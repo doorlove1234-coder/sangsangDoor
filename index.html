@@ -116,15 +116,17 @@
   }
 
   /* 문짝 */
+  /* 문짝은 ±230px 슬라이드하면 프레임 기둥(좌 412~744 / 우 1184~1516) 뒤로
+     완전히 가려진다. 그 이상 움직이면 투명 영역으로 빠져나와 배경 위에 떠 보인다. */
   .door-left {
     left: 732px; top: 128px; width: 233px; height: 895px;
-    transform: translateX(calc(var(--door) * -470px));
-    filter: brightness(calc(1 - var(--door) * 0.15));
+    transform: translateX(calc(var(--door) * -230px));
+    filter: brightness(calc(1 - var(--door) * 0.12));
   }
   .door-right {
     left: 965px; top: 129px; width: 232px; height: 890px;
-    transform: translateX(calc(var(--door) * 470px));
-    filter: brightness(calc(1 - var(--door) * 0.15));
+    transform: translateX(calc(var(--door) * 230px));
+    filter: brightness(calc(1 - var(--door) * 0.12));
   }
 
   /* 프레임 (최상단, 중앙 투명) */
