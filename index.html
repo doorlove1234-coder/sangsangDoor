@@ -213,47 +213,55 @@
     cursor: default;
   }
 
-  /* ── UI 오버레이 ──────────────────────────── */
-  /* 로고는 스크롤해도 항상 보이도록 (페이드 제거). 상단 잘림 방지 위해 아래로 내림 */
-  .logo {
-    left: 71px; top: 96px; width: 151px; height: 59px;
+  /* ── 상단 헤더 (배경 없이 히어로 위에 투명하게 / 위치는 서브 페이지와 동일) ──
+     스테이지 스케일과 분리된 고정 높이(78px) 헤더로, story.html 헤더와 같은 위치에 둠 */
+  .m-header {
+    position: absolute; top: 0; left: 0; z-index: 50;
+    width: 100%; height: 78px;
+    pointer-events: none;                 /* 빈 영역은 통과(히어로 클릭 유지), 내부 요소만 클릭 */
   }
+  .m-logo, .m-qbtn, .m-nav a { pointer-events: auto; }
 
-  /* 상단 중앙 메뉴 */
-  .topnav {
-    left: 0; top: 96px; width: 1920px; height: 60px;
-    display: flex; align-items: center; justify-content: center;
-    gap: 52px;
-    pointer-events: auto;
+  .m-logo {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    left: clamp(20px, 4vw, 56px);
+    height: 40px; width: auto;
   }
-  .topnav a {
+  /* 상단 중앙 메뉴 (뷰포트 중앙 정렬) */
+  .m-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    left: 0; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    gap: 38px;
+    pointer-events: none;                 /* 링크만 클릭되도록 */
+  }
+  .m-nav a {
     color: #efe6d4;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-decoration: none;
-    white-space: nowrap;
+    font-size: 16px; font-weight: 600; letter-spacing: 1.5px;
+    text-decoration: none; white-space: nowrap;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
     transition: color .2s ease;
   }
-  .topnav a:hover { color: var(--gold); }
+  .m-nav a:hover { color: var(--gold); }
 
-  .qbtn {
-    left: 1639px; top: 104px; width: 131px; height: 44px;
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px;
-    border-radius: 22px;
-    background: var(--gold);
-    color: #01071b;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border: none;
-    transition: filter .2s ease;       /* 스크롤해도 항상 보이도록 페이드 제거 */
-    text-decoration: none;
+  .m-qbtn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    right: clamp(20px, 4vw, 56px);
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 40px; padding: 0 22px;
+    border-radius: 20px;
+    background: var(--gold); color: #01071b;
+    font-size: 16px; font-weight: 700; letter-spacing: 1px;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: filter .2s ease;
   }
-  .qbtn:hover { filter: brightness(1.08); }
+  .m-qbtn:hover { filter: brightness(1.08); }
+
+  @media (max-width: 720px) {
+    .m-nav { gap: 18px; }
+    .m-nav a { font-size: 14px; letter-spacing: .05em; }
+    .m-qbtn { display: none; }
+  }
 
   /* 메인 카피 (문이 닫혔을 때 중앙) */
   .headline {
@@ -482,24 +490,25 @@
         <div class="layer door-trigger right" title="문 닫기" aria-label="문 닫기" role="button"></div>
 
         <!-- 6. UI 오버레이 -->
-        <img class="layer logo" src="img/main/logo.png" alt="상상도어" />
-
-        <nav class="layer topnav">
-          <a href="story.html">상상의 문</a>
-          <a href="#">테마</a>
-          <a href="#">예약</a>
-          <a href="#">매장안내</a>
-          <a href="#">공지</a>
-        </nav>
-
-        <a class="layer qbtn" href="#" aria-label="예약 확인">예약 확인</a>
-
         <div class="layer scroll-hint">
           <span>SCROLL</span>
           <span class="chev"></span>
         </div>
 
       </div>
+
+      <!-- 상단 헤더 (배경 없이 투명 / 위치는 서브 페이지와 동일) -->
+      <header class="m-header">
+        <img class="m-logo" src="img/main/logo.png" alt="상상의 문" />
+        <nav class="m-nav">
+          <a href="story.html">상상의 문</a>
+          <a href="#">테마</a>
+          <a href="#">예약</a>
+          <a href="#">매장안내</a>
+          <a href="#">공지</a>
+        </nav>
+        <a class="m-qbtn" href="#" aria-label="예약 확인">예약 확인</a>
+      </header>
     </div>
   </section>
 

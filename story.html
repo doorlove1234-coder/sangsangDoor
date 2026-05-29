@@ -36,16 +36,14 @@
   /* ══════════════ 상단 헤더 ══════════════ */
   .topbar {
     position: sticky; top: 0; z-index: 100;
-    height: 110px;
+    height: 78px;
     background: linear-gradient(180deg, #0c1124 0%, #080b18 100%);
     border-bottom: 1px solid rgba(200,168,99,.18);
     display: flex; align-items: center;
-    /* 디자인은 메인과 다르지만(다크 바), 로고/메뉴 위치는 메인 헤더와 동일하게.
-       메인은 로고/메뉴가 상단에서 약 66px(세로 중심 ~88px)에 위치 → 같은 높이로 맞춰 페이지 전환 시 안 들썩이게 함 */
-    padding: 66px clamp(20px, 4vw, 56px) 0;
+    padding: 0 clamp(20px, 4vw, 56px);
   }
   .topbar .brand { display: flex; align-items: center; flex: none; }
-  .topbar .brand img { height: 44px; width: auto; }
+  .topbar .brand img { height: 40px; width: auto; }
   .topbar nav {
     flex: 1;
     display: flex; align-items: center; justify-content: center;
