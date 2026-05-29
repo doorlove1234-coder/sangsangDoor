@@ -323,87 +323,95 @@
     text-indent: 0.5em;
   }
 
-  /* ── 난간 전환 (히어로 → THEME) ──
-     난간(rail-bar) 바로 아래에 검정→투명 그라데이션(rail-fade)을 살짝 겹쳐 깔고,
-     뒤 배경을 위(어둠)→아래(네이비)로 둬서 자연스럽게 THEME 네이비로 이어지게 한다. */
-  .railing {
-    width: 100%; overflow: hidden; line-height: 0;
-    background: linear-gradient(180deg, #01040f 0%, #01040f 42%, #141a3a 100%);
-  }
-  .railing .rail-bar  { position: relative; z-index: 2; width: 100%; display: block; }
-  .railing .rail-fade { position: relative; z-index: 1; width: 100%; display: block; margin-top: -2%; }
+  /* ── 난간 전환 (히어로 → THEME) ── */
+  .railing { width: 100%; line-height: 0; background: #01040f; }
+  .railing .rail-bar { display: block; width: 100%; }
 
   /* ── THEME 섹션 ── */
   .theme {
+    position: relative;
     background: #141a3a url('img/main/sec_bg.png') center top / cover no-repeat;
     padding: clamp(60px, 8vw, 120px) 20px clamp(80px, 10vw, 160px);
   }
-  .theme .sec-title { color: #f0e7d2; margin-bottom: clamp(34px, 5vw, 70px); }
+  /* 난간 아래 검정→투명 페이드: 섹션 배경 위, 콘텐츠(THEME 텍스트/카드) 아래 */
+  .theme-fade {
+    position: absolute; left: 0; top: 0; width: 100%;
+    height: clamp(150px, 18vw, 300px);
+    background: url('img/main/railing_down_img.png') top center / 100% 100% no-repeat;
+    z-index: 1; pointer-events: none;
+  }
+  .theme-content { position: relative; z-index: 2; }   /* 페이드 위로 올라오도록 */
+  .theme .sec-title { color: #f0e7d2; margin-bottom: clamp(34px, 5vw, 70px); position: relative; z-index: 3; }
 
-  .theme-carousel {
+  /* 5장 카드 스택: 맨 앞 = card.png, 뒤 4장 = 포스터. hover 시 위로, 클릭 시 맨 앞으로 */
+  .theme-stage {
     position: relative;
-    max-width: 1100px;
-    height: clamp(330px, 40vw, 500px);
-    margin: 0 auto;
-    perspective: 1500px;
+    height: clamp(360px, 44vw, 540px);
+    max-width: 860px; margin: 0 auto;
   }
   .tcard {
     position: absolute; top: 50%; left: 50%;
-    width: clamp(190px, 21vw, 290px);
-    aspect-ratio: 300 / 470;
-    transform: translate(-50%, -50%);
-    transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .6s, filter .6s;
-    cursor: pointer; will-change: transform, opacity;
+    width: clamp(178px, 20vw, 264px); aspect-ratio: 300 / 470;
+    transition: transform .5s cubic-bezier(.4,0,.2,1);
+    cursor: pointer; will-change: transform;
   }
-  .tcard img.poster { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:10px; box-shadow:0 22px 55px rgba(0,0,0,.55); }
-  .tcard img.frame-ov { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
-  .tcard.is-active { transform: translate(-50%,-50%) scale(1) rotateY(0); opacity:1; z-index:5; }
-  .tcard.is-prev   { transform: translate(-50%,-50%) translateX(-80%) scale(.8) rotateY(28deg);  opacity:.65; z-index:4; filter:brightness(.7); }
-  .tcard.is-next   { transform: translate(-50%,-50%) translateX(80%)  scale(.8) rotateY(-28deg); opacity:.65; z-index:4; filter:brightness(.7); }
-  .tcard.is-prev2  { transform: translate(-50%,-50%) translateX(-138%) scale(.62) rotateY(34deg);  opacity:.28; z-index:3; filter:brightness(.5); }
-  .tcard.is-next2  { transform: translate(-50%,-50%) translateX(138%)  scale(.62) rotateY(-34deg); opacity:.28; z-index:3; filter:brightness(.5); }
-  .tcard.is-hidden { transform: translate(-50%,-50%) scale(.5); opacity:0; z-index:1; pointer-events:none; }
-
-  .tc-arrow {
-    position:absolute; top:50%; transform:translateY(-50%); z-index:10;
-    width:48px; height:48px; border-radius:50%;
-    background:rgba(0,0,0,.35); border:1px solid rgba(242,215,172,.55);
-    color:var(--gold); font-size:24px; line-height:1; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; transition:background .2s;
+  .tcard .tc-in {
+    width: 100%; height: 100%;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0,0,0,.55);
+    transition: transform .3s ease, box-shadow .3s ease;
   }
-  .tc-arrow:hover { background:rgba(0,0,0,.65); }
-  .tc-arrow.prev { left: clamp(4px, 2vw, 20px); }
-  .tc-arrow.next { right: clamp(4px, 2vw, 20px); }
+  .tcard img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tcard:not(.is-front):hover { z-index: 9 !important; }
+  .tcard:not(.is-front):hover .tc-in { transform: translateY(-26px); box-shadow: 0 32px 60px rgba(0,0,0,.6); }
+  .tcard.is-front { cursor: default; }
 
-  .theme-info { text-align:center; margin-top: clamp(28px,4vw,56px); color:#f0e7d2; }
-  .theme-info .qmark { font-size: clamp(26px,3vw,40px); letter-spacing:.3em; font-weight:700; }
-  .theme-info .meta { margin-top:14px; font-size: clamp(14px,1.4vw,18px); letter-spacing:.12em; opacity:.92; }
-  .theme-info .meta .stars { color: var(--gold); }
+  .theme-info { text-align:center; margin-top: clamp(28px,3.5vw,52px); color:#f0e7d2; }
+  .theme-info .qmark { font-size: clamp(24px,2.6vw,34px); letter-spacing:.3em; font-weight:700; }
+  .theme-info .meta { margin-top:12px; font-size: clamp(13px,1.4vw,17px); letter-spacing:.12em; opacity:.92; }
+  .theme-info .meta .stars { color: var(--gold); letter-spacing:.1em; }
   .branch-btn {
-    margin-top: clamp(24px,3vw,40px); display:inline-block;
-    padding: 12px 40px; font-size: clamp(15px,1.5vw,19px); font-weight:700; letter-spacing:.08em;
-    color:#3a2c14; background:#e9d9b0; border:1px solid #b89b62; border-radius:4px;
-    box-shadow:0 6px 18px rgba(0,0,0,.45); cursor:pointer; transition:filter .2s;
+    margin-top: clamp(24px,3vw,40px);
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:170px; min-height:70px; padding: 16px 44px 22px;
+    font-size: clamp(16px,1.6vw,20px); font-weight:700; letter-spacing:.05em;
+    color:#3a2614; text-decoration: none;
+    background: url('img/main/panel.png') center/100% 100% no-repeat;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,.5));
+    cursor:pointer; transition: transform .2s; border:0;
   }
-  .branch-btn:hover { filter:brightness(1.06); }
+  .branch-btn:hover { transform: translateY(-2px); }
 
   /* ── NOTICE 섹션 ── */
   .notice { background:#efe3c8; padding: clamp(50px,7vw,110px) 16px clamp(60px,8vw,130px); }
   .notice-inner {
-    max-width:1340px; margin:0 auto;
-    background:url('img/main/notice_background.png') center / 100% 100% no-repeat;
-    padding: clamp(40px,5vw,80px) clamp(28px,5vw,90px) clamp(50px,6vw,90px);
+    max-width:1180px; margin:0 auto;
+    background:url('img/main/notice_background_big.png') center / 100% 100% no-repeat;
+    padding: clamp(48px,5vw,92px) clamp(40px,6vw,108px) clamp(60px,7vw,106px);
   }
   .notice .sec-title { color:#9a7b3e; letter-spacing:.4em; }
-  .notice-sub { text-align:center; margin-top:18px; color:#5b4a2c; }
-  .notice-sub strong { display:block; font-size:clamp(18px,2vw,24px); font-weight:700; }
-  .notice-sub span { display:block; margin-top:8px; font-size:clamp(13px,1.3vw,16px); opacity:.85; }
-  .notice-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(14px,1.6vw,26px); margin-top:clamp(34px,4vw,56px); }
-  .ncard { background:linear-gradient(160deg,#16244f,#0d1733); border:1px solid rgba(200,168,99,.5); border-radius:10px; padding:clamp(20px,2vw,34px) 16px; text-align:center; color:#f0e7d2; }
-  .ncard img { width:clamp(58px,6vw,84px); height:auto; }
-  .ncard h4 { margin-top:16px; font-size:clamp(16px,1.7vw,21px); font-weight:700; color:var(--gold); }
-  .ncard p { margin-top:12px; font-size:clamp(12px,1.2vw,15px); line-height:1.7; opacity:.82; }
-  @media (max-width:880px){ .notice-cards{ grid-template-columns:repeat(2,1fr);} }
+  .notice-sub { text-align:center; margin-top:16px; color:#5b4a2c; }
+  .notice-sub strong { display:block; font-size:clamp(17px,1.9vw,22px); font-weight:700; }
+  .notice-sub span { display:block; margin-top:10px; font-size:clamp(12px,1.25vw,15px); opacity:.8; }
+  .notice-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,1.6vw,24px); margin-top:clamp(32px,4vw,54px); }
+  .ncard {
+    position:relative;
+    background: linear-gradient(165deg,#1a2a55 0%, #0b142f 100%);
+    border:1px solid rgba(200,168,99,.6); border-radius:8px;
+    padding: clamp(24px,2.4vw,38px) 14px clamp(34px,3vw,46px);
+    text-align:center; color:#eadfc4;
+    box-shadow: inset 0 0 0 4px rgba(200,168,99,.10), 0 10px 26px rgba(0,0,0,.22);
+  }
+  .ncard img { width:clamp(52px,5.2vw,76px); height:auto; }
+  .ncard h4 { margin-top:14px; font-size:clamp(15px,1.6vw,20px); font-weight:700; color:var(--gold); }
+  .ncard p { margin-top:10px; font-size:clamp(11.5px,1.15vw,14px); line-height:1.7; color:#b9c2d8; }
+  .ncard .num {
+    position:absolute; left:50%; bottom:-16px; transform:translateX(-50%);
+    width:32px; height:32px; border-radius:50%;
+    background:#0b142f; border:1px solid rgba(200,168,99,.7); color:var(--gold);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;
+  }
+  @media (max-width:880px){ .notice-cards{ grid-template-columns:repeat(2,1fr); gap:26px;} }
   @media (max-width:480px){ .notice-cards{ grid-template-columns:1fr;} }
 
   /* ── FOOTER ── */
@@ -503,17 +511,22 @@
 
   <!-- THEME 섹션 -->
   <section class="theme">
-    <h2 class="sec-title">THEME</h2>
-    <div class="theme-carousel">
-      <button class="tc-arrow prev" aria-label="이전 테마">&#10094;</button>
-      <div class="theme-track" id="themeTrack"></div>
-      <button class="tc-arrow next" aria-label="다음 테마">&#10095;</button>
-    </div>
-    <div class="theme-info">
-      <div class="qmark">???</div>
-      <div class="meta">난이도 : <span class="stars">★★★</span></div>
-      <div class="meta">인원 2~6명 &nbsp;&nbsp;|&nbsp;&nbsp; 시간 100분</div>
-      <a class="branch-btn" href="#">대학로점</a>
+    <div class="theme-fade"></div>
+    <div class="theme-content">
+      <h2 class="sec-title">THEME</h2>
+      <div class="theme-stage" id="themeStage">
+        <div class="tcard"><div class="tc-in"><img src="img/main/card.png" alt="카드" /></div></div>
+        <div class="tcard"><div class="tc-in"><img src="img/main/poster/5_a.jpg" alt="테마 포스터" /></div></div>
+        <div class="tcard"><div class="tc-in"><img src="img/main/poster/16_a.jpg" alt="테마 포스터" /></div></div>
+        <div class="tcard"><div class="tc-in"><img src="img/main/poster/28_a.jpg" alt="테마 포스터" /></div></div>
+        <div class="tcard"><div class="tc-in"><img src="img/main/poster/37_a.jpg" alt="테마 포스터" /></div></div>
+      </div>
+      <div class="theme-info">
+        <div class="qmark">???</div>
+        <div class="meta">난이도 : <span class="stars">★★★</span></div>
+        <div class="meta">인원 2~6명 &nbsp;&nbsp;|&nbsp;&nbsp; 시간 100분</div>
+        <a class="branch-btn" href="#">대학로점</a>
+      </div>
     </div>
   </section>
 
@@ -530,21 +543,25 @@
           <img src="img/main/notice_icon1.png" alt="" />
           <h4>10분 전 도착</h4>
           <p>원활한 게임을 위해 예약시간 10분 전에 도착해 주세요.</p>
+          <span class="num">1</span>
         </div>
         <div class="ncard">
           <img src="img/main/notice_icon2.png" alt="" />
           <h4>누설 금지</h4>
           <p>아직 체험하지 않은 분들을 위해 문제 공유는 삼가 해주시기 바랍니다.</p>
+          <span class="num">2</span>
         </div>
         <div class="ncard">
           <img src="img/main/notice_icon3.png" alt="" />
           <h4>사진 촬영 금지</h4>
           <p>컨텐츠 보호를 위해 촬영을 금지합니다. 게임 입장 전 보관함에 보관해주세요.</p>
+          <span class="num">3</span>
         </div>
         <div class="ncard">
           <img src="img/main/notice_icon4.png" alt="" />
           <h4>위험물품 반입금지</h4>
           <p>라이터, 칼 등 위험물품은 게임 룸 안으로 반입이 금지됩니다.</p>
+          <span class="num">4</span>
         </div>
       </div>
     </div>
@@ -570,14 +587,15 @@
         <img src="img/main/logo.png" alt="상상의 문" />
         <p>상상 그 이상의 공간</p>
       </div>
-      <!-- 지점 연락처: 목업 기준 best-effort, 정확한 값은 확인 후 교정 필요 -->
+      <!-- 지점 연락처 (상상의문 공식 사이트 기준) -->
       <div class="footer-stores">
-        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하1층</div>
-        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로13번길 44, 4층</div>
-        <div><b>홍대점</b> 02-336-9007<br>서울 마포구 양화로 19, 2층</div>
-        <div><b>부평점</b> 010-3242-3216<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
-        <div><b>종로점</b> 062-226-1126<br>광주광역시 동구 중앙로 80-5, 6층</div>
-        <div><b>수원2호점</b> 010-9360-4140<br>경기도 수원시 팔달구 화서로24번길 46-1B 3층</div>
+        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
+        <div><b>홍대점</b> 02-336-9007<br>서울시 마포구 홍익로 19, 2층</div>
+        <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
+        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
+        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
       </div>
       <div class="footer-social">
         <a href="#" aria-label="인스타그램">IG</a>
@@ -587,8 +605,8 @@
     </div>
 
     <div class="footer-bottom">
-      <span>COPYRIGHT 2002 상상의문. All right reserved. / created by TEAM 1</span>
-      <span>이메일 imaginarydoor@yologi.sys</span>
+      <span>COPYRIGHT ⓒ 2022 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>이메일 imaginarydoor@yologuys.com</span>
     </div>
   </footer>
 
@@ -700,59 +718,44 @@
   update();
 })();
 
-// ── THEME 포스터 자동 순환 캐러셀 ──
+// ── THEME 카드 스택 (맨 앞 card.png, hover 시 위로, 클릭 시 맨 앞으로) ──
 (function () {
-  var track = document.getElementById('themeTrack');
-  if (!track) return;
-
-  var posters = [1,4,5,6,7,8,9,10,11,14,15,16,21,22,24,26,27,28,29,30,31,33,34,35,36,37,38,39,40,41,42];
-  posters.forEach(function (num) {
-    var d = document.createElement('div');
-    d.className = 'tcard';
-    d.innerHTML =
-      '<img class="poster" src="img/main/poster/' + num + '_a.jpg" alt="테마 포스터" loading="lazy" />' +
-      '<img class="frame-ov" src="img/main/card_transparent.png" alt="" />';
-    track.appendChild(d);
-  });
-
-  var cards = Array.prototype.slice.call(track.querySelectorAll('.tcard'));
+  var stage = document.getElementById('themeStage');
+  if (!stage) return;
+  var cards = Array.prototype.slice.call(stage.querySelectorAll('.tcard'));
   var n = cards.length;
   if (!n) return;
-  var active = 0;
-  var timer = null;
-  var DELAY = 3500;
+  var center = Math.floor(n / 2);
+  // 슬롯별 위치(가운데가 맨 앞)
+  var slotDefs = [
+    { x: -240, r: -17, s: .80, z: 1 },
+    { x: -128, r: -8,  s: .90, z: 2 },
+    { x: 0,    r: 0,   s: 1,   z: 5 },
+    { x: 128,  r: 8,   s: .90, z: 2 },
+    { x: 240,  r: 17,  s: .80, z: 1 }
+  ];
+  var slots = new Array(n);
+  slots[center] = cards[0];                 // 맨 앞 = card.png
+  var rest = cards.slice(1), oi = 0;
+  for (var s = 0; s < n; s++) { if (s !== center) slots[s] = rest[oi++]; }
 
   function render() {
-    for (var i = 0; i < n; i++) {
-      var d = i - active;
-      if (d > n / 2) d -= n;
-      if (d < -n / 2) d += n;
-      var cls = 'tcard';
-      if (d === 0) cls += ' is-active';
-      else if (d === -1) cls += ' is-prev';
-      else if (d === 1) cls += ' is-next';
-      else if (d === -2) cls += ' is-prev2';
-      else if (d === 2) cls += ' is-next2';
-      else cls += ' is-hidden';
-      cards[i].className = cls;
+    for (var s = 0; s < n; s++) {
+      var c = slots[s], d = slotDefs[s] || slotDefs[slotDefs.length - 1];
+      c.style.transform = 'translate(-50%,-50%) translateX(' + d.x + 'px) rotate(' + d.r + 'deg) scale(' + d.s + ')';
+      c.style.zIndex = d.z;
+      c.classList.toggle('is-front', s === center);
     }
   }
-  function restart() {
-    if (timer) clearInterval(timer);
-    timer = setInterval(function () { active = (active + 1) % n; render(); }, DELAY);
+  function toFront(card) {
+    var cur = slots.indexOf(card);
+    if (cur === center) return;
+    var f = slots[center];
+    slots[center] = card; slots[cur] = f;     // 클릭 카드 ↔ 맨 앞 카드 교체
+    render();
   }
-  function goTo(i) { active = ((i % n) + n) % n; render(); restart(); }
-
-  cards.forEach(function (c, i) {
-    c.addEventListener('click', function () { if (i !== active) goTo(i); });
-  });
-  var prevBtn = document.querySelector('.tc-arrow.prev');
-  var nextBtn = document.querySelector('.tc-arrow.next');
-  if (prevBtn) prevBtn.addEventListener('click', function () { goTo(active - 1); });
-  if (nextBtn) nextBtn.addEventListener('click', function () { goTo(active + 1); });
-
+  cards.forEach(function (c) { c.addEventListener('click', function () { toFront(c); }); });
   render();
-  restart();
 })();
 </script>
 </body>
