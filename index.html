@@ -102,13 +102,16 @@
   /* 각 카드 바깥 래퍼: 좌→우 이동 + 코버플로(scale/rotateY) = '오른쪽으로 돌며 교체' */
   .cwrap {
     position: absolute;
-    top: 470px; left: 0;
-    width: 164px; height: 257px;
+    top: 500px; left: 0;
+    width: 128px; height: 200px;            /* 카드 사이즈 축소 */
     animation: carousel var(--cdur, 24s) linear var(--cdelay, 0s) infinite;
     will-change: transform, opacity;
     pointer-events: auto;            /* 카드는 hover 가능 (.carousel 컨테이너는 none 유지) */
   }
-  .cwrap:hover { animation-play-state: paused; }   /* hover 시 그 카드는 멈춰서 뒤집기 편하게 */
+  /* 카드 하나라도 hover 중이면 캐러셀 전체(좌우 이동 + 위아래 흔들림)를 멈춘다.
+     → 한 장을 뒤집어 보는 동안 옆 카드가 계속 흘러가지 않아 자연스럽다 */
+  .carousel:has(.cwrap:hover) .cwrap,
+  .carousel:has(.cwrap:hover) .cfloat { animation-play-state: paused; }
   /* 안쪽 래퍼: 지금과 동일한 위아래 흔들림 유지 (이동/회전과 분리) + 뒤집기용 원근 */
   .cfloat {
     width: 100%; height: 100%;
@@ -136,12 +139,13 @@
   /* 좌측 기둥(412~744) 뒤에서 나와 우측 기둥(1184~1516) 뒤로 사라지며 무한 반복.
      양 끝(translateX 412/1352)은 기둥에 가려지고 opacity 0이라 순환 점프가 보이지 않는다.
      이동 폭을 넓혀(940px) 카드 간격이 예전처럼 넓게 보인다. */
+  /* 이동 폭을 넓혀(380→1420) 카드 사이 간격을 더 벌린다. 양 끝(기둥 뒤)은 opacity 0 */
   @keyframes carousel {
-    0%   { transform: translateX(412px)  scale(.80) rotateY(34deg);  opacity: 0; }
+    0%   { transform: translateX(380px)  scale(.80) rotateY(34deg);  opacity: 0; }
     12%  { opacity: 1; }
-    50%  { transform: translateX(882px)  scale(1.06) rotateY(0deg);  opacity: 1; }
+    50%  { transform: translateX(900px)  scale(1.06) rotateY(0deg);  opacity: 1; }
     88%  { opacity: 1; }
-    100% { transform: translateX(1352px) scale(.80) rotateY(-34deg); opacity: 0; }
+    100% { transform: translateX(1420px) scale(.80) rotateY(-34deg); opacity: 0; }
   }
 
   @keyframes floatY {
