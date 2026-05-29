@@ -106,20 +106,32 @@
     width: 164px; height: 257px;
     animation: carousel var(--cdur, 24s) linear var(--cdelay, 0s) infinite;
     will-change: transform, opacity;
+    pointer-events: auto;            /* 카드는 hover 가능 (.carousel 컨테이너는 none 유지) */
   }
-  /* 안쪽 래퍼: 지금과 동일한 위아래 흔들림 유지 (이동/회전과 분리) */
+  .cwrap:hover { animation-play-state: paused; }   /* hover 시 그 카드는 멈춰서 뒤집기 편하게 */
+  /* 안쪽 래퍼: 지금과 동일한 위아래 흔들림 유지 (이동/회전과 분리) + 뒤집기용 원근 */
   .cfloat {
     width: 100%; height: 100%;
+    perspective: 1000px;
     animation: floatY var(--fdur, 6.5s) ease-in-out var(--fdelay, 0s) infinite,
                floatTilt calc(var(--fdur, 6.5s) * 1.6) ease-in-out var(--fdelay, 0s) infinite;
   }
-  .cfloat img {
-    display: block;
-    width: 100%; height: 100%;
-    border-radius: 12px;
+  /* hover 하면 Y축으로 뒤집혀 뒷면(포스터) 공개 */
+  .flip {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .7s cubic-bezier(.2,.7,.2,1);
+  }
+  .cwrap:hover .flip { transform: rotateY(180deg); }
+  .cface {
+    position: absolute; inset: 0;
+    border-radius: 12px; overflow: hidden;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55),
                 0 0 42px rgba(255, 220, 160, calc(var(--cards) * 0.4));
   }
+  .cface img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .cback { transform: rotateY(180deg); }
 
   /* 좌측 기둥(412~744) 뒤에서 나와 우측 기둥(1184~1516) 뒤로 사라지며 무한 반복.
      양 끝(translateX 412/1352)은 기둥에 가려지고 opacity 0이라 순환 점프가 보이지 않는다.
@@ -202,14 +214,14 @@
   }
 
   /* ── UI 오버레이 ──────────────────────────── */
-  /* 로고는 스크롤해도 항상 보이도록 (페이드 제거) */
+  /* 로고는 스크롤해도 항상 보이도록 (페이드 제거). 상단 잘림 방지 위해 아래로 내림 */
   .logo {
-    left: 71px; top: 40px; width: 151px; height: 59px;
+    left: 71px; top: 96px; width: 151px; height: 59px;
   }
 
   /* 상단 중앙 메뉴 */
   .topnav {
-    left: 0; top: 39px; width: 1920px; height: 60px;
+    left: 0; top: 96px; width: 1920px; height: 60px;
     display: flex; align-items: center; justify-content: center;
     gap: 52px;
     pointer-events: auto;
@@ -227,7 +239,7 @@
   .topnav a:hover { color: var(--gold); }
 
   .qbtn {
-    left: 1639px; top: 39px; width: 131px; height: 44px;
+    left: 1639px; top: 104px; width: 131px; height: 44px;
     display: flex; align-items: center; justify-content: center;
     gap: 8px;
     border-radius: 22px;
@@ -302,18 +314,120 @@
   }
   .reveal-copy p { margin-top: 12px; font-size: 17px; letter-spacing: 3px; opacity: .8; }
 
-  /* ── 다음 섹션 (스크롤이 더 있다는 걸 보여주기 위한 자리) ── */
-  .next {
-    min-height: 100vh;
-    background: radial-gradient(ellipse at top, #0a1330 0%, #01040f 60%);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 24px;
+  /* ════════════ 하단 섹션 공통 ════════════ */
+  .sec-title {
     text-align: center;
-    padding: 40px;
+    font-size: clamp(28px, 3.2vw, 46px);
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;
   }
-  .next h2 { font-size: 40px; letter-spacing: 6px; font-weight: 700; }
-  .next p { font-size: 18px; letter-spacing: 2px; opacity: .7; max-width: 620px; line-height: 1.9; }
+
+  /* ── 난간 전환 (히어로 → THEME) ──
+     난간(rail-bar) 바로 아래에 검정→투명 그라데이션(rail-fade)을 살짝 겹쳐 깔고,
+     뒤 배경을 위(어둠)→아래(네이비)로 둬서 자연스럽게 THEME 네이비로 이어지게 한다. */
+  .railing {
+    width: 100%; overflow: hidden; line-height: 0;
+    background: linear-gradient(180deg, #01040f 0%, #01040f 42%, #141a3a 100%);
+  }
+  .railing .rail-bar  { position: relative; z-index: 2; width: 100%; display: block; }
+  .railing .rail-fade { position: relative; z-index: 1; width: 100%; display: block; margin-top: -2%; }
+
+  /* ── THEME 섹션 ── */
+  .theme {
+    background: #141a3a url('img/main/sec_bg.png') center top / cover no-repeat;
+    padding: clamp(60px, 8vw, 120px) 20px clamp(80px, 10vw, 160px);
+  }
+  .theme .sec-title { color: #f0e7d2; margin-bottom: clamp(34px, 5vw, 70px); }
+
+  .theme-carousel {
+    position: relative;
+    max-width: 1100px;
+    height: clamp(330px, 40vw, 500px);
+    margin: 0 auto;
+    perspective: 1500px;
+  }
+  .tcard {
+    position: absolute; top: 50%; left: 50%;
+    width: clamp(190px, 21vw, 290px);
+    aspect-ratio: 300 / 470;
+    transform: translate(-50%, -50%);
+    transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .6s, filter .6s;
+    cursor: pointer; will-change: transform, opacity;
+  }
+  .tcard img.poster { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:10px; box-shadow:0 22px 55px rgba(0,0,0,.55); }
+  .tcard img.frame-ov { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .tcard.is-active { transform: translate(-50%,-50%) scale(1) rotateY(0); opacity:1; z-index:5; }
+  .tcard.is-prev   { transform: translate(-50%,-50%) translateX(-80%) scale(.8) rotateY(28deg);  opacity:.65; z-index:4; filter:brightness(.7); }
+  .tcard.is-next   { transform: translate(-50%,-50%) translateX(80%)  scale(.8) rotateY(-28deg); opacity:.65; z-index:4; filter:brightness(.7); }
+  .tcard.is-prev2  { transform: translate(-50%,-50%) translateX(-138%) scale(.62) rotateY(34deg);  opacity:.28; z-index:3; filter:brightness(.5); }
+  .tcard.is-next2  { transform: translate(-50%,-50%) translateX(138%)  scale(.62) rotateY(-34deg); opacity:.28; z-index:3; filter:brightness(.5); }
+  .tcard.is-hidden { transform: translate(-50%,-50%) scale(.5); opacity:0; z-index:1; pointer-events:none; }
+
+  .tc-arrow {
+    position:absolute; top:50%; transform:translateY(-50%); z-index:10;
+    width:48px; height:48px; border-radius:50%;
+    background:rgba(0,0,0,.35); border:1px solid rgba(242,215,172,.55);
+    color:var(--gold); font-size:24px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:background .2s;
+  }
+  .tc-arrow:hover { background:rgba(0,0,0,.65); }
+  .tc-arrow.prev { left: clamp(4px, 2vw, 20px); }
+  .tc-arrow.next { right: clamp(4px, 2vw, 20px); }
+
+  .theme-info { text-align:center; margin-top: clamp(28px,4vw,56px); color:#f0e7d2; }
+  .theme-info .qmark { font-size: clamp(26px,3vw,40px); letter-spacing:.3em; font-weight:700; }
+  .theme-info .meta { margin-top:14px; font-size: clamp(14px,1.4vw,18px); letter-spacing:.12em; opacity:.92; }
+  .theme-info .meta .stars { color: var(--gold); }
+  .branch-btn {
+    margin-top: clamp(24px,3vw,40px); display:inline-block;
+    padding: 12px 40px; font-size: clamp(15px,1.5vw,19px); font-weight:700; letter-spacing:.08em;
+    color:#3a2c14; background:#e9d9b0; border:1px solid #b89b62; border-radius:4px;
+    box-shadow:0 6px 18px rgba(0,0,0,.45); cursor:pointer; transition:filter .2s;
+  }
+  .branch-btn:hover { filter:brightness(1.06); }
+
+  /* ── NOTICE 섹션 ── */
+  .notice { background:#efe3c8; padding: clamp(50px,7vw,110px) 16px clamp(60px,8vw,130px); }
+  .notice-inner {
+    max-width:1340px; margin:0 auto;
+    background:url('img/main/notice_background.png') center / 100% 100% no-repeat;
+    padding: clamp(40px,5vw,80px) clamp(28px,5vw,90px) clamp(50px,6vw,90px);
+  }
+  .notice .sec-title { color:#9a7b3e; letter-spacing:.4em; }
+  .notice-sub { text-align:center; margin-top:18px; color:#5b4a2c; }
+  .notice-sub strong { display:block; font-size:clamp(18px,2vw,24px); font-weight:700; }
+  .notice-sub span { display:block; margin-top:8px; font-size:clamp(13px,1.3vw,16px); opacity:.85; }
+  .notice-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(14px,1.6vw,26px); margin-top:clamp(34px,4vw,56px); }
+  .ncard { background:linear-gradient(160deg,#16244f,#0d1733); border:1px solid rgba(200,168,99,.5); border-radius:10px; padding:clamp(20px,2vw,34px) 16px; text-align:center; color:#f0e7d2; }
+  .ncard img { width:clamp(58px,6vw,84px); height:auto; }
+  .ncard h4 { margin-top:16px; font-size:clamp(16px,1.7vw,21px); font-weight:700; color:var(--gold); }
+  .ncard p { margin-top:12px; font-size:clamp(12px,1.2vw,15px); line-height:1.7; opacity:.82; }
+  @media (max-width:880px){ .notice-cards{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .notice-cards{ grid-template-columns:1fr;} }
+
+  /* ── FOOTER ── */
+  .footer { background:#0a0f24; color:#b9c0d6; padding:clamp(40px,5vw,72px) 20px clamp(28px,4vw,46px); }
+  .footer a { color:inherit; text-decoration:none; }
+  .footer-top { max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:16px 30px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .footer-hours { display:flex; align-items:center; gap:14px; }
+  .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
+  .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
+  .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+  .footer-nav a:hover { color:var(--gold); }
+  .footer-main { max-width:1280px; margin:clamp(24px,3vw,38px) auto 0; display:flex; flex-wrap:wrap; gap:30px 50px; align-items:flex-start; }
+  .footer-brand { min-width:190px; }
+  .footer-brand img { width:138px; height:auto; }
+  .footer-brand p { margin-top:10px; font-size:12px; color:#7c84a0; letter-spacing:.05em; }
+  .footer-stores { display:grid; grid-template-columns:repeat(2,minmax(210px,1fr)); gap:4px 40px; flex:1; }
+  .footer-stores div { font-size:12.5px; line-height:1.95; color:#9aa2bd; }
+  .footer-stores b { color:#c3cae0; font-weight:600; }
+  .footer-social { display:flex; gap:10px; }
+  .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
+  .footer-social a:hover { background:var(--gold); color:#0a0f24; }
+  .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
+  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -328,29 +442,29 @@
       <div class="stage" id="stage">
 
         <!-- 1. 배경 -->
-        <img class="layer bg" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/background.png" alt="" />
+        <img class="layer bg" src="img/main/main_bg.png" alt="" />
 
         <!-- 2. 문 내부 황금빛 -->
-        <img class="layer door-bg" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/door_bg.png" alt="" />
+        <img class="layer door-bg" src="img/main/door_bg.png" alt="" />
         <div class="layer door-glow"></div>
 
         <!-- 3. 문짝 (3D 경첩 스윙 / 카드보다 뒤에 그려져 열리면 카드가 드러남) -->
         <div class="layer door-scene">
-          <img class="door-left"  src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/left_door.png"  alt="" />
-          <img class="door-right" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/right_door.png" alt="" />
+          <img class="door-left"  src="img/main/left_door.png"  alt="" />
+          <img class="door-right" src="img/main/right_door.png" alt="" />
         </div>
 
         <!-- 4. 카드 캐러셀 (여러 장이 자동으로 오른쪽으로 순환, 간격 넓게) -->
         <div class="layer carousel" id="carousel">
-          <div class="cwrap" style="--cdur:24s; --cdelay:0s;     --fdur:6.5s; --fdelay:0s;">  <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
-          <div class="cwrap" style="--cdur:24s; --cdelay:-4.8s;  --fdur:7.2s; --fdelay:.5s;"> <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
-          <div class="cwrap" style="--cdur:24s; --cdelay:-9.6s;  --fdur:8s;   --fdelay:1s;">  <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
-          <div class="cwrap" style="--cdur:24s; --cdelay:-14.4s; --fdur:6.8s; --fdelay:1.5s;"><div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
-          <div class="cwrap" style="--cdur:24s; --cdelay:-19.2s; --fdur:7.6s; --fdelay:.3s;"> <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:0s;     --fdur:6.5s; --fdelay:0s;"><div class="cfloat"><div class="flip"><div class="cface cfront"><img src="img/main/card.png" alt="카드" /></div><div class="cface cback"><img src="img/main/poster/1_a.jpg" alt="테마 포스터" /></div></div></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-4.8s;  --fdur:7.2s; --fdelay:.5s;"><div class="cfloat"><div class="flip"><div class="cface cfront"><img src="img/main/card.png" alt="카드" /></div><div class="cface cback"><img src="img/main/poster/9_a.jpg" alt="테마 포스터" /></div></div></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-9.6s;  --fdur:8s;   --fdelay:1s;"><div class="cfloat"><div class="flip"><div class="cface cfront"><img src="img/main/card.png" alt="카드" /></div><div class="cface cback"><img src="img/main/poster/16_a.jpg" alt="테마 포스터" /></div></div></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-14.4s; --fdur:6.8s; --fdelay:1.5s;"><div class="cfloat"><div class="flip"><div class="cface cfront"><img src="img/main/card.png" alt="카드" /></div><div class="cface cback"><img src="img/main/poster/28_a.jpg" alt="테마 포스터" /></div></div></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-19.2s; --fdur:7.6s; --fdelay:.3s;"><div class="cfloat"><div class="flip"><div class="cface cfront"><img src="img/main/card.png" alt="카드" /></div><div class="cface cback"><img src="img/main/poster/37_a.jpg" alt="테마 포스터" /></div></div></div></div>
         </div>
 
         <!-- 5. 프레임 (최상단, 중앙 투명) -->
-        <img class="layer frame" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/door_line.png" alt="" />
+        <img class="layer frame" src="img/main/door_line.png" alt="" />
 
         <!-- 닫힌 문 클릭 영역 (닫혀 있을 때 클릭 시 문 열기) -->
         <div class="layer door-open-trigger" title="문 열기" aria-label="문 열기" role="button"></div>
@@ -360,7 +474,7 @@
         <div class="layer door-trigger right" title="문 닫기" aria-label="문 닫기" role="button"></div>
 
         <!-- 6. UI 오버레이 -->
-        <img class="layer logo" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/logo.png" alt="상상도어" />
+        <img class="layer logo" src="img/main/logo.png" alt="상상도어" />
 
         <nav class="layer topnav">
           <a href="#">상상의 문</a>
@@ -372,29 +486,111 @@
 
         <a class="layer qbtn" href="#" aria-label="예약 확인">예약 확인</a>
 
-        <div class="layer headline">
-          <h1>운명의 문을 열다</h1>
-          <p>스크롤하여 당신의 카드를 만나보세요</p>
-        </div>
-
         <div class="layer scroll-hint">
           <span>SCROLL</span>
           <span class="chev"></span>
-        </div>
-
-        <div class="layer reveal-copy">
-          <h2>당신을 위한 세 장의 카드</h2>
-          <p>마음이 이끄는 카드를 선택하세요</p>
         </div>
 
       </div>
     </div>
   </section>
 
-  <section class="next">
-    <h2>상상도어</h2>
-    <p>문 너머의 이야기가 여기서 이어집니다. 이 영역에 다음 콘텐츠 섹션을 자유롭게 배치하세요.</p>
+  <!-- 난간 전환 (난간 + 검정→투명 그라데이션 살짝 겹침) -->
+  <div class="railing">
+    <img class="rail-bar"  src="img/main/railing_img.png" alt="" />
+    <img class="rail-fade" src="img/main/railing_down_img.png" alt="" />
+  </div>
+
+  <!-- THEME 섹션 -->
+  <section class="theme">
+    <h2 class="sec-title">THEME</h2>
+    <div class="theme-carousel">
+      <button class="tc-arrow prev" aria-label="이전 테마">&#10094;</button>
+      <div class="theme-track" id="themeTrack"></div>
+      <button class="tc-arrow next" aria-label="다음 테마">&#10095;</button>
+    </div>
+    <div class="theme-info">
+      <div class="qmark">???</div>
+      <div class="meta">난이도 : <span class="stars">★★★</span></div>
+      <div class="meta">인원 2~6명 &nbsp;&nbsp;|&nbsp;&nbsp; 시간 100분</div>
+      <a class="branch-btn" href="#">대학로점</a>
+    </div>
   </section>
+
+  <!-- NOTICE 섹션 -->
+  <section class="notice">
+    <div class="notice-inner">
+      <h2 class="sec-title">NOTICE</h2>
+      <div class="notice-sub">
+        <strong>입장 전 반드시 확인해주세요.</strong>
+        <span>임산부, 노약자, 폐쇄공포증, 13세 미만 어린이, 음주자는 입장이 제한됩니다.</span>
+      </div>
+      <div class="notice-cards">
+        <div class="ncard">
+          <img src="img/main/notice_icon1.png" alt="" />
+          <h4>10분 전 도착</h4>
+          <p>원활한 게임을 위해 예약시간 10분 전에 도착해 주세요.</p>
+        </div>
+        <div class="ncard">
+          <img src="img/main/notice_icon2.png" alt="" />
+          <h4>누설 금지</h4>
+          <p>아직 체험하지 않은 분들을 위해 문제 공유는 삼가 해주시기 바랍니다.</p>
+        </div>
+        <div class="ncard">
+          <img src="img/main/notice_icon3.png" alt="" />
+          <h4>사진 촬영 금지</h4>
+          <p>컨텐츠 보호를 위해 촬영을 금지합니다. 게임 입장 전 보관함에 보관해주세요.</p>
+        </div>
+        <div class="ncard">
+          <img src="img/main/notice_icon4.png" alt="" />
+          <h4>위험물품 반입금지</h4>
+          <p>라이터, 칼 등 위험물품은 게임 룸 안으로 반입이 금지됩니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-hours">
+        <span class="clock">&#128337;</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="#">공지사항</a>
+        <a href="#">예약확인</a>
+        <a href="#">제휴문의</a>
+        <a href="#">개인정보취급방침</a>
+      </nav>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-brand">
+        <img src="img/main/logo.png" alt="상상의 문" />
+        <p>상상 그 이상의 공간</p>
+      </div>
+      <!-- 지점 연락처: 목업 기준 best-effort, 정확한 값은 확인 후 교정 필요 -->
+      <div class="footer-stores">
+        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하1층</div>
+        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로13번길 44, 4층</div>
+        <div><b>홍대점</b> 02-336-9007<br>서울 마포구 양화로 19, 2층</div>
+        <div><b>부평점</b> 010-3242-3216<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>종로점</b> 062-226-1126<br>광주광역시 동구 중앙로 80-5, 6층</div>
+        <div><b>수원2호점</b> 010-9360-4140<br>경기도 수원시 팔달구 화서로24번길 46-1B 3층</div>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="인스타그램">IG</a>
+        <a href="#" aria-label="네이버 블로그">N</a>
+        <a href="#" aria-label="카카오톡">K</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>COPYRIGHT 2002 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>이메일 imaginarydoor@yologi.sys</span>
+    </div>
+  </footer>
 
 <script>
 (function () {
@@ -502,6 +698,61 @@
 
   resize();
   update();
+})();
+
+// ── THEME 포스터 자동 순환 캐러셀 ──
+(function () {
+  var track = document.getElementById('themeTrack');
+  if (!track) return;
+
+  var posters = [1,4,5,6,7,8,9,10,11,14,15,16,21,22,24,26,27,28,29,30,31,33,34,35,36,37,38,39,40,41,42];
+  posters.forEach(function (num) {
+    var d = document.createElement('div');
+    d.className = 'tcard';
+    d.innerHTML =
+      '<img class="poster" src="img/main/poster/' + num + '_a.jpg" alt="테마 포스터" loading="lazy" />' +
+      '<img class="frame-ov" src="img/main/card_transparent.png" alt="" />';
+    track.appendChild(d);
+  });
+
+  var cards = Array.prototype.slice.call(track.querySelectorAll('.tcard'));
+  var n = cards.length;
+  if (!n) return;
+  var active = 0;
+  var timer = null;
+  var DELAY = 3500;
+
+  function render() {
+    for (var i = 0; i < n; i++) {
+      var d = i - active;
+      if (d > n / 2) d -= n;
+      if (d < -n / 2) d += n;
+      var cls = 'tcard';
+      if (d === 0) cls += ' is-active';
+      else if (d === -1) cls += ' is-prev';
+      else if (d === 1) cls += ' is-next';
+      else if (d === -2) cls += ' is-prev2';
+      else if (d === 2) cls += ' is-next2';
+      else cls += ' is-hidden';
+      cards[i].className = cls;
+    }
+  }
+  function restart() {
+    if (timer) clearInterval(timer);
+    timer = setInterval(function () { active = (active + 1) % n; render(); }, DELAY);
+  }
+  function goTo(i) { active = ((i % n) + n) % n; render(); restart(); }
+
+  cards.forEach(function (c, i) {
+    c.addEventListener('click', function () { if (i !== active) goTo(i); });
+  });
+  var prevBtn = document.querySelector('.tc-arrow.prev');
+  var nextBtn = document.querySelector('.tc-arrow.next');
+  if (prevBtn) prevBtn.addEventListener('click', function () { goTo(active - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { goTo(active + 1); });
+
+  render();
+  restart();
 })();
 </script>
 </body>
