@@ -25,9 +25,12 @@
   }
 
   /* ── 스크롤 핀 구간 ───────────────────────── */
+  /* 높이가 클수록 히어로가 화면에 고정(pin)된 채 스크롤되는 거리가 길어진다.
+     문 열림+카드 등장은 앞부분에서 끝나고, 나머지는 '고정 유지(hold)' 구간이라
+     카드가 다 나온 뒤에도 화면이 안 내려가고 카드가 날아다니는 걸 볼 수 있다. */
   .hero-scroll {
     position: relative;
-    height: 320vh;            /* 이 구간 동안 문이 열림 */
+    height: 360vh;
   }
 
   .hero {
@@ -57,12 +60,14 @@
     will-change: transform, opacity, filter;
   }
 
-  /* 배경 */
+  /* 배경 — 장면이 드러나는 동안(0~0.62)에만 부드럽게 줌인하고, 고정 유지 구간에선
+     더 커지지 않는다(creep 방지). transition으로 스크롤 단계 점프를 매끄럽게. */
   .bg {
     left: 0; top: 0; width: 1920px; height: 1080px;
     object-fit: cover;
-    transform: scale(calc(1 + var(--p) * 0.06));
+    transform: scale(calc(1 + var(--reveal, 0) * 0.08));
     transform-origin: center center;
+    transition: transform 0.5s ease-out;
   }
 
   /* 문 내부 황금빛 */
@@ -85,25 +90,46 @@
     pointer-events: none;
   }
 
-  /* ── 카드 ─────────────────────────────────── */
-  .card {
-    width: 164px; height: 257px;
-    /* 바깥 래퍼: 스크롤 진행 transform 담당 */
-    transform:
-      translate(var(--cx), var(--cy))
-      rotate(var(--crot))
-      scale(var(--cscale));
-    opacity: var(--copacity);
+  /* ── 카드 캐러셀 (문이 열린 뒤 자동으로 오른쪽으로 순환) ── */
+  .carousel {
+    left: 0; top: 0; width: 1920px; height: 1080px;
+    perspective: 1500px;
+    perspective-origin: 50% 42%;
+    opacity: var(--cards);             /* 문이 열릴수록 나타남 */
+    transition: opacity .35s ease;
+    pointer-events: none;
   }
-  .card img {
+  /* 각 카드 바깥 래퍼: 좌→우 이동 + 코버플로(scale/rotateY) = '오른쪽으로 돌며 교체' */
+  .cwrap {
+    position: absolute;
+    top: 470px; left: 0;
+    width: 164px; height: 257px;
+    animation: carousel var(--cdur, 24s) linear var(--cdelay, 0s) infinite;
+    will-change: transform, opacity;
+  }
+  /* 안쪽 래퍼: 지금과 동일한 위아래 흔들림 유지 (이동/회전과 분리) */
+  .cfloat {
+    width: 100%; height: 100%;
+    animation: floatY var(--fdur, 6.5s) ease-in-out var(--fdelay, 0s) infinite,
+               floatTilt calc(var(--fdur, 6.5s) * 1.6) ease-in-out var(--fdelay, 0s) infinite;
+  }
+  .cfloat img {
     display: block;
     width: 100%; height: 100%;
     border-radius: 12px;
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55),
-                0 0 40px rgba(255, 220, 160, calc(var(--cards) * 0.35));
-    /* 안쪽: 무한 드리프트 (스크롤과 충돌 안 하도록 분리) */
-    animation: floatY var(--fdur) ease-in-out var(--fdelay) infinite,
-               floatTilt calc(var(--fdur) * 1.6) ease-in-out var(--fdelay) infinite;
+                0 0 42px rgba(255, 220, 160, calc(var(--cards) * 0.4));
+  }
+
+  /* 좌측 기둥(412~744) 뒤에서 나와 우측 기둥(1184~1516) 뒤로 사라지며 무한 반복.
+     양 끝(translateX 412/1352)은 기둥에 가려지고 opacity 0이라 순환 점프가 보이지 않는다.
+     이동 폭을 넓혀(940px) 카드 간격이 예전처럼 넓게 보인다. */
+  @keyframes carousel {
+    0%   { transform: translateX(412px)  scale(.80) rotateY(34deg);  opacity: 0; }
+    12%  { opacity: 1; }
+    50%  { transform: translateX(882px)  scale(1.06) rotateY(0deg);  opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translateX(1352px) scale(.80) rotateY(-34deg); opacity: 0; }
   }
 
   @keyframes floatY {
@@ -115,18 +141,35 @@
     50%      { rotate: 1.5deg; }
   }
 
-  /* 문짝 */
-  /* 문짝은 ±230px 슬라이드하면 프레임 기둥(좌 412~744 / 우 1184~1516) 뒤로
-     완전히 가려진다. 그 이상 움직이면 투명 영역으로 빠져나와 배경 위에 떠 보인다. */
+  /* ── 문짝 (3D 경첩 스윙) ───────────────────────
+     사람이 양손으로 미는 것처럼, 양쪽 문이 바깥쪽 세로 모서리(경첩)를
+     축으로 안쪽(화면 안)으로 회전하며 열린다. */
+  .door-scene {
+    left: 0; top: 0; width: 1920px; height: 1080px;
+    perspective: 2200px;
+    perspective-origin: 50% 45%;
+    pointer-events: none;
+  }
+  .door-scene img {
+    position: absolute;
+    display: block;
+    backface-visibility: visible;
+    will-change: transform, filter;
+    -webkit-user-drag: none;
+  }
+  /* 왼쪽 문: 왼쪽 모서리가 경첩, 안쪽으로 밀려 열림 */
   .door-left {
     left: 732px; top: 128px; width: 233px; height: 895px;
-    transform: translateX(calc(var(--door) * -230px));
-    filter: brightness(calc(1 - var(--door) * 0.12));
+    transform-origin: left center;
+    transform: rotateY(calc(var(--door) * 100deg));
+    filter: brightness(calc(1 - var(--door) * 0.28));
   }
+  /* 오른쪽 문: 오른쪽 모서리가 경첩, 반대 방향으로 밀려 열림 */
   .door-right {
     left: 965px; top: 129px; width: 232px; height: 890px;
-    transform: translateX(calc(var(--door) * 230px));
-    filter: brightness(calc(1 - var(--door) * 0.12));
+    transform-origin: right center;
+    transform: rotateY(calc(var(--door) * -100deg));
+    filter: brightness(calc(1 - var(--door) * 0.28));
   }
 
   /* 프레임 (최상단, 중앙 투명) */
@@ -135,11 +178,53 @@
     pointer-events: none;
   }
 
+  /* 문틀(기둥) 클릭 영역 — 완전히 열렸을 때만 클릭으로 문을 닫는다.
+     상단 메뉴 영역(y<128)은 건드리지 않도록 기둥 높이에 맞춘다. */
+  .door-trigger {
+    top: 128px; height: 895px; width: 332px;
+    pointer-events: none;            /* 닫힘 상태에선 클릭 무시 */
+  }
+  .door-trigger.left  { left: 412px; }
+  .door-trigger.right { left: 1184px; }
+  .stage.is-open .door-trigger {
+    pointer-events: auto;
+    cursor: pointer;                 /* 열린 상태에서만 클릭 가능 */
+  }
+  /* 닫힌 문 클릭 영역 — 닫혀 있을 때 클릭하면 문이 열린다 (스크롤 방식은 그대로 유지) */
+  .door-open-trigger {
+    left: 744px; top: 150px; width: 440px; height: 880px;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .stage.is-open .door-open-trigger {
+    pointer-events: none;            /* 열린 뒤엔 비활성(카드/닫기 클릭 방해 안 함) */
+    cursor: default;
+  }
+
   /* ── UI 오버레이 ──────────────────────────── */
+  /* 로고는 스크롤해도 항상 보이도록 (페이드 제거) */
   .logo {
     left: 71px; top: 40px; width: 151px; height: 59px;
-    opacity: calc(1 - var(--p) * 0.6);
   }
+
+  /* 상단 중앙 메뉴 */
+  .topnav {
+    left: 0; top: 39px; width: 1920px; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 52px;
+    pointer-events: auto;
+  }
+  .topnav a {
+    color: #efe6d4;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-decoration: none;
+    white-space: nowrap;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+    transition: color .2s ease;
+  }
+  .topnav a:hover { color: var(--gold); }
 
   .qbtn {
     left: 1639px; top: 39px; width: 131px; height: 44px;
@@ -153,8 +238,7 @@
     letter-spacing: 1px;
     cursor: pointer;
     border: none;
-    opacity: calc(1 - var(--p) * 1.4);
-    transition: filter .2s ease;
+    transition: filter .2s ease;       /* 스크롤해도 항상 보이도록 페이드 제거 */
     text-decoration: none;
   }
   .qbtn:hover { filter: brightness(1.08); }
@@ -250,27 +334,43 @@
         <img class="layer door-bg" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/door_bg.png" alt="" />
         <div class="layer door-glow"></div>
 
-        <!-- 3. 카드 ×3 (문 안쪽) -->
-        <div class="layer card" id="cardA" style="left:688px; top:482px; --fdur:6.5s; --fdelay:0s;">
-          <img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" />
-        </div>
-        <div class="layer card" id="cardB" style="left:881px; top:576px; --fdur:8s; --fdelay:.6s;">
-          <img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" />
-        </div>
-        <div class="layer card" id="cardC" style="left:1068px; top:476px; --fdur:7.2s; --fdelay:1.1s;">
-          <img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" />
+        <!-- 3. 문짝 (3D 경첩 스윙 / 카드보다 뒤에 그려져 열리면 카드가 드러남) -->
+        <div class="layer door-scene">
+          <img class="door-left"  src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/left_door.png"  alt="" />
+          <img class="door-right" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/right_door.png" alt="" />
         </div>
 
-        <!-- 4. 문짝 -->
-        <img class="layer door-left"  src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/left_door.png"  alt="" />
-        <img class="layer door-right" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/right_door.png" alt="" />
+        <!-- 4. 카드 캐러셀 (여러 장이 자동으로 오른쪽으로 순환, 간격 넓게) -->
+        <div class="layer carousel" id="carousel">
+          <div class="cwrap" style="--cdur:24s; --cdelay:0s;     --fdur:6.5s; --fdelay:0s;">  <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-4.8s;  --fdur:7.2s; --fdelay:.5s;"> <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-9.6s;  --fdur:8s;   --fdelay:1s;">  <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-14.4s; --fdur:6.8s; --fdelay:1.5s;"><div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
+          <div class="cwrap" style="--cdur:24s; --cdelay:-19.2s; --fdur:7.6s; --fdelay:.3s;"> <div class="cfloat"><img src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/card.png" alt="카드" /></div></div>
+        </div>
 
         <!-- 5. 프레임 (최상단, 중앙 투명) -->
         <img class="layer frame" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/door_line.png" alt="" />
 
+        <!-- 닫힌 문 클릭 영역 (닫혀 있을 때 클릭 시 문 열기) -->
+        <div class="layer door-open-trigger" title="문 열기" aria-label="문 열기" role="button"></div>
+
+        <!-- 문틀 클릭 영역 (열린 상태에서 클릭 시 문 닫기) -->
+        <div class="layer door-trigger left"  title="문 닫기" aria-label="문 닫기" role="button"></div>
+        <div class="layer door-trigger right" title="문 닫기" aria-label="문 닫기" role="button"></div>
+
         <!-- 6. UI 오버레이 -->
         <img class="layer logo" src="https://raw.githubusercontent.com/doorlove1234-coder/sangsangDoor/main/logo.png" alt="상상도어" />
-        <a class="layer qbtn" href="#" aria-label="안내">? 안내</a>
+
+        <nav class="layer topnav">
+          <a href="#">상상의 문</a>
+          <a href="#">테마</a>
+          <a href="#">예약</a>
+          <a href="#">매장안내</a>
+          <a href="#">공지</a>
+        </nav>
+
+        <a class="layer qbtn" href="#" aria-label="예약 확인">예약 확인</a>
 
         <div class="layer headline">
           <h1>운명의 문을 열다</h1>
@@ -301,13 +401,7 @@
   var heroScroll = document.getElementById('heroScroll');
   var stage = document.getElementById('stage');
   var root = document.documentElement;
-
-  var cards = [
-    // [el, 시작 x오프셋(중앙으로 모음), 시작 y오프셋, 목표 회전(deg), 등장 시작p, 등장 끝p]
-    { el: document.getElementById('cardA'), dx: 200,  dy: 150, rot: -7, s0: 0.34, s1: 0.78 },
-    { el: document.getElementById('cardB'), dx: 0,    dy: 170, rot:  0, s0: 0.40, s1: 0.86 },
-    { el: document.getElementById('cardC'), dx: -185, dy: 150, rot:  7, s0: 0.30, s1: 0.74 }
-  ];
+  var lastDoor = 0, isAnimating = false;
 
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
   function easeInOutCubic(t) {
@@ -338,29 +432,65 @@
 
     root.style.setProperty('--p', p.toFixed(4));
 
-    // 문 열림: p 0 → 0.62 구간
-    var door = easeInOutCubic(range(p, 0.0, 0.62));
+    // 배경 줌용 진행도: 장면이 드러나는 0~0.62 구간에만 이징으로 증가, 이후 고정.
+    root.style.setProperty('--reveal', easeInOutCubic(range(p, 0.0, 0.62)).toFixed(4));
+
+    // 문 열림: p 0 → 0.42 (핀 구간 앞부분에서 완전히 열림)
+    var door = easeInOutCubic(range(p, 0.0, 0.42));
     root.style.setProperty('--door', door.toFixed(4));
+    lastDoor = door;
+    stage.classList.toggle('is-open', door > 0.95);   // 완전히 열렸을 때만 문틀 클릭 활성화
 
-    // 카드 전체 진행도 (글로우/그림자 강도용)
-    var cardsGlobal = range(p, 0.30, 0.86);
+    // 카드 캐러셀 등장: p 0.30 → 0.62 에 완전히 나옴.
+    // 그 이후(0.62 → 1.0)는 변화 없는 '고정 유지' 구간 → 화면 고정 + 카드만 날아다님.
+    var cardsGlobal = range(p, 0.30, 0.62);
     root.style.setProperty('--cards', cardsGlobal.toFixed(4));
+  }
 
-    // 카드 개별 등장
-    for (var i = 0; i < cards.length; i++) {
-      var c = cards[i];
-      var t = easeInOutCubic(range(p, c.s0, c.s1));
-      var cx = (1 - t) * c.dx;          // 중앙 근처 → 제자리
-      var cy = (1 - t) * c.dy;          // 아래에서 떠오름
-      var scale = 0.8 + t * 0.2;
-      var rot = c.rot * t;
-      var st = c.el.style;
-      st.setProperty('--cx', cx.toFixed(1) + 'px');
-      st.setProperty('--cy', cy.toFixed(1) + 'px');
-      st.setProperty('--cscale', scale.toFixed(3));
-      st.setProperty('--crot', rot.toFixed(2) + 'deg');
-      st.setProperty('--copacity', t.toFixed(3));
+  // 스크롤 위치를 목표값까지 부드럽게 애니메이션 → 스크롤 기반 문 열림/닫힘을 재생
+  function animateScrollTo(targetY, dur) {
+    if (isAnimating) return;
+    var startY = window.pageYOffset || document.documentElement.scrollTop;
+    if (Math.abs(targetY - startY) < 2) return;
+    isAnimating = true;
+    root.style.scrollBehavior = 'auto';        // 수동 스크롤이 이중 부드러움 안 타도록
+    var t0 = null;
+    function stepFn(ts) {
+      if (t0 === null) t0 = ts;
+      var k = clamp((ts - t0) / dur, 0, 1);
+      var e = easeInOutCubic(k);
+      window.scrollTo(0, Math.round(startY + (targetY - startY) * e));
+      update();
+      if (k < 1) { requestAnimationFrame(stepFn); }
+      else { isAnimating = false; root.style.scrollBehavior = ''; }
     }
+    requestAnimationFrame(stepFn);
+  }
+
+  // 문 열기: 닫힌 문을 클릭하면 스크롤을 '카드가 다 나오는 지점'까지 보내 열림 스윙 재생
+  function openDoors() {
+    var scrollable = heroScroll.offsetHeight - window.innerHeight;
+    animateScrollTo(heroScroll.offsetTop + scrollable * 0.65, 1400);
+  }
+
+  // 문 닫기: 스크롤을 히어로 상단으로 되돌려 '열림 애니메이션을 그대로 역재생'
+  // → 양문이 경첩을 중심으로 다시 닫히는 3D 스윙(양손으로 닫는 동작)
+  function closeDoors() {
+    animateScrollTo(heroScroll.offsetTop, 1100);
+  }
+
+  var triggers = document.querySelectorAll('.door-trigger');
+  for (var ti = 0; ti < triggers.length; ti++) {
+    triggers[ti].addEventListener('click', function () {
+      if (lastDoor > 0.95) closeDoors();   // 완전히 열린 상태에서 문틀 클릭 시에만 닫힘
+    });
+  }
+
+  var openTrigger = document.querySelector('.door-open-trigger');
+  if (openTrigger) {
+    openTrigger.addEventListener('click', function () {
+      if (lastDoor < 0.9) openDoors();     // 닫혀 있을 때 문 클릭 시 열림
+    });
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
