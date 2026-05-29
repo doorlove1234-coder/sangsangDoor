@@ -102,8 +102,8 @@
   /* 각 카드 바깥 래퍼: 좌→우 이동 + 코버플로(scale/rotateY) = '오른쪽으로 돌며 교체' */
   .cwrap {
     position: absolute;
-    top: 500px; left: 0;
-    width: 128px; height: 200px;            /* 카드 사이즈 축소 */
+    top: 488px; left: 0;
+    width: 144px; height: 225px;            /* 카드 사이즈 (너무 작지 않게 살짝 키움) */
     animation: carousel var(--cdur, 24s) linear var(--cdelay, 0s) infinite;
     will-change: transform, opacity;
     pointer-events: auto;            /* 카드는 hover 가능 (.carousel 컨테이너는 none 유지) */
@@ -130,8 +130,11 @@
     position: absolute; inset: 0;
     border-radius: 12px; overflow: hidden;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55),
-                0 0 42px rgba(255, 220, 160, calc(var(--cards) * 0.4));
+    /* 밝은 포탈 위에서 '검은 블록'처럼 떠 보이지 않도록:
+       금색 글로우(번짐) 제거 + 짙은 드롭섀도와 얇은 테두리로 또렷하게 분리/접지 */
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.6),
+                0 8px 20px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(0, 0, 0, 0.3);
   }
   .cface img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .cback { transform: rotateY(180deg); }
@@ -139,13 +142,13 @@
   /* 좌측 기둥(412~744) 뒤에서 나와 우측 기둥(1184~1516) 뒤로 사라지며 무한 반복.
      양 끝(translateX 412/1352)은 기둥에 가려지고 opacity 0이라 순환 점프가 보이지 않는다.
      이동 폭을 넓혀(940px) 카드 간격이 예전처럼 넓게 보인다. */
-  /* 이동 폭을 넓혀(380→1420) 카드 사이 간격을 더 벌린다. 양 끝(기둥 뒤)은 opacity 0 */
+  /* 이동 폭(400→1400)으로 카드 간격 설정. 양 끝(기둥 뒤)은 opacity 0 */
   @keyframes carousel {
-    0%   { transform: translateX(380px)  scale(.80) rotateY(34deg);  opacity: 0; }
+    0%   { transform: translateX(400px)  scale(.80) rotateY(34deg);  opacity: 0; }
     12%  { opacity: 1; }
     50%  { transform: translateX(900px)  scale(1.06) rotateY(0deg);  opacity: 1; }
     88%  { opacity: 1; }
-    100% { transform: translateX(1420px) scale(.80) rotateY(-34deg); opacity: 0; }
+    100% { transform: translateX(1400px) scale(.80) rotateY(-34deg); opacity: 0; }
   }
 
   @keyframes floatY {
