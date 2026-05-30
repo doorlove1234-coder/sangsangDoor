@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>상상의 문 — THEMES</title>
+
+<!-- 공용 웹폰트 (Paperozi) -->
+<link rel="stylesheet" href="css/fonts.css" />
+<!-- 영문 타이틀용 세리프 (STORY 페이지와 동일) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --navy:   #0a0e1c;
+    --gold:   #f2d7ac;
+    --gold-d: #c8a863;
+    --cream:  #ece4d6;
+    --muted:  #9aa2bd;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--navy);
+    color: var(--cream);
+    font-family: 'Paperozi', "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+  img { display: block; -webkit-user-drag: none; user-select: none; }
+
+  /* ══════════════ 상단 헤더 (STORY 페이지와 동일 위치/스타일) ══════════════ */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    height: 78px;
+    background: linear-gradient(180deg, #0c1124 0%, #080b18 100%);
+    border-bottom: 1px solid rgba(200,168,99,.18);
+    display: flex; align-items: center;
+    padding: 0 clamp(20px, 4vw, 56px);
+  }
+  .topbar .brand { display: flex; align-items: center; flex: none; }
+  .topbar .brand img { height: 40px; width: auto; }
+  .topbar nav {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    gap: 38px;
+  }
+  .topbar nav a {
+    position: relative;
+    color: #d9d2c4; text-decoration: none;
+    font-size: 16px; font-weight: 600; letter-spacing: 1.5px;
+    white-space: nowrap;
+    transition: color .2s ease;
+  }
+  .topbar nav a:hover { color: var(--gold); }
+  .topbar nav a.active { color: var(--gold); font-weight: 700; }
+  .topbar nav a.active::before {
+    content: ""; position: absolute; left: 50%; top: -14px;
+    width: 13px; height: 13px; transform: translateX(-50%);
+    background: url('img/story/header_star.png') center/contain no-repeat;
+  }
+  .topbar .qbtn {
+    flex: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    height: 44px; padding: 0 22px;
+    border: 1px solid rgba(200,168,99,.55); border-radius: 6px;
+    color: var(--gold); text-decoration: none;
+    font-size: 15px; font-weight: 600; letter-spacing: 1px;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .topbar .qbtn:hover { background: rgba(200,168,99,.12); border-color: var(--gold); }
+  .topbar .qbtn span { font-size: 18px; }
+
+  @media (max-width: 860px) {
+    .topbar { height: 64px; padding: 0 16px; }
+    .topbar nav { gap: 18px; }
+    .topbar nav a { font-size: 14px; letter-spacing: .05em; }
+    .topbar .qbtn { display: none; }
+  }
+
+  /* ══════════════ 테마 본문 (sub_bgi.png 통배경) ══════════════ */
+  .themes {
+    position: relative;
+    background:
+      var(--navy)
+      url('img/sub_bgi.png') top center / 100% auto no-repeat;
+    padding-bottom: clamp(80px, 10vw, 140px);
+  }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px); }
+
+  /* THEMES 타이틀 (좌측, 문 아트 옆) */
+  .themes-head { padding: clamp(60px, 9vw, 120px) 0 clamp(40px, 6vw, 80px); max-width: 620px; }
+  .themes-head .en {
+    font-family: "Cormorant Garamond", "Times New Roman", serif;
+    font-size: clamp(46px, 6vw, 76px);
+    font-weight: 600; letter-spacing: .14em; line-height: 1;
+    color: var(--gold);
+  }
+  .themes-head .kr {
+    margin-top: clamp(22px, 3vw, 34px);
+    font-size: clamp(20px, 2.4vw, 30px); font-weight: 700; color: #f4eede;
+    letter-spacing: .02em;
+  }
+  .themes-head .desc {
+    margin-top: 16px;
+    font-size: clamp(14px, 1.5vw, 17px); line-height: 1.85; color: var(--muted);
+  }
+
+  /* 지점 탭 */
+  .branch-tabs {
+    display: flex; flex-wrap: wrap; gap: clamp(20px, 3vw, 44px);
+    padding-bottom: 14px; margin-bottom: clamp(34px, 4vw, 52px);
+    border-bottom: 1px solid rgba(200,168,99,.16);
+  }
+  .branch-tabs button {
+    background: none; border: 0; cursor: pointer;
+    font-family: inherit; font-size: clamp(16px, 1.8vw, 20px); font-weight: 700;
+    letter-spacing: .02em; color: var(--muted); padding: 4px 2px;
+    position: relative; transition: color .2s ease;
+  }
+  .branch-tabs button:hover { color: #d9d2c4; }
+  .branch-tabs button.active { color: var(--gold); }
+  .branch-tabs button.active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -15px;
+    height: 2px; background: var(--gold-d);
+  }
+
+  /* 테마 패널 */
+  .panel {
+    position: relative;
+    background: rgba(10, 14, 32, 0.62);
+    border: 1px solid rgba(200,168,99,.18);
+    border-radius: 8px;
+    padding: clamp(54px, 6vw, 72px) clamp(22px, 4vw, 56px) clamp(40px, 5vw, 56px);
+    box-shadow: 0 30px 70px rgba(0,0,0,.45);
+  }
+
+  /* 양피지 지점 라벨 (themes_title.png 사용) */
+  .branch-label {
+    position: absolute; top: -26px; left: clamp(20px, 4vw, 40px);
+    min-width: 168px; min-height: 64px;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 4px 30px 10px;
+    background: url('img/themes_title.png') center / 100% 100% no-repeat;
+    color: #3a2c18; font-size: clamp(17px, 1.9vw, 21px); font-weight: 700;
+    letter-spacing: .02em; transform: rotate(-2deg);
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,.5));
+  }
+
+  /* 포스터 그리드 */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(22px, 3vw, 38px); }
+
+  .tcard { display: flex; flex-direction: column; }
+  .tframe {
+    position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+    border: 2px solid rgba(200,168,99,.45); border-radius: 4px;
+    background: #05070f; box-shadow: 0 12px 30px rgba(0,0,0,.55);
+    transition: transform .35s ease, border-color .35s ease;
+  }
+  .tcard:hover .tframe { transform: translateY(-8px); border-color: var(--gold); }
+  .tframe img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .tcard:hover .tframe img { transform: scale(1.05); }
+  .tframe .genre {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(5,7,15,.82); color: var(--gold);
+    font-size: 12px; letter-spacing: .03em; padding: 4px 12px; border-radius: 20px;
+  }
+
+  .tcap { padding: 16px 4px 0; text-align: center; }
+  .tcap .name { font-size: clamp(16px, 1.7vw, 20px); font-weight: 700; color: #f4eede; }
+  .tcap .stars { margin-top: 8px; color: var(--gold-d); letter-spacing: 3px; font-size: 15px; }
+  .tcap .meta { margin-top: 6px; font-size: 13.5px; color: var(--muted); }
+  .tcap .meta .dot { opacity: .5; margin: 0 7px; }
+
+  @media (max-width: 820px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
+    .branch-tabs { gap: 16px; }
+  }
+
+  /* ══════════════ FOOTER (메인/STORY와 동일) ══════════════ */
+  .footer { background:#0a0f24; color:#b9c0d6; padding:clamp(40px,5vw,72px) 20px clamp(28px,4vw,46px); }
+  .footer a { color:inherit; text-decoration:none; }
+  .footer-top { max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:16px 30px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .footer-hours { display:flex; align-items:center; gap:14px; }
+  .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
+  .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
+  .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+  .footer-nav a:hover { color:var(--gold); }
+  .footer-main { max-width:1280px; margin:clamp(24px,3vw,38px) auto 0; display:flex; flex-wrap:wrap; gap:30px 50px; align-items:flex-start; }
+  .footer-brand { min-width:190px; }
+  .footer-brand img { width:138px; height:auto; }
+  .footer-brand p { margin-top:10px; font-size:12px; color:#7c84a0; letter-spacing:.05em; }
+  .footer-stores { display:grid; grid-template-columns:repeat(2,minmax(210px,1fr)); gap:4px 40px; flex:1; }
+  .footer-stores div { font-size:12.5px; line-height:1.95; color:#9aa2bd; }
+  .footer-stores b { color:#c3cae0; font-weight:600; }
+  .footer-social { display:flex; gap:10px; }
+  .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
+  .footer-social a:hover { background:var(--gold); color:#0a0f24; }
+  .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
+  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
+</style>
+</head>
+<body>
+
+  <!-- ── 헤더 ── -->
+  <header class="topbar">
+    <a class="brand" href="index.html"><img src="img/main/logo.png" alt="상상의문 ESCAPE ROOM" /></a>
+    <nav>
+      <a href="story.html">상상의 문</a>
+      <a href="themes.html" class="active">테마</a>
+      <a href="#">예약</a>
+      <a href="#">매장안내</a>
+      <a href="#">공지</a>
+    </nav>
+    <a class="qbtn" href="#">예약 확인 <span>→</span></a>
+  </header>
+
+  <!-- ── 테마 본문 ── -->
+  <section class="themes">
+    <div class="wrap">
+
+      <!-- THEMES 타이틀 -->
+      <div class="themes-head">
+        <h1 class="en">THEMES</h1>
+        <p class="kr">상상의 문을 열어보세요</p>
+        <p class="desc">테마마다 다른 이야기와 공간.<br>당신의 상상을 현실로 만들 미스터리한 테마들을 소개합니다.</p>
+      </div>
+
+      <!-- 지점 탭 -->
+      <div class="branch-tabs" id="branchTabs">
+        <button class="active" data-branch="대학로점">대학로점</button>
+        <button data-branch="분당서현점">분당서현점</button>
+        <button data-branch="광주점">광주점</button>
+        <button data-branch="부평점">부평점</button>
+        <button data-branch="수원점">수원점</button>
+        <button data-branch="수원2호점">수원2호점</button>
+      </div>
+
+      <!-- 테마 패널 -->
+      <div class="panel">
+        <span class="branch-label" id="branchLabel">대학로점</span>
+        <div class="grid" id="grid"><!-- JS 렌더링 --></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-hours">
+        <span class="clock">&#128337;</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="#">공지사항</a>
+        <a href="#">예약확인</a>
+        <a href="#">제휴문의</a>
+        <a href="#">개인정보취급방침</a>
+      </nav>
+    </div>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <img src="img/main/logo.png" alt="상상의 문" />
+        <p>상상 그 이상의 공간</p>
+      </div>
+      <div class="footer-stores">
+        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
+        <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
+        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
+        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="인스타그램">IG</a>
+        <a href="#" aria-label="네이버 블로그">N</a>
+        <a href="#" aria-label="카카오톡">K</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>COPYRIGHT ⓒ 2022 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>이메일 imaginarydoor@yologuys.com</span>
+    </div>
+  </footer>
+
+  <!-- ── JS ── -->
+  <script>
+    // 지점별 테마 (themes-detail.md 기준) · poster = img/main/poster/{n}_a.jpg
+    const P = "img/main/poster/";
+    const themeData = {
+      "대학로점": [
+        { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.jpg" },
+        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.jpg" },
+        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.jpg" },
+      ],
+      "분당서현점": [
+        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.jpg" },
+        { name: "HERE I AM", genre: "생존/탐험", diff: 3, players: "2~6인", time: "70분", img: P+"6_a.jpg" },
+        { name: "몽염 : 도망칠 수 없는 꿈", genre: "공포", diff: 4, players: "2~4인", time: "80분", img: P+"9_a.jpg" },
+        { name: "역만", genre: "미스터리", diff: 4, players: "2~6인", time: "90분", img: P+"11_a.jpg" },
+        { name: "셔플월드", genre: "게임/판타지", diff: 3, players: "2~6인", time: "70분", img: P+"8_a.jpg" },
+        { name: "전당포 조필두", genre: "스릴러", diff: 2, players: "2~6인", time: "60분", img: P+"5_a.jpg" },
+      ],
+      "광주점": [
+        { name: "영결식", genre: "공포", diff: 3, players: "2~6인", time: "60분", img: P+"14_a.jpg" },
+        { name: "시크릿 왕국의 스캔들", genre: "추리/잔혹동화", diff: 4, players: "2~5인", time: "80분", img: P+"15_a.jpg" },
+        { name: "호러맨스", genre: "로맨스/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"16_a.jpg" },
+        { name: "서울만가면된다", genre: "일상/코미디", diff: 4, players: "2~5인", time: "69분", img: P+"21_a.jpg" },
+        { name: "TITAN : 전쟁의경계", genre: "SF", diff: 4, players: "2~4인", time: "70분", img: P+"24_a.jpg" },
+        { name: "그럼에도 불구하고,", genre: "드라마", diff: 2, players: "2~5인", time: "70분", img: P+"22_a.jpg" },
+      ],
+      "부평점": [
+        { name: "쇼쿠진", genre: "공포", diff: 4, players: "2~6인", time: "70분", img: P+"34_a.jpg" },
+        { name: "420번지", genre: "스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"33_a.jpg" },
+        { name: "흑신소", genre: "판타지/코미디", diff: 3, players: "2~6인", time: "70분", img: P+"35_a.jpg" },
+        { name: "행복목욕탕", genre: "드라마/판타지", diff: 4, players: "2~6인", time: "80분", img: P+"36_a.jpg" },
+      ],
+      "수원점": [
+        { name: "직박구리 : 남친탐구생활", genre: "코믹", diff: 3, players: "2~6인", time: "70분", img: P+"27_a.jpg" },
+        { name: "복도끝", genre: "공포", diff: 4, players: "2~6인", time: "75분", img: P+"26_a.jpg" },
+        { name: "혼숨", genre: "미스터리/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"28_a.jpg" },
+        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.jpg" },
+        { name: "영안실", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"30_a.jpg" },
+        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.jpg" },
+      ],
+      "수원2호점": [
+        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.jpg" },
+        { name: "OKCUT", genre: "코메디", diff: 4, players: "2~6인", time: "90분", img: P+"42_a.jpg" },
+        { name: "성지기숙학원 : 특수교정반", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"37_a.jpg" },
+        { name: "춘화각 : 피할 수 없는 저주", genre: "공포", diff: 3, players: "2~6인", time: "80분", img: P+"40_a.jpg" },
+        { name: "낙화 : 떨어지는 꽃", genre: "스릴러", diff: 2, players: "2~6인", time: "80분", img: P+"38_a.jpg" },
+        { name: "HINDSIGHT", genre: "잠입/드라마", diff: 3, players: "2~4인", time: "80분", img: P+"41_a.jpg" },
+      ],
+    };
+
+    const stars = d => "★".repeat(d) + "☆".repeat(5 - d);
+
+    function render(branch) {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = themeData[branch].map(t => `
+        <article class="tcard">
+          <div class="tframe">
+            <img src="${t.img}" alt="${t.name}" loading="lazy" />
+            <span class="genre">${t.genre}</span>
+          </div>
+          <div class="tcap">
+            <p class="name">${t.name}</p>
+            <p class="stars">${stars(t.diff)}</p>
+            <p class="meta"><span>${t.players}</span><span class="dot">·</span><span>${t.time}</span></p>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    document.querySelectorAll("#branchTabs button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#branchTabs button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("branchLabel").textContent = btn.dataset.branch;
+        render(btn.dataset.branch);
+      });
+    });
+
+    render("대학로점");
+  </script>
+
+</body>
+</html>
