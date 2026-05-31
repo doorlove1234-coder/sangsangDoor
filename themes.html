@@ -60,7 +60,7 @@
   .topbar nav a.active::before {
     content: ""; position: absolute; left: 50%; top: -14px;
     width: 13px; height: 13px; transform: translateX(-50%);
-    background: url('img/story/header_star.png') center/contain no-repeat;
+    background: url('img/story/header_star.webp') center/contain no-repeat;
   }
   .topbar .qbtn {
     flex: none;
@@ -86,7 +86,7 @@
     position: relative;
     background:
       linear-gradient(180deg, rgba(10,14,28,0) 56%, rgba(10,14,28,.85) 80%, var(--navy) 92%),
-      url('img/sub_bgi.png') top center / 100% auto no-repeat,
+      url('img/sub_bgi.webp') top center / 100% auto no-repeat,
       var(--navy);
     padding-bottom: clamp(80px, 10vw, 140px);
   }
@@ -146,7 +146,7 @@
     min-width: 168px; min-height: 64px;
     display: inline-flex; align-items: center; justify-content: center;
     padding: 4px 30px 10px;
-    background: url('img/themes_title.png') center / 100% 100% no-repeat;
+    background: url('img/themes_title.webp') center / 100% 100% no-repeat;
     color: #3a2c18; font-size: clamp(17px, 1.9vw, 21px); font-weight: 700;
     letter-spacing: .02em; transform: rotate(-2deg);
     filter: drop-shadow(0 8px 16px rgba(0,0,0,.5));
@@ -248,7 +248,7 @@
 
   <!-- ── 헤더 ── -->
   <header class="topbar">
-    <a class="brand" href="index.html"><img src="img/main/logo.png" alt="상상의문 ESCAPE ROOM" /></a>
+    <a class="brand" href="index.html"><img src="img/main/logo.webp" alt="상상의문 ESCAPE ROOM" /></a>
     <nav>
       <a href="story.html">상상의 문</a>
       <a href="themes.html" class="active">테마</a>
@@ -305,7 +305,7 @@
     </div>
     <div class="footer-main">
       <div class="footer-brand">
-        <img src="img/main/logo.png" alt="상상의 문" />
+        <img src="img/main/logo.webp" alt="상상의 문" />
         <p>상상 그 이상의 공간</p>
       </div>
       <div class="footer-stores">
@@ -330,51 +330,51 @@
 
   <!-- ── JS ── -->
   <script>
-    // 지점별 테마 (themes-detail.md 기준) · poster = img/main/poster/{n}_a.jpg · desc = 사이트 소개문
+    // 지점별 테마 (themes-detail.md 기준) · poster = img/main/poster/{n}_a.webp · desc = 사이트 소개문
     const P = "img/main/poster/";
     const themeData = {
       "대학로점": [
-        { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.jpg", desc: "어두운 밤 속으로 발걸음을 내딛었다. 그리고 한없이 걸었다. 그 끝에서 한 목소리를 들었다." },
-        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.jpg", desc: "그들은 이미 알고 있었다. ※ 고소공포증 주의 · 초등학생 이용 불가" },
-        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.jpg", desc: "이 사건의 주인공은 나야 — EP.1 경찰이야기 / EP.2 도둑이야기. 같은 공간 두 개의 시점." },
+        { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.webp", desc: "어두운 밤 속으로 발걸음을 내딛었다. 그리고 한없이 걸었다. 그 끝에서 한 목소리를 들었다." },
+        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.webp", desc: "그들은 이미 알고 있었다. ※ 고소공포증 주의 · 초등학생 이용 불가" },
+        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.webp", desc: "이 사건의 주인공은 나야 — EP.1 경찰이야기 / EP.2 도둑이야기. 같은 공간 두 개의 시점." },
       ],
       "분당서현점": [
-        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.jpg", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
-        { name: "HERE I AM", genre: "생존/탐험", diff: 3, players: "2~6인", time: "70분", img: P+"6_a.jpg", desc: "으으... 나 살아있는건가? 목말라... 낯선 곳에서 눈을 뜬 당신, 살아남아 이곳을 빠져나가라." },
-        { name: "몽염 : 도망칠 수 없는 꿈", genre: "공포", diff: 4, players: "2~4인", time: "80분", img: P+"9_a.jpg", desc: "나는 매일 꿈을 꾸었다. 온통 어두운 곳에서 그녀가 날 바라보는 꿈. 우리 사이엔 아무런 행동조차 오가지 않았다. 그저 바라만 보고 있었다." },
-        { name: "역만", genre: "미스터리", diff: 4, players: "2~6인", time: "90분", img: P+"11_a.jpg", desc: "이곳에는 어떤 이야기도 없습니다." },
-        { name: "셔플월드", genre: "게임/판타지", diff: 3, players: "2~6인", time: "70분", img: P+"8_a.jpg", desc: "평화로운 픽셀월드에 나타난 포탈들! 용사님! 픽셀월드가 삼켜지고 있어! 일어나봐 용사님!" },
-        { name: "전당포 조필두", genre: "스릴러", diff: 2, players: "2~6인", time: "60분", img: P+"5_a.jpg", desc: "지루한 매일의 연속.. 조필두는 한숨을 쉬며 자신의 가게인 전당포로 향한다. ※ 입문자용" },
+        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.webp", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
+        { name: "HERE I AM", genre: "생존/탐험", diff: 3, players: "2~6인", time: "70분", img: P+"6_a.webp", desc: "으으... 나 살아있는건가? 목말라... 낯선 곳에서 눈을 뜬 당신, 살아남아 이곳을 빠져나가라." },
+        { name: "몽염 : 도망칠 수 없는 꿈", genre: "공포", diff: 4, players: "2~4인", time: "80분", img: P+"9_a.webp", desc: "나는 매일 꿈을 꾸었다. 온통 어두운 곳에서 그녀가 날 바라보는 꿈. 우리 사이엔 아무런 행동조차 오가지 않았다. 그저 바라만 보고 있었다." },
+        { name: "역만", genre: "미스터리", diff: 4, players: "2~6인", time: "90분", img: P+"11_a.webp", desc: "이곳에는 어떤 이야기도 없습니다." },
+        { name: "셔플월드", genre: "게임/판타지", diff: 3, players: "2~6인", time: "70분", img: P+"8_a.webp", desc: "평화로운 픽셀월드에 나타난 포탈들! 용사님! 픽셀월드가 삼켜지고 있어! 일어나봐 용사님!" },
+        { name: "전당포 조필두", genre: "스릴러", diff: 2, players: "2~6인", time: "60분", img: P+"5_a.webp", desc: "지루한 매일의 연속.. 조필두는 한숨을 쉬며 자신의 가게인 전당포로 향한다. ※ 입문자용" },
       ],
       "광주점": [
-        { name: "영결식", genre: "공포", diff: 3, players: "2~6인", time: "60분", img: P+"14_a.jpg", desc: "現在去接你 — 지금 데리러 갑니다." },
-        { name: "시크릿 왕국의 스캔들", genre: "추리/잔혹동화", diff: 4, players: "2~5인", time: "80분", img: P+"15_a.jpg", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
-        { name: "호러맨스", genre: "로맨스/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"16_a.jpg", desc: "와 오늘은 데이트하는 날! 즐겁게 놀아야지! 그런데.. 자기야 뭐라고? ^^" },
-        { name: "서울만가면된다", genre: "일상/코미디", diff: 4, players: "2~5인", time: "69분", img: P+"21_a.jpg", desc: "민서: 팀장님 근데.. 저희 지금 여기 무슨 컨셉으로 만드는 중인거예요? / 석현: 음...." },
-        { name: "TITAN : 전쟁의경계", genre: "SF", diff: 4, players: "2~4인", time: "70분", img: P+"24_a.jpg", desc: "이곳에서 나는 자부심이 가득한 군인으로 일하고 있다. 그리고 오늘 나는 이 행성의 이름이 타이탄인 게 맞는지 의심이 가기 시작했다." },
-        { name: "그럼에도 불구하고,", genre: "드라마", diff: 2, players: "2~5인", time: "70분", img: P+"22_a.jpg", desc: "유감스럽게도, 당신은 결국 성공하지 못할 거예요." },
+        { name: "영결식", genre: "공포", diff: 3, players: "2~6인", time: "60분", img: P+"14_a.webp", desc: "現在去接你 — 지금 데리러 갑니다." },
+        { name: "시크릿 왕국의 스캔들", genre: "추리/잔혹동화", diff: 4, players: "2~5인", time: "80분", img: P+"15_a.webp", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
+        { name: "호러맨스", genre: "로맨스/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"16_a.webp", desc: "와 오늘은 데이트하는 날! 즐겁게 놀아야지! 그런데.. 자기야 뭐라고? ^^" },
+        { name: "서울만가면된다", genre: "일상/코미디", diff: 4, players: "2~5인", time: "69분", img: P+"21_a.webp", desc: "민서: 팀장님 근데.. 저희 지금 여기 무슨 컨셉으로 만드는 중인거예요? / 석현: 음...." },
+        { name: "TITAN : 전쟁의경계", genre: "SF", diff: 4, players: "2~4인", time: "70분", img: P+"24_a.webp", desc: "이곳에서 나는 자부심이 가득한 군인으로 일하고 있다. 그리고 오늘 나는 이 행성의 이름이 타이탄인 게 맞는지 의심이 가기 시작했다." },
+        { name: "그럼에도 불구하고,", genre: "드라마", diff: 2, players: "2~5인", time: "70분", img: P+"22_a.webp", desc: "유감스럽게도, 당신은 결국 성공하지 못할 거예요." },
       ],
       "부평점": [
-        { name: "쇼쿠진", genre: "공포", diff: 4, players: "2~6인", time: "70분", img: P+"34_a.jpg", desc: "쇼쿠진님은 언제나 여러분들을 기다리고 있습니다." },
-        { name: "420번지", genre: "스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"33_a.jpg", desc: "눈을 떠보니 어둡고 기이한 방. 여긴 어디지? 난... 여기서 대체 무엇을 하고 있었지...?" },
-        { name: "흑신소", genre: "판타지/코미디", diff: 3, players: "2~6인", time: "70분", img: P+"35_a.jpg", desc: "돈도 여친도 직업도 없는 고시생 노령진. 극단적 선택을 하려던 그는 '흑역사 없애드립니다'라는 명함을 발견하고 전화를 거는데…" },
-        { name: "행복목욕탕", genre: "드라마/판타지", diff: 4, players: "2~6인", time: "80분", img: P+"36_a.jpg", desc: "행복목욕탕 절찬 운영 중 ♨" },
+        { name: "쇼쿠진", genre: "공포", diff: 4, players: "2~6인", time: "70분", img: P+"34_a.webp", desc: "쇼쿠진님은 언제나 여러분들을 기다리고 있습니다." },
+        { name: "420번지", genre: "스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"33_a.webp", desc: "눈을 떠보니 어둡고 기이한 방. 여긴 어디지? 난... 여기서 대체 무엇을 하고 있었지...?" },
+        { name: "흑신소", genre: "판타지/코미디", diff: 3, players: "2~6인", time: "70분", img: P+"35_a.webp", desc: "돈도 여친도 직업도 없는 고시생 노령진. 극단적 선택을 하려던 그는 '흑역사 없애드립니다'라는 명함을 발견하고 전화를 거는데…" },
+        { name: "행복목욕탕", genre: "드라마/판타지", diff: 4, players: "2~6인", time: "80분", img: P+"36_a.webp", desc: "행복목욕탕 절찬 운영 중 ♨" },
       ],
       "수원점": [
-        { name: "직박구리 : 남친탐구생활", genre: "코믹", diff: 3, players: "2~6인", time: "70분", img: P+"27_a.jpg", desc: "회사 일 때문에 잠시 외출한 남자친구. 과연 남자친구의 컴퓨터에도 '그것'이 있을까? 어라..? 잠깐만, 이게 뭐야..!" },
-        { name: "복도끝", genre: "공포", diff: 4, players: "2~6인", time: "75분", img: P+"26_a.jpg", desc: "상문빌라의 입주민 회장인 당신은 평소처럼 집 303호로 올라가는 엘리베이터를 탄다. 그런데 뒤에서 들려오는 비명소리.." },
-        { name: "혼숨", genre: "미스터리/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"28_a.jpg", desc: "'괴담 모음집' 동아리에 새로 가입한 우리들은, 폐가로 유명한 옥석 산장으로 신입 환영회를 가게 되었다." },
-        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.jpg", desc: "오늘도 평화로운 DKDK COMPANY. 실적 문제로 혼난 쿵부장이 심대리·장사원에게 던진 '프로젝트 HEART'! 성공시켜 실적을 올릴 수 있을까?" },
-        { name: "영안실", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"30_a.jpg", desc: "안녕하십니까, 고객님의 마지막 여정을 함께하는 인계병원 영안실입니다. 편안한 밤 되시길 바랍니다." },
-        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.jpg", desc: "줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. 무대에서 뵙겠습니다." },
+        { name: "직박구리 : 남친탐구생활", genre: "코믹", diff: 3, players: "2~6인", time: "70분", img: P+"27_a.webp", desc: "회사 일 때문에 잠시 외출한 남자친구. 과연 남자친구의 컴퓨터에도 '그것'이 있을까? 어라..? 잠깐만, 이게 뭐야..!" },
+        { name: "복도끝", genre: "공포", diff: 4, players: "2~6인", time: "75분", img: P+"26_a.webp", desc: "상문빌라의 입주민 회장인 당신은 평소처럼 집 303호로 올라가는 엘리베이터를 탄다. 그런데 뒤에서 들려오는 비명소리.." },
+        { name: "혼숨", genre: "미스터리/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"28_a.webp", desc: "'괴담 모음집' 동아리에 새로 가입한 우리들은, 폐가로 유명한 옥석 산장으로 신입 환영회를 가게 되었다." },
+        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.webp", desc: "오늘도 평화로운 DKDK COMPANY. 실적 문제로 혼난 쿵부장이 심대리·장사원에게 던진 '프로젝트 HEART'! 성공시켜 실적을 올릴 수 있을까?" },
+        { name: "영안실", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"30_a.webp", desc: "안녕하십니까, 고객님의 마지막 여정을 함께하는 인계병원 영안실입니다. 편안한 밤 되시길 바랍니다." },
+        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.webp", desc: "줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. 무대에서 뵙겠습니다." },
       ],
       "수원2호점": [
-        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.jpg", desc: "세상에서 제일 한가한 마을 RCADE VILLAGE에 '우수마을 평가원이 한 시간 뒤 도착'이라는 소식이! 1시간 안에 정신 차릴 수 있을까?" },
-        { name: "OKCUT", genre: "코메디", diff: 4, players: "2~6인", time: "90분", img: P+"42_a.jpg", desc: "[Synopsis #3] 어느 한 저택을 수사하려는 주인공. (문이 닫히고 눈을 뜨며 시계를 본다) '주어진 시간이 얼마 없군.'" },
-        { name: "성지기숙학원 : 특수교정반", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"37_a.jpg", desc: "같은 기척, 같은 냄새, 같은 어둠. 나는 또다시 이 기숙학원에서 깨어났다." },
-        { name: "춘화각 : 피할 수 없는 저주", genre: "공포", diff: 3, players: "2~6인", time: "80분", img: P+"40_a.jpg", desc: "자네도 장원 급제를 위해서 이 춘화각을 찾았는가? 이쪽 끝방으로 들어가시게. ※ 직원 NPC와 함께 진행" },
-        { name: "낙화 : 떨어지는 꽃", genre: "스릴러", diff: 2, players: "2~6인", time: "80분", img: P+"38_a.jpg", desc: "수천 개의 플래시가 날 향하던 그 밤, 나는 꼭대기에 있었다. 누구보다 찬란했던 그 순간부터— 어쩌면 끝은 이미 정해져 있었는지도 모른다." },
-        { name: "HINDSIGHT", genre: "잠입/드라마", diff: 3, players: "2~4인", time: "80분", img: P+"41_a.jpg", desc: "여보세요, 도희 맞지? 거의 2년 만이네. 그날 뒤로 해킹에서 손 뗀 건 알지만... 우리 오랜만에 일 하나만 같이 할까?" },
+        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.webp", desc: "세상에서 제일 한가한 마을 RCADE VILLAGE에 '우수마을 평가원이 한 시간 뒤 도착'이라는 소식이! 1시간 안에 정신 차릴 수 있을까?" },
+        { name: "OKCUT", genre: "코메디", diff: 4, players: "2~6인", time: "90분", img: P+"42_a.webp", desc: "[Synopsis #3] 어느 한 저택을 수사하려는 주인공. (문이 닫히고 눈을 뜨며 시계를 본다) '주어진 시간이 얼마 없군.'" },
+        { name: "성지기숙학원 : 특수교정반", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"37_a.webp", desc: "같은 기척, 같은 냄새, 같은 어둠. 나는 또다시 이 기숙학원에서 깨어났다." },
+        { name: "춘화각 : 피할 수 없는 저주", genre: "공포", diff: 3, players: "2~6인", time: "80분", img: P+"40_a.webp", desc: "자네도 장원 급제를 위해서 이 춘화각을 찾았는가? 이쪽 끝방으로 들어가시게. ※ 직원 NPC와 함께 진행" },
+        { name: "낙화 : 떨어지는 꽃", genre: "스릴러", diff: 2, players: "2~6인", time: "80분", img: P+"38_a.webp", desc: "수천 개의 플래시가 날 향하던 그 밤, 나는 꼭대기에 있었다. 누구보다 찬란했던 그 순간부터— 어쩌면 끝은 이미 정해져 있었는지도 모른다." },
+        { name: "HINDSIGHT", genre: "잠입/드라마", diff: 3, players: "2~4인", time: "80분", img: P+"41_a.webp", desc: "여보세요, 도희 맞지? 거의 2년 만이네. 그날 뒤로 해킹에서 손 뗀 건 알지만... 우리 오랜만에 일 하나만 같이 할까?" },
       ],
     };
 
