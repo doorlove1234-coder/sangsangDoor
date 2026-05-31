@@ -85,8 +85,9 @@
   .themes {
     position: relative;
     background:
-      var(--navy)
-      url('img/sub_bgi.png') top center / 100% auto no-repeat;
+      linear-gradient(180deg, rgba(10,14,28,0) 56%, rgba(10,14,28,.85) 80%, var(--navy) 92%),
+      url('img/sub_bgi.png') top center / 100% auto no-repeat,
+      var(--navy);
     padding-bottom: clamp(80px, 10vw, 140px);
   }
 

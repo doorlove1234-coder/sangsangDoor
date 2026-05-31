@@ -37,7 +37,11 @@
   @media (max-width:860px){ .topbar{ height:64px; padding:0 16px; } .topbar nav{ gap:18px; } .topbar nav a{ font-size:14px; letter-spacing:.05em; } .topbar .qbtn{ display:none; } }
 
   /* 배경 */
-  .loc { position:relative; background:var(--navy) url('img/sub_bgi.png') top center / 100% auto no-repeat; padding-bottom:clamp(80px,10vw,140px); }
+  .loc { position:relative; padding-bottom:clamp(80px,10vw,140px);
+         background:
+           linear-gradient(180deg, rgba(10,14,28,0) 56%, rgba(10,14,28,.85) 80%, var(--navy) 92%),
+           url('img/sub_bgi.png') top center / 100% auto no-repeat,
+           var(--navy); }
   .wrap { max-width:1180px; margin:0 auto; padding:0 clamp(20px,4vw,48px); }
 
   /* LOCATION 히어로 */
