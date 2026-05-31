@@ -178,7 +178,14 @@
   .best-tabs button.active::after { content:""; position:absolute; left:0; right:0; bottom:-10px; height:2px; background:var(--gold-d); }
   .best-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(20px,2.5vw,30px); }
   @media(max-width:820px){ .best-grid{ grid-template-columns:repeat(2,1fr);} }
-  @media(max-width:520px){ .best-grid{ grid-template-columns:1fr; max-width:340px; margin:0 auto;} }
+  /* 모바일: 한 줄 가로 슬라이드(스냅) — 아래로 쌓이지 않게 */
+  @media(max-width:620px){
+    .best-grid{ display:flex; grid-template-columns:none; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+                -webkit-overflow-scrolling:touch; padding:2px 16px 16px; margin:0 -16px; scrollbar-width:none; }
+    .best-grid::-webkit-scrollbar{ display:none; }
+    .best-grid .bcard{ flex:0 0 78%; max-width:300px; scroll-snap-align:center; }
+    .best-grid .bcard:last-child{ margin-right:16px; }
+  }
   .bcard { background:linear-gradient(180deg,#121732,#0c1022); border:1px solid var(--line); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; transition:transform .25s,border-color .25s,box-shadow .25s; }
   .bcard:hover { transform:translateY(-6px); border-color:rgba(200,168,99,.55); box-shadow:0 26px 54px rgba(0,0,0,.5); }
   .bcard .pic { position:relative; aspect-ratio:3/4; overflow:hidden; }
@@ -236,7 +243,7 @@
   .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
   .footer-social a:hover { background:var(--gold); color:#0a0f24; }
   .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
-  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
+  @media (max-width:760px){ .footer-stores{ display:none; } .footer-nav{ margin-left:0; width:100%; } }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
