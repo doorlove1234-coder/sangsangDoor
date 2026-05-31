@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>상상의 문 — 매장안내</title>
+
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root { --navy:#0a0e1c; --gold:#f2d7ac; --gold-d:#c8a863; --cream:#ece4d6; --muted:#9aa2bd;
+          --card:#11162b; --line:rgba(200,168,99,.18); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--navy); color:var(--cream);
+         font-family:'Paperozi',"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; overflow-x:hidden; }
+  img { display:block; -webkit-user-drag:none; user-select:none; }
+
+  /* 헤더 */
+  .topbar { position:sticky; top:0; z-index:100; height:78px; background:linear-gradient(180deg,#0c1124 0%,#080b18 100%);
+            border-bottom:1px solid var(--line); display:flex; align-items:center; padding:0 clamp(20px,4vw,56px); }
+  .topbar .brand { display:flex; align-items:center; flex:none; }
+  .topbar .brand img { height:40px; width:auto; }
+  .topbar nav { flex:1; display:flex; align-items:center; justify-content:center; gap:38px; }
+  .topbar nav a { color:#d9d2c4; text-decoration:none; font-size:16px; font-weight:600; letter-spacing:1.5px; white-space:nowrap; transition:color .2s ease; }
+  .topbar nav a:hover, .topbar nav a.active { color:var(--gold); }
+  .topbar .qbtn { flex:none; display:inline-flex; align-items:center; gap:10px; height:44px; padding:0 22px;
+                  border:1px solid rgba(200,168,99,.55); border-radius:6px; color:var(--gold); text-decoration:none;
+                  font-size:15px; font-weight:600; letter-spacing:1px; transition:background .2s,border-color .2s; }
+  .topbar .qbtn:hover { background:rgba(200,168,99,.12); border-color:var(--gold); }
+  .topbar .qbtn span { font-size:18px; }
+  @media (max-width:860px){ .topbar{ height:64px; padding:0 16px; } .topbar nav{ gap:18px; } .topbar nav a{ font-size:14px; letter-spacing:.05em; } .topbar .qbtn{ display:none; } }
+
+  /* 배경 */
+  .loc { position:relative; background:var(--navy) url('img/sub_bgi.png') top center / 100% auto no-repeat; padding-bottom:clamp(80px,10vw,140px); }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 clamp(20px,4vw,48px); }
+
+  /* LOCATION 히어로 */
+  .loc-head { padding:clamp(56px,8vw,110px) 0 clamp(40px,6vw,80px); max-width:600px; }
+  .loc-head .en { font-family:"Cormorant Garamond",serif; font-size:clamp(42px,6vw,72px); font-weight:600; letter-spacing:.13em; line-height:1; color:var(--gold); }
+  .loc-head .kr { margin-top:clamp(20px,3vw,32px); font-size:clamp(20px,2.4vw,29px); font-weight:700; color:#f4eede; }
+  .loc-head .desc { margin-top:14px; font-size:clamp(14px,1.5vw,16px); line-height:1.85; color:var(--muted); }
+
+  /* 지점 카드 리스트 */
+  .branches { display:flex; flex-direction:column; gap:clamp(18px,2.2vw,26px); }
+  .bcard { display:grid; grid-template-columns:200px 1fr 170px; gap:clamp(22px,3vw,40px); align-items:center;
+           background:rgba(17,22,43,.78); border:1px solid rgba(255,255,255,.06); border-radius:12px;
+           padding:clamp(20px,2.4vw,30px); transition:border-color .2s, transform .2s; }
+  .bcard:hover { border-color:rgba(200,168,99,.35); transform:translateY(-2px); }
+  .bcard .photo { width:200px; aspect-ratio:4/3; border-radius:8px; overflow:hidden; border:1px solid rgba(200,168,99,.25); background:#05070f; }
+  .bcard .photo img { width:100%; height:100%; object-fit:cover; }
+
+  .binfo .name { font-size:clamp(22px,2.4vw,28px); font-weight:700; color:#f4eede; margin-bottom:18px; }
+  .binfo .row { display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:#cdd3e4; line-height:1.5; margin-bottom:11px; }
+  .binfo .row:last-child { margin-bottom:0; }
+  .binfo .row svg { width:17px; height:17px; flex:none; margin-top:1px; color:var(--gold-d); }
+  .binfo .row a { color:#cdd3e4; text-decoration:none; }
+  .binfo .row a:hover { color:var(--gold); }
+
+  .maps { display:flex; flex-direction:column; gap:9px; }
+  .maps a { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:7px;
+            background:rgba(8,11,22,.7); border:1px solid rgba(255,255,255,.08); color:#dfe3ef;
+            text-decoration:none; font-size:13.5px; transition:border-color .2s, background .2s; }
+  .maps a:hover { border-color:rgba(200,168,99,.5); background:rgba(200,168,99,.08); }
+  .maps .badge { width:22px; height:22px; border-radius:5px; flex:none; display:flex; align-items:center; justify-content:center;
+                 font-size:12px; font-weight:800; color:#0a0e1c; }
+  .maps .g { background:#e8eaed; color:#4285f4; }
+  .maps .k { background:#fee500; color:#3c1e1e; }
+  .maps .n { background:#03c75a; color:#fff; }
+
+  @media (max-width:760px){
+    .bcard { grid-template-columns:1fr; }
+    .bcard .photo { width:100%; aspect-ratio:16/9; }
+    .maps { flex-direction:row; flex-wrap:wrap; }
+    .maps a { flex:1 1 30%; justify-content:center; }
+  }
+
+  /* 푸터 */
+  .footer { background:#0a0f24; color:#6f7794; text-align:center; padding:26px 20px; font-size:12px; border-top:1px solid rgba(255,255,255,.08); }
+</style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="topbar">
+    <a class="brand" href="index.html"><img src="img/main/logo.png" alt="상상의문 ESCAPE ROOM" /></a>
+    <nav>
+      <a href="story.html">상상의 문</a>
+      <a href="themes.html">테마</a>
+      <a href="reserve.html">예약</a>
+      <a href="location.html" class="active">매장안내</a>
+      <a href="#">공지</a>
+    </nav>
+    <a class="qbtn" href="#">예약 확인 <span>→</span></a>
+  </header>
+
+  <section class="loc">
+    <div class="wrap">
+
+      <!-- LOCATION 히어로 -->
+      <div class="loc-head">
+        <h1 class="en">LOCATION</h1>
+        <p class="kr">상상의 문은 생각보다 가까이에 있습니다</p>
+        <p class="desc">당신이 꿈꾸던 이야기의 시작,<br>가장 가까운 지점에서 만나보세요.</p>
+      </div>
+
+      <!-- 지점 카드 -->
+      <div class="branches" id="branches"></div>
+
+    </div>
+  </section>
+
+  <footer class="footer">© 2025 상상의문 ESCAPE ROOM. All rights reserved.</footer>
+
+  <script>
+    const ICON = {
+      pin:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>',
+      tel:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.5 15.5 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.24.2 2.45.57 3.57a1 1 0 01-.24 1.02l-2.2 2.2z"/></svg>',
+      pay:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19"/></svg>'
+    };
+
+    const BRANCHES = [
+      { name:"대학로점",   img:"img/daehakro_img.png",      addr:"서울 종로구 창경궁로34길 18-5, 지하3층", tel:"02-765-7771",   pay:"신한 140-013-822758 상상의문 대학로점" },
+      { name:"분당서현점", img:"img/bundangSeohyeon_img.png", addr:"경기 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층", tel:"031-708-1777", pay:"국민 534201-04-185148 김리나" },
+      { name:"광주점",     img:"img/gwangju_img.png",        addr:"광주광역시 동구 충장로 80-5, 6층", tel:"062-226-1126",  pay:"국민 754201-04-128031 조준호" },
+      { name:"부평점",     img:"img/bupyeong_img.png",       addr:"인천 부평구 시장로12번길 7 보광빌딩 4층", tel:"010-3242-3218", pay:"우리은행 1002-355-497203 이원일" },
+      { name:"수원점",     img:"img/suwon1_img.png",         addr:"경기 수원시 팔달구 인계로138번길 44, 4층", tel:"010-4397-3057", pay:"현장 결제" },
+      { name:"수원2호점",  img:"img/suwon2_img.png",         addr:"경기 수원시 팔달구 효원로249번길 46-18, 3층", tel:"010-9360-4148", pay:"현장 결제" },
+    ];
+
+    const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const telHref = t => "tel:" + t.replace(/[^0-9]/g,"");
+    const q = b => encodeURIComponent("상상의문 " + b.name + " " + b.addr);
+    const gmap = b => "https://www.google.com/maps/search/?api=1&query=" + q(b);
+    const kmap = b => "https://map.kakao.com/?q=" + q(b);
+    const nmap = b => "https://map.naver.com/p/search/" + q(b);
+
+    document.getElementById("branches").innerHTML = BRANCHES.map(b => `
+      <article class="bcard">
+        <div class="photo"><img src="${b.img}" alt="${esc(b.name)} 매장" loading="lazy"
+             onerror="this.parentElement.style.background='linear-gradient(135deg,#1a2150,#0c1126)'"></div>
+        <div class="binfo">
+          <h2 class="name">${esc(b.name)}</h2>
+          <div class="row">${ICON.pin}<span>${esc(b.addr)}</span></div>
+          <div class="row">${ICON.tel}<a href="${telHref(b.tel)}">${esc(b.tel)}</a></div>
+          <div class="row">${ICON.pay}<span>${esc(b.pay)}</span></div>
+        </div>
+        <div class="maps">
+          <a href="${gmap(b)}" target="_blank" rel="noopener"><span class="badge g">G</span>구글 지도</a>
+          <a href="${kmap(b)}" target="_blank" rel="noopener"><span class="badge k">K</span>카카오 지도</a>
+          <a href="${nmap(b)}" target="_blank" rel="noopener"><span class="badge n">N</span>네이버 지도</a>
+        </div>
+      </article>
+    `).join("");
+  </script>
+
+</body>
+</html>
