@@ -19,7 +19,7 @@
          font-family:'Paperozi',"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; overflow-x:hidden; }
   img { display:block; -webkit-user-drag:none; user-select:none; }
 
-  /* ── 헤더 (themes/story와 동일) ── */
+  /* ── 헤더 ── */
   .topbar { position:sticky; top:0; z-index:100; height:78px; background:linear-gradient(180deg,#0c1124 0%,#080b18 100%);
             border-bottom:1px solid var(--line); display:flex; align-items:center; padding:0 clamp(20px,4vw,56px); }
   .topbar .brand { display:flex; align-items:center; flex:none; }
@@ -37,7 +37,7 @@
   @media (max-width:860px){ .topbar{ height:64px; padding:0 16px; } .topbar nav{ gap:18px; } .topbar nav a{ font-size:14px; letter-spacing:.05em; } .topbar .qbtn{ display:none; } }
 
   /* ── 배경 ── */
-  .resv { position:relative; background:var(--navy) url('img/sub_bgi.png') top center / 100% auto no-repeat; padding-bottom:clamp(80px,10vw,140px); }
+  .resv { position:relative; background:var(--navy) url('img/sub_bgi.png') top center / 100% auto no-repeat; padding-bottom:clamp(60px,7vw,100px); }
   .wrap { max-width:1240px; margin:0 auto; padding:0 clamp(20px,4vw,48px); }
 
   /* ── RESERVATION 히어로 ── */
@@ -69,26 +69,33 @@
   .resv-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.22fr); gap:clamp(20px,2.5vw,32px); align-items:start; }
   @media (max-width:880px){ .resv-grid{ grid-template-columns:1fr; } }
 
-  /* 좌: 테마 리스트 */
-  .tlist { display:flex; flex-direction:column; gap:18px; }
-  .titem { display:grid; grid-template-columns:96px 1fr auto; gap:18px; align-items:center;
+  /* 좌측 컬럼 (sticky 고정) */
+  .left-col { position:sticky; top:96px; align-self:start; display:flex; flex-direction:column; gap:18px; }
+  @media (max-width:880px){ .left-col{ position:static; } }
+  .tlist { display:flex; flex-direction:column; gap:16px; }
+  .titem { display:grid; grid-template-columns:90px 1fr auto; gap:16px; align-items:center;
            background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:10px;
-           padding:18px; cursor:pointer; transition:border-color .2s, background .2s, transform .2s; }
+           padding:16px; cursor:pointer; transition:border-color .2s, background .2s, transform .2s; }
   .titem:hover { transform:translateY(-2px); border-color:rgba(200,168,99,.4); }
   .titem.active { border-color:var(--gold); background:#141a33; }
-  .titem .thumb { width:96px; aspect-ratio:3/4; border-radius:6px; overflow:hidden; border:1px solid rgba(200,168,99,.3); }
+  .titem .thumb { width:90px; aspect-ratio:3/4; border-radius:6px; overflow:hidden; border:1px solid rgba(200,168,99,.3); }
   .titem .thumb img { width:100%; height:100%; object-fit:cover; }
   .titem .ti-genre { font-size:12px; color:var(--gold-d); margin-bottom:5px; }
-  .titem .ti-name { font-size:19px; font-weight:700; color:#f4eede; margin-bottom:9px; }
-  .titem .ti-line { font-size:13px; color:var(--muted); margin-bottom:3px; }
+  .titem .ti-name { font-size:18px; font-weight:700; color:#f4eede; margin-bottom:9px; }
+  .titem .ti-line { font-size:12.5px; color:var(--muted); margin-bottom:3px; }
   .titem .ti-line .stars { color:var(--gold); letter-spacing:1px; }
-  .titem .ti-desc { margin-top:8px; font-size:12.5px; line-height:1.6; color:#b7bdcf;
-                    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
-  .titem .book { align-self:center; display:inline-flex; align-items:center; gap:8px; white-space:nowrap;
-                 padding:11px 18px; border-radius:7px; font-weight:700; font-size:14px;
+  .titem .book { align-self:center; display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
+                 padding:10px 15px; border-radius:7px; font-weight:700; font-size:13.5px;
                  border:1px solid rgba(200,168,99,.5); color:var(--gold); background:transparent; transition:background .2s,border-color .2s; }
   .titem.active .book, .titem .book:hover { background:var(--gold); color:#0a0e1c; border-color:var(--gold); }
-  @media (max-width:520px){ .titem{ grid-template-columns:80px 1fr; } .titem .book{ grid-column:1/-1; justify-content:center; } .titem .thumb{ width:80px; } }
+  @media (max-width:520px){ .titem{ grid-template-columns:76px 1fr; } .titem .book{ grid-column:1/-1; justify-content:center; } .titem .thumb{ width:76px; } }
+
+  /* 이용 안내 카드 (좌측 하단 균형) */
+  .guide { background:rgba(12,17,38,.6); border:1px solid var(--line); border-radius:10px; padding:22px 22px 24px; }
+  .guide h3 { font-size:15px; font-weight:700; color:var(--gold); margin-bottom:14px; letter-spacing:.02em; }
+  .guide ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .guide li { display:flex; gap:9px; font-size:13px; line-height:1.55; color:#c2c8da; }
+  .guide li::before { content:""; flex:none; width:5px; height:5px; margin-top:7px; border-radius:50%; background:var(--gold-d); }
 
   /* 우: 상세 + 예약 */
   .detail { background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:clamp(22px,3vw,34px); }
@@ -111,18 +118,22 @@
   .step-h .num { font-family:"Cormorant Garamond",serif; font-size:16px; font-weight:700; color:var(--gold-d); }
   .step-h .t { font-size:16px; font-weight:700; color:#f0e8d6; }
 
+  /* 날짜+시간 2열 (오른쪽 높이 단축) */
+  .dt-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,2.5vw,30px); align-items:start; }
+  @media (max-width:620px){ .dt-grid{ grid-template-columns:1fr; } }
+
   /* 달력 */
-  .cal { background:var(--card-2); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:18px clamp(14px,2vw,22px); }
+  .cal { background:var(--card-2); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:18px clamp(12px,1.6vw,18px); }
   .cal-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .cal-top .my { font-size:17px; font-weight:700; color:#f0e8d6; letter-spacing:.04em; }
-  .cal-nav { width:34px; height:34px; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--gold);
+  .cal-top .my { font-size:16px; font-weight:700; color:#f0e8d6; letter-spacing:.04em; }
+  .cal-nav { width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--gold);
              cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background .2s; }
   .cal-nav:hover { background:rgba(200,168,99,.12); }
-  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center; }
-  .cal-dow { font-size:12.5px; color:var(--muted); padding:6px 0 10px; }
-  .cal-dow:first-child { color:#d98c8c; } /* 일 */
-  .cal-dow:last-child { color:#8ca6d9; }  /* 토 */
-  .cal-cell { aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:14px; color:#d5d9e6;
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; }
+  .cal-dow { font-size:12px; color:var(--muted); padding:6px 0 9px; }
+  .cal-dow:first-child { color:#d98c8c; }
+  .cal-dow:last-child { color:#8ca6d9; }
+  .cal-cell { aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:13.5px; color:#d5d9e6;
               border-radius:50%; cursor:pointer; transition:background .15s, color .15s; }
   .cal-cell.out { color:#3c425a; cursor:default; }
   .cal-cell.past { color:#454b63; cursor:not-allowed; }
@@ -133,16 +144,15 @@
   .cal-cell:not(.out):not(.past):hover { background:rgba(200,168,99,.18); }
 
   /* 시간 */
-  .times { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
-  @media (max-width:520px){ .times{ grid-template-columns:repeat(3,1fr); } }
-  .slot { padding:12px 6px; text-align:center; font-size:14px; font-weight:600; color:#dfe3ef;
+  .times { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; align-content:start; }
+  .slot { padding:11px 4px; text-align:center; font-size:13.5px; font-weight:600; color:#dfe3ef;
           background:var(--card-2); border:1px solid rgba(255,255,255,.07); border-radius:7px; cursor:pointer; transition:all .15s; }
   .slot:hover { border-color:rgba(200,168,99,.5); }
   .slot.sel { background:var(--gold); color:#0a0e1c; border-color:var(--gold); }
   .note { margin-top:12px; font-size:12px; color:#7c84a0; }
 
   /* 인원 */
-  .counter { display:inline-flex; align-items:center; gap:0; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; }
+  .counter { display:inline-flex; align-items:center; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; }
   .counter button { width:46px; height:46px; background:var(--card-2); border:0; color:var(--gold); font-size:20px; cursor:pointer; transition:background .15s; }
   .counter button:hover { background:rgba(200,168,99,.14); }
   .counter button:disabled { color:#454b63; cursor:not-allowed; }
@@ -160,8 +170,28 @@
   .result.err { display:block; background:rgba(217,140,140,.12); border:1px solid rgba(217,140,140,.4); color:#f0d6d6; }
   .result b { color:var(--gold); }
 
-  /* 푸터 */
-  .footer { background:#0a0f24; color:#6f7794; text-align:center; padding:26px 20px; font-size:12px; border-top:1px solid rgba(255,255,255,.08); }
+  /* ══ FOOTER (메인/스토리/테마와 동일) ══ */
+  .footer { background:#0a0f24; color:#b9c0d6; padding:clamp(40px,5vw,72px) 20px clamp(28px,4vw,46px); }
+  .footer a { color:inherit; text-decoration:none; }
+  .footer-top { max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:16px 30px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .footer-hours { display:flex; align-items:center; gap:14px; }
+  .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
+  .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
+  .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+  .footer-nav a:hover { color:var(--gold); }
+  .footer-main { max-width:1280px; margin:clamp(24px,3vw,38px) auto 0; display:flex; flex-wrap:wrap; gap:30px 50px; align-items:flex-start; }
+  .footer-brand { min-width:190px; }
+  .footer-brand img { width:138px; height:auto; }
+  .footer-brand p { margin-top:10px; font-size:12px; color:#7c84a0; letter-spacing:.05em; }
+  .footer-stores { display:grid; grid-template-columns:repeat(2,minmax(210px,1fr)); gap:4px 40px; flex:1; }
+  .footer-stores div { font-size:12.5px; line-height:1.95; color:#9aa2bd; }
+  .footer-stores b { color:#c3cae0; font-weight:600; }
+  .footer-social { display:flex; gap:10px; }
+  .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
+  .footer-social a:hover { background:var(--gold); color:#0a0f24; }
+  .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
+  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
 </style>
 </head>
 <body>
@@ -193,26 +223,29 @@
       <div class="branch-bar">
         <div class="pick">
           <label for="branchSel">지점 선택</label>
-          <div class="selectbox">
-            <select id="branchSel"></select>
-          </div>
+          <div class="selectbox"><select id="branchSel"></select></div>
         </div>
         <div class="meta">
-          <div class="col">
-            <div class="lab">지점 정보</div>
-            <div class="val" id="bInfo">—</div>
-          </div>
-          <div class="col">
-            <div class="lab">운영 시간</div>
-            <div class="val" id="bHours">—</div>
-          </div>
+          <div class="col"><div class="lab">지점 정보</div><div class="val" id="bInfo">—</div></div>
+          <div class="col"><div class="lab">운영 시간</div><div class="val" id="bHours">—</div></div>
         </div>
       </div>
 
       <!-- 본문 2단 -->
       <div class="resv-grid">
-        <!-- 좌: 테마 리스트 -->
-        <div class="tlist" id="tlist"></div>
+        <!-- 좌: 테마 리스트 + 이용 안내 (sticky) -->
+        <div class="left-col">
+          <div class="tlist" id="tlist"></div>
+          <div class="guide">
+            <h3>이용 안내</h3>
+            <ul>
+              <li>예약금 20,000원 선결제 · 잔금은 현장에서 결제합니다.</li>
+              <li>게임 시작 10분 전까지 도착해 주세요. (지각 시 시간 차감)</li>
+              <li>시작 24시간 이내 취소·변경 시 예약금 환불이 어렵습니다.</li>
+              <li>임산부·폐쇄공포증·음주 고객은 입장이 제한됩니다.</li>
+            </ul>
+          </div>
+        </div>
 
         <!-- 우: 상세 + 예약 -->
         <div class="detail">
@@ -227,23 +260,25 @@
 
           <div class="hr"></div>
 
-          <!-- 01 날짜 -->
-          <div class="step-h"><span class="num">01</span><span class="t">날짜 선택</span></div>
-          <div class="cal">
-            <div class="cal-top">
-              <button class="cal-nav" id="calPrev" aria-label="이전 달">‹</button>
-              <span class="my" id="calMY"></span>
-              <button class="cal-nav" id="calNext" aria-label="다음 달">›</button>
+          <div class="dt-grid">
+            <div>
+              <div class="step-h"><span class="num">01</span><span class="t">날짜 선택</span></div>
+              <div class="cal">
+                <div class="cal-top">
+                  <button class="cal-nav" id="calPrev" aria-label="이전 달">‹</button>
+                  <span class="my" id="calMY"></span>
+                  <button class="cal-nav" id="calNext" aria-label="다음 달">›</button>
+                </div>
+                <div class="cal-grid" id="calGrid"></div>
+              </div>
             </div>
-            <div class="cal-grid" id="calGrid"></div>
+            <div>
+              <div class="step-h"><span class="num">02</span><span class="t">시간 선택</span></div>
+              <div class="times" id="times"></div>
+              <p class="note">* 시간은 게임 시작 기준 · 실제 잔여 좌석은 예약 시스템 연동 후 표시됩니다.</p>
+            </div>
           </div>
 
-          <!-- 02 시간 -->
-          <div class="step-h" style="margin-top:28px"><span class="num">02</span><span class="t">시간 선택</span></div>
-          <div class="times" id="times"></div>
-          <p class="note">* 실제 잔여 좌석은 예약 시스템 연동 후 표시됩니다.</p>
-
-          <!-- 03 인원 -->
           <div class="step-h" style="margin-top:28px"><span class="num">03</span><span class="t">인원 선택</span></div>
           <div class="counter">
             <button id="minus" aria-label="인원 감소">−</button>
@@ -260,69 +295,100 @@
     </div>
   </section>
 
-  <footer class="footer">© 2025 상상의문 ESCAPE ROOM. All rights reserved.</footer>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-hours">
+        <span class="clock">&#128337;</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="#">공지사항</a>
+        <a href="#">예약확인</a>
+        <a href="#">제휴문의</a>
+        <a href="#">개인정보취급방침</a>
+      </nav>
+    </div>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <img src="img/main/logo.png" alt="상상의 문" />
+        <p>상상 그 이상의 공간</p>
+      </div>
+      <div class="footer-stores">
+        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
+        <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
+        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
+        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="인스타그램">IG</a>
+        <a href="#" aria-label="네이버 블로그">N</a>
+        <a href="#" aria-label="카카오톡">K</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>COPYRIGHT ⓒ 2022 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>이메일 imaginarydoor@yologuys.com</span>
+    </div>
+  </footer>
 
   <script>
     const P = "img/main/poster/";
-    // 공포도/활동성 → 텍스트 변환
     const fearTxt = f => f <= 1 ? "거의 없음" : f === 2 ? "낮음" : f === 3 ? "보통" : f === 4 ? "높음" : "매우 높음";
     const actTxt  = a => a <= 1 ? "낮음" : a === 2 ? "보통" : a === 3 ? "다소 높음" : a === 4 ? "높음" : "매우 높음";
     const stars = d => "★".repeat(d) + "☆".repeat(5 - d);
     const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
-    // 공통 시간 슬롯 (디자인 샘플)
-    const SLOTS = ["10:00","11:25","12:45","14:15","15:35","16:55","18:25","19:40","20:55","22:25"];
-
-    // 지점 정보 (주소·운영시간) + 테마 (themes-detail.md 기준)
+    // 지점 정보 + 테마(themes-detail.md) + 시작 시간(imaginary_door_reservation_schedule.md)
     const BR = {
       "대학로점": { info:"서울 종로구 창경궁로34길 18-5, 지하3층 · 02-765-7771", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[
-        { n:"경찰과 도둑", g:"추리", d:3, p:"2~4명", t:"60분", f:1, a:2, img:P+"4_a.jpg", desc:"EP.1 경찰이야기\nEP.2 도둑이야기 — 같은 공간, 두 개의 시점." },
-        { n:"스포일러", g:"미스터리", d:5, p:"2~6명", t:"85분", f:2, a:5, img:P+"1_a.jpg", desc:"그들은 이미 알고 있었다. ※ 고소공포증 주의 · 초등학생 이용 불가" },
-        { n:"나이트워크", g:"판타지", d:3, p:"2~6명", t:"100분", f:2, a:2, img:P+"10_a.jpg", desc:"어두운 밤 속으로 발걸음을 내딛었다. 그리고 한없이 걸었다.\n그 끝에서 한 목소리를 들었다." },
+        { n:"경찰과 도둑", g:"추리", d:3, p:"2~4명", t:"60분", f:1, a:2, img:P+"4_a.jpg", desc:"EP.1 경찰이야기\nEP.2 도둑이야기 — 같은 공간, 두 개의 시점.", slots:["11:25","12:45","14:15","15:35","16:55","18:25","19:40","20:55","22:25"] },
+        { n:"스포일러", g:"미스터리", d:5, p:"2~6명", t:"85분", f:2, a:5, img:P+"1_a.jpg", desc:"그들은 이미 알고 있었다. ※ 고소공포증 주의 · 초등학생 이용 불가", slots:["11:35","13:00","14:30","15:50","17:10","18:40","20:00","21:20","22:40"] },
+        { n:"나이트워크", g:"판타지", d:3, p:"2~6명", t:"100분", f:2, a:2, img:P+"10_a.jpg", desc:"어두운 밤 속으로 발걸음을 내딛었다. 그리고 한없이 걸었다.\n그 끝에서 한 목소리를 들었다.", slots:["12:00","14:00","16:00","18:00","20:00","22:00"] },
       ]},
       "분당서현점": { info:"경기 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층 · 031-708-1777", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[
-        { n:"시크릿 왕국의 스캔들 (감독판)", g:"추리/잔혹동화", d:4, p:"2~6명", t:"90분", f:3, a:2, img:P+"7_a.jpg", desc:"시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
-        { n:"HERE I AM", g:"생존/탐험", d:3, p:"2~6명", t:"70분", f:2, a:4, img:P+"6_a.jpg", desc:"으으... 나 살아있는건가? 목말라... 낯선 곳에서 눈을 뜬 당신, 살아남아 이곳을 빠져나가라." },
-        { n:"몽염 : 도망칠 수 없는 꿈", g:"공포", d:4, p:"2~4명", t:"80분", f:5, a:2, img:P+"9_a.jpg", desc:"나는 매일 꿈을 꾸었다. 온통 어두운 곳에서 그녀가 날 바라보는 꿈. 그저 바라만 보고 있었다." },
-        { n:"역만", g:"미스터리", d:4, p:"2~6명", t:"90분", f:2, a:2, img:P+"11_a.jpg", desc:"이곳에는 어떤 이야기도 없습니다." },
-        { n:"셔플월드", g:"게임/판타지", d:3, p:"2~6명", t:"70분", f:1, a:3, img:P+"8_a.jpg", desc:"평화로운 픽셀월드에 나타난 포탈들! 용사님! 픽셀월드가 삼켜지고 있어! 일어나봐 용사님!" },
-        { n:"전당포 조필두", g:"스릴러", d:2, p:"2~6명", t:"60분", f:2, a:1, img:P+"5_a.jpg", desc:"지루한 매일의 연속.. 조필두는 한숨을 쉬며 자신의 가게인 전당포로 향한다. ※ 입문자용" },
+        { n:"시크릿 왕국의 스캔들 (감독판)", g:"추리/잔혹동화", d:4, p:"2~6명", t:"90분", f:3, a:2, img:P+"7_a.jpg", desc:"시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오.", slots:["11:00","12:40","14:20","16:00","17:40","19:20","21:00","22:40"] },
+        { n:"HERE I AM", g:"생존/탐험", d:3, p:"2~6명", t:"70분", f:2, a:4, img:P+"6_a.jpg", desc:"으으... 나 살아있는건가? 목말라... 낯선 곳에서 눈을 뜬 당신, 살아남아 이곳을 빠져나가라.", slots:["11:20","13:00","14:40","16:20","18:00","19:40","21:20"] },
+        { n:"몽염 : 도망칠 수 없는 꿈", g:"공포", d:4, p:"2~4명", t:"80분", f:5, a:2, img:P+"9_a.jpg", desc:"나는 매일 꿈을 꾸었다. 온통 어두운 곳에서 그녀가 날 바라보는 꿈. 그저 바라만 보고 있었다.", slots:["11:40","13:20","15:00","16:40","18:20","20:00","21:40"] },
+        { n:"역만", g:"미스터리", d:4, p:"2~6명", t:"90분", f:2, a:2, img:P+"11_a.jpg", desc:"이곳에는 어떤 이야기도 없습니다.", slots:["11:10","12:50","14:30","16:10","17:50","19:30","21:10"] },
+        { n:"셔플월드", g:"게임/판타지", d:3, p:"2~6명", t:"70분", f:1, a:3, img:P+"8_a.jpg", desc:"평화로운 픽셀월드에 나타난 포탈들! 용사님! 픽셀월드가 삼켜지고 있어! 일어나봐 용사님!", slots:["11:30","13:10","14:50","16:30","18:10","19:50","21:30"] },
+        { n:"전당포 조필두", g:"스릴러", d:2, p:"2~6명", t:"60분", f:2, a:1, img:P+"5_a.jpg", desc:"지루한 매일의 연속.. 조필두는 한숨을 쉬며 자신의 가게인 전당포로 향한다. ※ 입문자용", slots:["11:50","13:10","14:30","15:50","17:10","18:30","19:50","21:10"] },
       ]},
       "광주점": { info:"광주 동구 충장로 80-5, 6층 · 062-226-1126", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[
-        { n:"영결식", g:"공포", d:3, p:"2~6명", t:"60분", f:5, a:2, img:P+"14_a.jpg", desc:"現在去接你 — 지금 데리러 갑니다." },
-        { n:"시크릿 왕국의 스캔들", g:"추리/잔혹동화", d:4, p:"2~5명", t:"80분", f:3, a:2, img:P+"15_a.jpg", desc:"시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
-        { n:"호러맨스", g:"로맨스/스릴러", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"16_a.jpg", desc:"와 오늘은 데이트하는 날! 즐겁게 놀아야지! 그런데.. 자기야 뭐라고? ^^" },
-        { n:"서울만가면된다", g:"일상/코미디", d:4, p:"2~5명", t:"69분", f:1, a:2, img:P+"21_a.jpg", desc:"민서: 팀장님 근데.. 저희 지금 여기 무슨 컨셉으로 만드는 중인거예요? / 석현: 음...." },
-        { n:"TITAN : 전쟁의경계", g:"SF", d:4, p:"2~4명", t:"70분", f:2, a:3, img:P+"24_a.jpg", desc:"이곳에서 나는 자부심이 가득한 군인으로 일하고 있다. 그리고 오늘, 이 행성의 이름이 타이탄인 게 맞는지 의심이 가기 시작했다." },
-        { n:"그럼에도 불구하고,", g:"드라마", d:2, p:"2~5명", t:"70분", f:1, a:1, img:P+"22_a.jpg", desc:"유감스럽게도, 당신은 결국 성공하지 못할 거예요." },
+        { n:"영결식", g:"공포", d:3, p:"2~6명", t:"60분", f:5, a:2, img:P+"14_a.jpg", desc:"現在去接你 — 지금 데리러 갑니다.", slots:["13:35","14:55","16:15","17:35","18:55","20:15","21:35"] },
+        { n:"시크릿 왕국의 스캔들", g:"추리/잔혹동화", d:4, p:"2~5명", t:"80분", f:3, a:2, img:P+"15_a.jpg", desc:"시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오.", slots:["12:35","14:15","16:00","17:40","19:20","21:00"] },
+        { n:"호러맨스", g:"로맨스/스릴러", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"16_a.jpg", desc:"와 오늘은 데이트하는 날! 즐겁게 놀아야지! 그런데.. 자기야 뭐라고? ^^", slots:["12:45","14:05","15:35","16:55","18:25","19:45","21:15"] },
+        { n:"서울만가면된다", g:"일상/코미디", d:4, p:"2~5명", t:"69분", f:1, a:2, img:P+"21_a.jpg", desc:"민서: 팀장님 근데.. 저희 지금 여기 무슨 컨셉으로 만드는 중인거예요? / 석현: 음....", slots:["12:50","14:20","15:50","17:20","18:50","20:20","21:50"] },
+        { n:"TITAN : 전쟁의경계", g:"SF", d:4, p:"2~4명", t:"70분", f:2, a:3, img:P+"24_a.jpg", desc:"이곳에서 나는 자부심이 가득한 군인으로 일하고 있다. 그리고 오늘, 이 행성의 이름이 타이탄인 게 맞는지 의심이 가기 시작했다.", slots:["13:00","14:30","16:00","17:30","19:00","20:30"] },
+        { n:"그럼에도 불구하고,", g:"드라마", d:2, p:"2~5명", t:"70분", f:1, a:1, img:P+"22_a.jpg", desc:"유감스럽게도, 당신은 결국 성공하지 못할 거예요.", slots:["13:10","14:40","16:10","17:40","19:10","20:40"] },
       ]},
       "부평점": { info:"인천 부평구 시장로12번길 7 보광빌딩 4층 · 010-3242-3218", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[
-        { n:"쇼쿠진", g:"공포", d:4, p:"2~6명", t:"70분", f:5, a:2, img:P+"34_a.jpg", desc:"쇼쿠진님은 언제나 여러분들을 기다리고 있습니다." },
-        { n:"420번지", g:"스릴러", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"33_a.jpg", desc:"눈을 떠보니 어둡고 기이한 방. 여긴 어디지? 난... 여기서 대체 무엇을 하고 있었지...?" },
-        { n:"흑신소", g:"판타지/코미디", d:3, p:"2~6명", t:"70분", f:1, a:2, img:P+"35_a.jpg", desc:"돈도 여친도 직업도 없는 고시생 노령진. 극단적 선택을 하려던 그는 '흑역사 없애드립니다'라는 명함을 발견하는데…" },
-        { n:"행복목욕탕", g:"드라마/판타지", d:4, p:"2~6명", t:"80분", f:1, a:2, img:P+"36_a.jpg", desc:"행복목욕탕 절찬 운영 중 ♨" },
+        { n:"쇼쿠진", g:"공포", d:4, p:"2~6명", t:"70분", f:5, a:2, img:P+"34_a.jpg", desc:"쇼쿠진님은 언제나 여러분들을 기다리고 있습니다.", slots:["11:15","12:45","14:15","15:45","17:15","18:45","20:15","21:45"] },
+        { n:"420번지", g:"스릴러", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"33_a.jpg", desc:"눈을 떠보니 어둡고 기이한 방. 여긴 어디지? 난... 여기서 대체 무엇을 하고 있었지...?", slots:["11:35","13:05","14:35","16:05","17:35","19:05","20:35","22:05"] },
+        { n:"흑신소", g:"판타지/코미디", d:3, p:"2~6명", t:"70분", f:1, a:2, img:P+"35_a.jpg", desc:"돈도 여친도 직업도 없는 고시생 노령진. 극단적 선택을 하려던 그는 '흑역사 없애드립니다'라는 명함을 발견하는데…", slots:["11:25","12:55","14:25","15:55","17:25","18:55","20:25","21:55"] },
+        { n:"행복목욕탕", g:"드라마/판타지", d:4, p:"2~6명", t:"80분", f:1, a:2, img:P+"36_a.jpg", desc:"행복목욕탕 절찬 운영 중 ♨", slots:["11:40","13:20","15:00","16:40","18:20","20:00","21:40"] },
       ]},
       "수원점": { info:"경기 수원시 팔달구 인계로138번길 44, 4층 · 010-4397-3057", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[
-        { n:"직박구리 : 남친탐구생활", g:"코믹", d:3, p:"2~6명", t:"70분", f:1, a:2, img:P+"27_a.jpg", desc:"회사 일 때문에 잠시 외출한 남자친구. 과연 남자친구의 컴퓨터에도 '그것'이 있을까? 어라..? 이게 뭐야..!" },
-        { n:"복도끝", g:"공포", d:4, p:"2~6명", t:"75분", f:5, a:2, img:P+"26_a.jpg", desc:"상문빌라의 입주민 회장인 당신은 평소처럼 집 303호로 올라가는 엘리베이터를 탄다. 그런데 뒤에서 들려오는 비명소리.." },
-        { n:"혼숨", g:"미스터리/스릴러", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"28_a.jpg", desc:"'괴담 모음집' 동아리에 새로 가입한 우리들은, 폐가로 유명한 옥석 산장으로 신입 환영회를 가게 되었다." },
-        { n:"DKDK컴퍼니", g:"판타지/코미디", d:4, p:"2~6명", t:"80분", f:1, a:2, img:P+"29_a.jpg", desc:"오늘도 평화로운 DKDK COMPANY. 쿵부장이 심대리·장사원에게 던진 '프로젝트 HEART'! 성공시켜 실적을 올릴 수 있을까?" },
-        { n:"영안실", g:"공포", d:4, p:"2~6명", t:"80분", f:5, a:2, img:P+"30_a.jpg", desc:"안녕하십니까, 고객님의 마지막 여정을 함께하는 인계병원 영안실입니다. 편안한 밤 되시길 바랍니다." },
-        { n:"퍼펫쇼", g:"미스터리", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"31_a.jpg", desc:"줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. 무대에서 뵙겠습니다." },
+        { n:"직박구리 : 남친탐구생활", g:"코믹", d:3, p:"2~6명", t:"70분", f:1, a:2, img:P+"27_a.jpg", desc:"회사 일 때문에 잠시 외출한 남자친구. 과연 남자친구의 컴퓨터에도 '그것'이 있을까? 어라..? 이게 뭐야..!", slots:["10:00","11:25","12:50","14:15","15:40","17:05","18:30","19:55","21:20","22:45"] },
+        { n:"복도끝", g:"공포", d:4, p:"2~6명", t:"75분", f:5, a:2, img:P+"26_a.jpg", desc:"상문빌라의 입주민 회장인 당신은 평소처럼 집 303호로 올라가는 엘리베이터를 탄다. 그런데 뒤에서 들려오는 비명소리..", slots:["10:30","12:00","13:30","15:00","16:30","18:00","19:30","21:00","22:30"] },
+        { n:"혼숨", g:"미스터리/스릴러", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"28_a.jpg", desc:"'괴담 모음집' 동아리에 새로 가입한 우리들은, 폐가로 유명한 옥석 산장으로 신입 환영회를 가게 되었다.", slots:["10:10","11:35","13:00","14:25","15:50","17:15","18:40","20:05","21:30","22:55"] },
+        { n:"DKDK컴퍼니", g:"판타지/코미디", d:4, p:"2~6명", t:"80분", f:1, a:2, img:P+"29_a.jpg", desc:"오늘도 평화로운 DKDK COMPANY. 쿵부장이 심대리·장사원에게 던진 '프로젝트 HEART'! 성공시켜 실적을 올릴 수 있을까?", slots:["10:10","11:45","13:20","14:55","16:30","18:05","19:40","21:15","22:50"] },
+        { n:"영안실", g:"공포", d:4, p:"2~6명", t:"80분", f:5, a:2, img:P+"30_a.jpg", desc:"안녕하십니까, 고객님의 마지막 여정을 함께하는 인계병원 영안실입니다. 편안한 밤 되시길 바랍니다.", slots:["10:05","11:40","13:15","14:50","16:25","18:00","19:35","21:10","22:45"] },
+        { n:"퍼펫쇼", g:"미스터리", d:3, p:"2~6명", t:"70분", f:3, a:2, img:P+"31_a.jpg", desc:"줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. 무대에서 뵙겠습니다.", slots:["10:05","11:30","12:55","14:20","15:45","17:10","18:35","20:00","21:25","22:50"] },
       ]},
       "수원2호점": { info:"경기 수원시 팔달구 효원로249번길 46-18, 3층 · 010-9360-4148", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[
-        { n:"알케이드 빌리지", g:"아케이드", d:4, p:"2~6명", t:"80분", f:1, a:4, img:P+"39_a.jpg", desc:"세상에서 제일 한가한 마을 RCADE VILLAGE에 '우수마을 평가원이 한 시간 뒤 도착'이라는 소식이! 1시간 안에 정신 차릴 수 있을까?" },
-        { n:"OKCUT", g:"코메디", d:4, p:"2~6명", t:"90분", f:1, a:2, img:P+"42_a.jpg", desc:"[Synopsis #3] 어느 한 저택을 수사하려는 주인공. (문이 닫히고 눈을 뜨며 시계를 본다) '주어진 시간이 얼마 없군.'" },
-        { n:"성지기숙학원 : 특수교정반", g:"공포", d:4, p:"2~6명", t:"80분", f:5, a:2, img:P+"37_a.jpg", desc:"같은 기척, 같은 냄새, 같은 어둠. 나는 또다시 이 기숙학원에서 깨어났다." },
-        { n:"춘화각 : 피할 수 없는 저주", g:"공포", d:3, p:"2~6명", t:"80분", f:4, a:2, img:P+"40_a.jpg", desc:"자네도 장원 급제를 위해서 이 춘화각을 찾았는가? 이쪽 끝방으로 들어가시게. ※ 직원 NPC와 함께 진행" },
-        { n:"낙화 : 떨어지는 꽃", g:"스릴러", d:2, p:"2~6명", t:"80분", f:2, a:2, img:P+"38_a.jpg", desc:"수천 개의 플래시가 날 향하던 그 밤, 나는 꼭대기에 있었다. 어쩌면 끝은 이미 정해져 있었는지도 모른다." },
-        { n:"HINDSIGHT", g:"잠입/드라마", d:3, p:"2~4명", t:"80분", f:1, a:3, img:P+"41_a.jpg", desc:"여보세요, 도희 맞지? 거의 2년 만이네. 그날 뒤로 해킹에서 손 뗀 건 알지만... 우리 오랜만에 일 하나만 같이 할까?" },
+        { n:"알케이드 빌리지", g:"아케이드", d:4, p:"2~6명", t:"80분", f:1, a:4, img:P+"39_a.jpg", desc:"세상에서 제일 한가한 마을 RCADE VILLAGE에 '우수마을 평가원이 한 시간 뒤 도착'이라는 소식이! 1시간 안에 정신 차릴 수 있을까?", slots:["09:50","11:30","13:10","14:50","16:30","18:10","19:50","21:30"] },
+        { n:"OKCUT", g:"코메디", d:4, p:"2~6명", t:"90분", f:1, a:2, img:P+"42_a.jpg", desc:"[Synopsis #3] 어느 한 저택을 수사하려는 주인공. (문이 닫히고 눈을 뜨며 시계를 본다) '주어진 시간이 얼마 없군.'", slots:["10:00","11:50","13:40","15:30","17:20","19:10","21:00","22:50"] },
+        { n:"성지기숙학원 : 특수교정반", g:"공포", d:4, p:"2~6명", t:"80분", f:5, a:2, img:P+"37_a.jpg", desc:"같은 기척, 같은 냄새, 같은 어둠. 나는 또다시 이 기숙학원에서 깨어났다.", slots:["09:55","11:35","13:15","14:55","16:35","18:15","19:55","21:35"] },
+        { n:"춘화각 : 피할 수 없는 저주", g:"공포", d:3, p:"2~6명", t:"80분", f:4, a:2, img:P+"40_a.jpg", desc:"자네도 장원 급제를 위해서 이 춘화각을 찾았는가? 이쪽 끝방으로 들어가시게. ※ 직원 NPC와 함께 진행", slots:["10:15","11:55","13:35","15:15","16:55","18:35","20:15","21:55"] },
+        { n:"낙화 : 떨어지는 꽃", g:"스릴러", d:2, p:"2~6명", t:"80분", f:2, a:2, img:P+"38_a.jpg", desc:"수천 개의 플래시가 날 향하던 그 밤, 나는 꼭대기에 있었다. 어쩌면 끝은 이미 정해져 있었는지도 모른다.", slots:["10:05","11:45","13:25","15:05","16:45","18:25","20:05","21:45"] },
+        { n:"HINDSIGHT", g:"잠입/드라마", d:3, p:"2~4명", t:"80분", f:1, a:3, img:P+"41_a.jpg", desc:"여보세요, 도희 맞지? 거의 2년 만이네. 그날 뒤로 해킹에서 손 뗀 건 알지만... 우리 오랜만에 일 하나만 같이 할까?", slots:["10:10","11:50","13:30","15:10","16:50","18:30","20:10","21:50"] },
       ]},
     };
 
-    // 상태
-    const state = { branch:null, theme:0, count:2, slot:null,
-                    cal:{ y:0, m:0, sel:null } };
+    const state = { branch:null, theme:0, count:2, slot:null, cal:{ y:0, m:0, sel:null } };
     const today = new Date(); today.setHours(0,0,0,0);
     state.cal.y = today.getFullYear();
     state.cal.m = today.getMonth();
@@ -331,14 +397,12 @@
     function curThemes(){ return BR[state.branch].themes; }
     function curTheme(){ return curThemes()[state.theme]; }
 
-    /* 지점 드롭다운 */
     function initBranches(preBranch, preTheme){
       const sel = document.getElementById("branchSel");
       sel.innerHTML = Object.keys(BR).map(b=>`<option value="${b}">${b}</option>`).join("");
       state.branch = (preBranch && BR[preBranch]) ? preBranch : Object.keys(BR)[0];
       sel.value = state.branch;
       sel.addEventListener("change", ()=>{ state.branch = sel.value; state.theme = 0; refreshBranch(); });
-      // 사전 선택 테마
       if (preTheme){ const i = curThemes().findIndex(t=>t.n===preTheme); if(i>=0) state.theme = i; }
       refreshBranch();
     }
@@ -350,7 +414,6 @@
       selectTheme(state.theme);
     }
 
-    /* 좌측 리스트 */
     function renderList(){
       const el = document.getElementById("tlist");
       el.innerHTML = curThemes().map((t,i)=>`
@@ -361,16 +424,12 @@
             <div class="ti-name">${esc(t.n)}</div>
             <div class="ti-line">난이도 <span class="stars">${stars(t.d)}</span></div>
             <div class="ti-line">인원 ${t.p} &nbsp;|&nbsp; 시간 ${t.t}</div>
-            <div class="ti-desc">${esc(t.desc)}</div>
           </div>
           <button class="book">예약하기 <span>→</span></button>
         </div>`).join("");
-      el.querySelectorAll(".titem").forEach(c=>{
-        c.addEventListener("click", ()=>selectTheme(parseInt(c.dataset.i)));
-      });
+      el.querySelectorAll(".titem").forEach(c=>c.addEventListener("click", ()=>selectTheme(parseInt(c.dataset.i))));
     }
 
-    /* 우측 상세 */
     function selectTheme(i){
       state.theme = i;
       document.querySelectorAll("#tlist .titem").forEach((c,idx)=>c.classList.toggle("active", idx===i));
@@ -386,7 +445,6 @@
         <div class="row"><span class="k">공포</span><span class="v">${fearTxt(t.f)}</span></div>
         <div class="row"><span class="k">활동성</span><span class="v">${actTxt(t.a)}</span></div>`;
       document.getElementById("dDesc").textContent = t.desc;
-      // 인원 초기화
       const [mn] = parseRange(t.p);
       state.count = mn;
       updateCount();
@@ -394,7 +452,6 @@
       hideResult();
     }
 
-    /* 달력 */
     const MON = ["일","월","화","수","목","금","토"];
     function renderCal(){
       const {y,m} = state.cal;
@@ -402,7 +459,7 @@
       const first = new Date(y,m,1).getDay();
       const dim = new Date(y,m+1,0).getDate();
       const prevDim = new Date(y,m,0).getDate();
-      let html = MON.map((d,i)=>`<div class="cal-dow ${i===0?'':''}">${d}</div>`).join("");
+      let html = MON.map(d=>`<div class="cal-dow">${d}</div>`).join("");
       for(let i=0;i<42;i++){
         let day, cls="cal-cell", inMonth=true, dateObj=null;
         if(i<first){ day=prevDim-first+1+i; cls+=" out"; inMonth=false; }
@@ -428,10 +485,9 @@
     document.getElementById("calPrev").addEventListener("click",()=>{ state.cal.m--; if(state.cal.m<0){state.cal.m=11;state.cal.y--;} renderCal(); });
     document.getElementById("calNext").addEventListener("click",()=>{ state.cal.m++; if(state.cal.m>11){state.cal.m=0;state.cal.y++;} renderCal(); });
 
-    /* 시간 */
     function renderTimes(){
       const el=document.getElementById("times");
-      el.innerHTML = SLOTS.map(s=>`<div class="slot" data-s="${s}">${s}</div>`).join("");
+      el.innerHTML = curTheme().slots.map(s=>`<div class="slot" data-s="${s}">${s}</div>`).join("");
       state.slot=null;
       el.querySelectorAll(".slot").forEach(s=>s.addEventListener("click",()=>{
         el.querySelectorAll(".slot").forEach(x=>x.classList.remove("sel"));
@@ -439,7 +495,6 @@
       }));
     }
 
-    /* 인원 */
     function updateCount(){
       const [mn,mx]=parseRange(curTheme().p);
       state.count=Math.min(Math.max(state.count,mn),mx);
@@ -451,7 +506,6 @@
     document.getElementById("minus").addEventListener("click",()=>{ state.count--; updateCount(); hideResult(); });
     document.getElementById("plus").addEventListener("click",()=>{ state.count++; updateCount(); hideResult(); });
 
-    /* 진행 */
     function hideResult(){ const r=document.getElementById("result"); r.className="result"; r.innerHTML=""; }
     document.getElementById("submit").addEventListener("click",()=>{
       const r=document.getElementById("result");
@@ -463,7 +517,6 @@
       r.innerHTML=`예약 정보가 확인되었습니다 — <b>${state.branch}</b> · <b>${esc(curTheme().n)}</b><br>${dateStr} ${state.slot} · ${state.count}명<br><span style="color:#9aa2bd">※ 온라인 결제·확정은 예약 시스템 연동 후 제공됩니다.</span>`;
     });
 
-    /* 초기화 (themes.html에서 넘어온 ?branch=&theme= 반영) */
     const q=new URLSearchParams(location.search);
     initBranches(q.get("branch"), q.get("theme"));
     renderCal();

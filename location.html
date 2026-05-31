@@ -80,8 +80,28 @@
     .maps a { flex:1 1 30%; justify-content:center; }
   }
 
-  /* 푸터 */
-  .footer { background:#0a0f24; color:#6f7794; text-align:center; padding:26px 20px; font-size:12px; border-top:1px solid rgba(255,255,255,.08); }
+  /* ══ FOOTER (메인/스토리/테마와 동일) ══ */
+  .footer { background:#0a0f24; color:#b9c0d6; padding:clamp(40px,5vw,72px) 20px clamp(28px,4vw,46px); }
+  .footer a { color:inherit; text-decoration:none; }
+  .footer-top { max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:16px 30px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .footer-hours { display:flex; align-items:center; gap:14px; }
+  .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
+  .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
+  .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+  .footer-nav a:hover { color:var(--gold); }
+  .footer-main { max-width:1280px; margin:clamp(24px,3vw,38px) auto 0; display:flex; flex-wrap:wrap; gap:30px 50px; align-items:flex-start; }
+  .footer-brand { min-width:190px; }
+  .footer-brand img { width:138px; height:auto; }
+  .footer-brand p { margin-top:10px; font-size:12px; color:#7c84a0; letter-spacing:.05em; }
+  .footer-stores { display:grid; grid-template-columns:repeat(2,minmax(210px,1fr)); gap:4px 40px; flex:1; }
+  .footer-stores div { font-size:12.5px; line-height:1.95; color:#9aa2bd; }
+  .footer-stores b { color:#c3cae0; font-weight:600; }
+  .footer-social { display:flex; gap:10px; }
+  .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
+  .footer-social a:hover { background:var(--gold); color:#0a0f24; }
+  .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
+  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
 </style>
 </head>
 <body>
@@ -115,7 +135,44 @@
     </div>
   </section>
 
-  <footer class="footer">© 2025 상상의문 ESCAPE ROOM. All rights reserved.</footer>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-hours">
+        <span class="clock">&#128337;</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="#">공지사항</a>
+        <a href="#">예약확인</a>
+        <a href="#">제휴문의</a>
+        <a href="#">개인정보취급방침</a>
+      </nav>
+    </div>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <img src="img/main/logo.png" alt="상상의 문" />
+        <p>상상 그 이상의 공간</p>
+      </div>
+      <div class="footer-stores">
+        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
+        <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
+        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
+        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="인스타그램">IG</a>
+        <a href="#" aria-label="네이버 블로그">N</a>
+        <a href="#" aria-label="카카오톡">K</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>COPYRIGHT ⓒ 2022 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>이메일 imaginarydoor@yologuys.com</span>
+    </div>
+  </footer>
 
   <script>
     const ICON = {

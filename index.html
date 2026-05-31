@@ -254,15 +254,17 @@
   .m-qbtn {
     position: absolute; top: 50%; transform: translateY(-50%);
     right: clamp(20px, 4vw, 56px);
-    display: inline-flex; align-items: center; justify-content: center;
-    height: 40px; padding: 0 22px;
-    border-radius: 20px;
-    background: var(--gold); color: #01071b;
-    font-size: 16px; font-weight: 700; letter-spacing: 1px;
-    text-decoration: none; border: none; cursor: pointer;
-    transition: filter .2s ease;
+    display: inline-flex; align-items: center; gap: 10px; justify-content: center;
+    height: 44px; padding: 0 22px;
+    border-radius: 6px;
+    background: transparent; color: var(--gold);
+    border: 1px solid rgba(200, 168, 99, 0.55);
+    font-size: 15px; font-weight: 600; letter-spacing: 1px;
+    text-decoration: none; cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
   }
-  .m-qbtn:hover { filter: brightness(1.08); }
+  .m-qbtn:hover { background: rgba(200, 168, 99, 0.12); border-color: var(--gold); }
+  .m-qbtn span { font-size: 18px; }
 
   @media (max-width: 720px) {
     .m-nav { gap: 18px; }
@@ -514,7 +516,7 @@
           <a href="location.html">매장안내</a>
           <a href="#">공지</a>
         </nav>
-        <a class="m-qbtn" href="#" aria-label="예약 확인">예약 확인</a>
+        <a class="m-qbtn" href="#" aria-label="예약 확인">예약 확인 <span>→</span></a>
       </header>
     </div>
   </section>
