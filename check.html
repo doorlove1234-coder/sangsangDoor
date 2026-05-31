@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>상상의 문 — 예약 확인</title>
+
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root { --navy:#0a0e1c; --gold:#f2d7ac; --gold-d:#c8a863; --cream:#ece4d6; --muted:#9aa2bd;
+          --card:#10162e; --card-2:#0c1126; --line:rgba(200,168,99,.18); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--navy); color:var(--cream);
+         font-family:'Paperozi',"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; overflow-x:hidden; }
+  img { display:block; -webkit-user-drag:none; user-select:none; }
+
+  /* ── 헤더 ── */
+  .topbar { position:sticky; top:0; z-index:100; height:78px; background:linear-gradient(180deg,#0c1124 0%,#080b18 100%);
+            border-bottom:1px solid var(--line); display:flex; align-items:center; padding:0 clamp(20px,4vw,56px); }
+  .topbar .brand { display:flex; align-items:center; flex:none; }
+  .topbar .brand img { height:40px; width:auto; }
+  .topbar nav { flex:1; display:flex; align-items:center; justify-content:center; gap:38px; }
+  .topbar nav a { position:relative; color:#d9d2c4; text-decoration:none; font-size:16px; font-weight:600; letter-spacing:1.5px; white-space:nowrap; transition:color .2s ease; }
+  .topbar nav a:hover, .topbar nav a.active { color:var(--gold); }
+  .topbar nav a.active { font-weight:700; }
+  .topbar nav a.active::before { content:""; position:absolute; left:50%; top:-14px; width:13px; height:13px; transform:translateX(-50%); background:url('img/story/header_star.webp') center/contain no-repeat; }
+  .topbar .qbtn { flex:none; display:inline-flex; align-items:center; gap:10px; height:44px; padding:0 22px;
+                  border:1px solid rgba(200,168,99,.55); border-radius:6px; color:var(--gold); text-decoration:none;
+                  font-size:15px; font-weight:600; letter-spacing:1px; transition:background .2s,border-color .2s; }
+  .topbar .qbtn:hover { background:rgba(200,168,99,.12); border-color:var(--gold); }
+  .topbar .qbtn span { font-size:18px; }
+  @media (max-width:860px){ .topbar{ height:64px; padding:0 16px; } .topbar nav{ gap:18px; } .topbar nav a{ font-size:14px; letter-spacing:.05em; } .topbar .qbtn{ display:none; } }
+
+  /* ── 배경 ── */
+  .page { position:relative; padding-bottom:clamp(60px,7vw,100px); min-height:78vh;
+          background:
+            linear-gradient(180deg, rgba(10,14,28,0) 56%, rgba(10,14,28,.85) 80%, var(--navy) 92%),
+            url('img/sub_bgi.webp') top center / 100% auto no-repeat,
+            var(--navy); }
+  .wrap { max-width:1240px; margin:0 auto; padding:0 clamp(20px,4vw,48px); }
+
+  /* ── 공통 서브 헤더 규격 ── */
+  .sub-head { padding:clamp(56px,8vw,110px) 0 clamp(40px,6vw,76px); max-width:620px; }
+  .sub-head .en { font-family:"Cormorant Garamond","Times New Roman",serif; font-size:clamp(44px,6vw,74px); font-weight:600; letter-spacing:.135em; line-height:1; color:var(--gold); }
+  .sub-head .kr { margin-top:clamp(20px,3vw,32px); font-size:clamp(20px,2.4vw,29px); font-weight:700; color:#f4eede; letter-spacing:.02em; }
+  .sub-head .desc { margin-top:14px; font-size:clamp(14px,1.5vw,16px); line-height:1.85; color:var(--muted); }
+
+  .body-narrow { max-width:760px; }
+
+  /* 조회 폼 */
+  .lookup { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:clamp(24px,3vw,34px); }
+  .lookup .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:560px){ .lookup .field-row{ grid-template-columns:1fr; } }
+  .field label { display:block; font-size:13.5px; color:#cdd3e4; margin-bottom:8px; font-weight:600; }
+  .field input { width:100%; background:var(--card-2); border:1px solid rgba(255,255,255,.1); border-radius:8px;
+    color:var(--cream); font-family:inherit; font-size:15px; padding:13px 15px; transition:border-color .2s; }
+  .field input:focus { outline:none; border-color:var(--gold); }
+  .field input::placeholder { color:#5e647c; }
+  .lookup .submit { margin-top:22px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:10px;
+            padding:16px; border:0; border-radius:8px; background:var(--gold); color:#0a0e1c; font-family:inherit;
+            font-size:16px; font-weight:700; cursor:pointer; transition:filter .2s; }
+  .lookup .submit:hover { filter:brightness(1.06); }
+  .lookup .submit span { font-size:18px; }
+  .hint { margin-top:14px; font-size:12.5px; color:#7c84a0; line-height:1.6; }
+  .hint b { color:var(--gold-d); }
+
+  .msg { margin-top:16px; padding:13px 16px; border-radius:8px; font-size:13.5px; display:none; }
+  .msg.err { display:block; background:rgba(217,140,140,.12); border:1px solid rgba(217,140,140,.4); color:#f0d6d6; }
+
+  /* 결과 카드 */
+  .results { margin-top:clamp(26px,4vw,40px); display:flex; flex-direction:column; gap:18px; }
+  .rcard { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .rcard .rc-top { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;
+                   padding:16px 22px; background:var(--card-2); border-bottom:1px solid rgba(255,255,255,.06); }
+  .rcard .rc-num { font-size:13.5px; color:var(--muted); }
+  .rcard .rc-num b { color:var(--gold); font-family:"Cormorant Garamond",serif; font-size:17px; letter-spacing:.08em; margin-left:6px; }
+  .rcard .rc-state { font-size:12px; font-weight:700; padding:5px 13px; border-radius:20px; background:rgba(200,168,99,.15); color:var(--gold); border:1px solid rgba(200,168,99,.4); }
+  .rcard .rc-body { padding:22px; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px 24px; }
+  .rcard .cell .k { font-size:12px; color:var(--gold-d); margin-bottom:6px; letter-spacing:.03em; }
+  .rcard .cell .v { font-size:15px; color:#eae4d5; font-weight:600; }
+  .rcard .rc-foot { padding:0 22px 22px; display:flex; gap:10px; flex-wrap:wrap; }
+  .rcard .rc-foot button { padding:11px 18px; border-radius:8px; font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; transition:background .2s,border-color .2s; background:transparent; }
+  .rcard .rc-foot .ghost { border:1px solid rgba(200,168,99,.45); color:var(--gold); }
+  .rcard .rc-foot .ghost:hover { background:rgba(200,168,99,.12); }
+  .rcard .rc-foot .danger { border:1px solid rgba(217,140,140,.45); color:#e6a3a3; }
+  .rcard .rc-foot .danger:hover { background:rgba(217,140,140,.12); }
+  .rcard.cancelled { opacity:.6; }
+  .rcard.cancelled .rc-state { background:rgba(150,156,176,.14); color:#aab; border-color:rgba(150,156,176,.4); }
+
+  /* 빈 상태 */
+  .empty { margin-top:clamp(26px,4vw,40px); text-align:center; padding:48px 20px; border:1px dashed var(--line); border-radius:12px; color:var(--muted); }
+  .empty .ic { font-size:34px; margin-bottom:14px; opacity:.7; }
+  .empty p { font-size:14px; line-height:1.7; }
+  .empty a { color:var(--gold); text-decoration:underline; }
+
+  /* ── FOOTER ── */
+  .footer { background:#0a0f24; color:#b9c0d6; padding:clamp(40px,5vw,72px) 20px clamp(28px,4vw,46px); }
+  .footer a { color:inherit; text-decoration:none; }
+  .footer-top { max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:16px 30px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .footer-hours { display:flex; align-items:center; gap:14px; }
+  .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
+  .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
+  .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+  .footer-nav a:hover { color:var(--gold); }
+  .footer-main { max-width:1280px; margin:clamp(24px,3vw,38px) auto 0; display:flex; flex-wrap:wrap; gap:30px 50px; align-items:flex-start; }
+  .footer-brand { min-width:190px; }
+  .footer-brand img { width:138px; height:auto; }
+  .footer-brand p { margin-top:10px; font-size:12px; color:#7c84a0; letter-spacing:.05em; }
+  .footer-stores { display:grid; grid-template-columns:repeat(2,minmax(210px,1fr)); gap:4px 40px; flex:1; }
+  .footer-stores div { font-size:12.5px; line-height:1.95; color:#9aa2bd; }
+  .footer-stores b { color:#c3cae0; font-weight:600; }
+  .footer-social { display:flex; gap:10px; }
+  .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
+  .footer-social a:hover { background:var(--gold); color:#0a0f24; }
+  .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
+  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
+</style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="topbar">
+    <a class="brand" href="index.html"><img src="img/main/logo.webp" alt="상상의문 ESCAPE ROOM" /></a>
+    <nav>
+      <a href="story.html">상상의 문</a>
+      <a href="themes.html">테마</a>
+      <a href="reserve.html">예약</a>
+      <a href="location.html">매장안내</a>
+      <a href="notice.html">공지</a>
+    </nav>
+    <a class="qbtn" href="reserve.html">예약 하기 <span>→</span></a>
+  </header>
+
+  <section class="page">
+    <div class="wrap">
+
+      <div class="sub-head">
+        <h1 class="en">MY BOOKING</h1>
+        <p class="kr">예약 내역을 확인하세요</p>
+        <p class="desc">예약자명과 연락처로 조회할 수 있습니다.<br>예약 변경·취소도 이곳에서 진행해 주세요.</p>
+      </div>
+
+      <div class="body-narrow">
+        <div class="lookup">
+          <div class="field-row">
+            <div class="field">
+              <label>예약자명</label>
+              <input type="text" id="qName" placeholder="예약 시 입력한 이름" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label>연락처</label>
+              <input type="tel" id="qPhone" placeholder="010-0000-0000" autocomplete="tel" inputmode="numeric" />
+            </div>
+          </div>
+          <button class="submit" id="lookupBtn">예약 조회 <span>→</span></button>
+          <p class="hint">* 데모 환경에서는 이 브라우저에서 진행한 예약만 조회됩니다. 실제 운영 시 <b>예약번호 또는 이름+연락처</b>로 조회됩니다.</p>
+          <div class="msg" id="msg"></div>
+        </div>
+
+        <div class="results" id="results"></div>
+        <div class="empty" id="empty" style="display:none">
+          <div class="ic">🗝</div>
+          <p>조회된 예약이 없습니다.<br><a href="reserve.html">예약하러 가기 →</a></p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-hours">
+        <span class="clock">&#128337;</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="notice.html">공지사항</a>
+        <a href="check.html">예약확인</a>
+        <a href="partnership.html">제휴문의</a>
+        <a href="privacy.html">개인정보취급방침</a>
+      </nav>
+    </div>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <img src="img/main/logo.webp" alt="상상의 문" />
+        <p>상상 그 이상의 공간</p>
+      </div>
+      <div class="footer-stores">
+        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
+        <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
+        <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
+        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="인스타그램">IG</a>
+        <a href="#" aria-label="네이버 블로그">N</a>
+        <a href="#" aria-label="카카오톡">K</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>COPYRIGHT ⓒ 2022 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>이메일 imaginarydoor@yologuys.com</span>
+    </div>
+  </footer>
+
+  <script>
+    const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const won = n => (n||0).toLocaleString("ko-KR");
+    const results = document.getElementById("results");
+    const empty = document.getElementById("empty");
+    const msg = document.getElementById("msg");
+
+    function load(){ try{ return JSON.parse(localStorage.getItem("sd_reservations")||"[]"); }catch(e){ return []; } }
+    function save(arr){ try{ localStorage.setItem("sd_reservations", JSON.stringify(arr)); }catch(e){} }
+
+    function dow(dstr){
+      const m=(dstr||"").match(/(\d{4})\.(\d{1,2})\.(\d{1,2})/);
+      if(!m) return "";
+      return "("+["일","월","화","수","목","금","토"][new Date(+m[1],+m[2]-1,+m[3]).getDay()]+")";
+    }
+
+    function render(list){
+      results.innerHTML="";
+      if(!list.length){ empty.style.display="block"; return; }
+      empty.style.display="none";
+      list.forEach(r=>{
+        const card=document.createElement("div");
+        card.className="rcard"+(r.cancelled?" cancelled":"");
+        card.innerHTML=`
+          <div class="rc-top">
+            <div class="rc-num">예약번호<b>${esc(r.num||"—")}</b></div>
+            <div class="rc-state">${r.cancelled?"취소됨":"예약 확정"}</div>
+          </div>
+          <div class="rc-body">
+            <div class="cell"><div class="k">지점</div><div class="v">${esc(r.branch||"—")}</div></div>
+            <div class="cell"><div class="k">테마</div><div class="v">${esc(r.theme||"—")}</div></div>
+            <div class="cell"><div class="k">예약일</div><div class="v">${esc(r.date||"—")} ${dow(r.date)}</div></div>
+            <div class="cell"><div class="k">시간</div><div class="v">${esc(r.time||"—")}</div></div>
+            <div class="cell"><div class="k">인원</div><div class="v">${r.count||"—"}명</div></div>
+            <div class="cell"><div class="k">예약자</div><div class="v">${esc(r.name||"—")}</div></div>
+            <div class="cell"><div class="k">결제수단</div><div class="v">${esc(r.pay||"—")}</div></div>
+            <div class="cell"><div class="k">결제금액</div><div class="v">${won(r.total)}원</div></div>
+          </div>
+          ${r.cancelled?"":`<div class="rc-foot">
+            <button class="ghost" data-act="copy" data-num="${esc(r.num)}">예약번호 복사</button>
+            <button class="danger" data-act="cancel" data-num="${esc(r.num)}">예약 취소</button>
+          </div>`}`;
+        results.appendChild(card);
+      });
+      results.querySelectorAll("button[data-act]").forEach(b=>b.addEventListener("click",()=>{
+        const num=b.dataset.num;
+        if(b.dataset.act==="copy"){
+          navigator.clipboard?.writeText(num); b.textContent="복사됨 ✓"; setTimeout(()=>b.textContent="예약번호 복사",1500);
+        } else if(b.dataset.act==="cancel"){
+          const all=load(); const i=all.findIndex(x=>x.num===num); if(i>=0){ all[i].cancelled=true; save(all); doLookup(true); }
+        }
+      }));
+    }
+
+    let lastQuery=null;
+    function doLookup(keep){
+      const name=document.getElementById("qName").value.trim();
+      const phone=document.getElementById("qPhone").value.replace(/\D/g,"");
+      msg.className="msg";
+      if(!keep){
+        if(!name && !phone){ msg.className="msg err"; msg.textContent="예약자명 또는 연락처를 입력해주세요."; return; }
+        lastQuery={name,phone};
+      }
+      const q=lastQuery||{name:"",phone:""};
+      let list=load();
+      list=list.filter(r=>{
+        const okName = !q.name || (r.name||"").includes(q.name);
+        const okPhone= !q.phone || (r.phone||"").replace(/\D/g,"").includes(q.phone);
+        return okName && okPhone;
+      });
+      render(list);
+      if(!list.length && !keep){ /* empty 상태가 표시됨 */ }
+    }
+    document.getElementById("lookupBtn").addEventListener("click",()=>doLookup(false));
+    document.querySelectorAll("#qName,#qPhone").forEach(el=>el.addEventListener("keydown",e=>{ if(e.key==="Enter") doLookup(false); }));
+    document.getElementById("qPhone").addEventListener("input",e=>{
+      let v=e.target.value.replace(/\D/g,"").slice(0,11);
+      if(v.length<4) e.target.value=v;
+      else if(v.length<8) e.target.value=v.slice(0,3)+"-"+v.slice(3);
+      else e.target.value=v.slice(0,3)+"-"+v.slice(3,7)+"-"+v.slice(7);
+    });
+
+    // 진입 시: 저장된 예약이 있으면 전체를 미리 보여줌(데모 편의)
+    (function init(){
+      const all=load();
+      if(all.length){ render(all); } else { empty.style.display="block"; }
+    })();
+  </script>
+
+</body>
+</html>

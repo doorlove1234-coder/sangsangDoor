@@ -93,23 +93,11 @@
 
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px); }
 
-  /* THEMES 타이틀 (좌측, 문 아트 옆) */
-  .themes-head { padding: clamp(60px, 9vw, 120px) 0 clamp(40px, 6vw, 80px); max-width: 620px; }
-  .themes-head .en {
-    font-family: "Cormorant Garamond", "Times New Roman", serif;
-    font-size: clamp(46px, 6vw, 76px);
-    font-weight: 600; letter-spacing: .14em; line-height: 1;
-    color: var(--gold);
-  }
-  .themes-head .kr {
-    margin-top: clamp(22px, 3vw, 34px);
-    font-size: clamp(20px, 2.4vw, 30px); font-weight: 700; color: #f4eede;
-    letter-spacing: .02em;
-  }
-  .themes-head .desc {
-    margin-top: 16px;
-    font-size: clamp(14px, 1.5vw, 17px); line-height: 1.85; color: var(--muted);
-  }
+  /* THEMES 타이틀 (서브페이지 공통 헤더 규격) */
+  .themes-head { padding:clamp(56px,8vw,110px) 0 clamp(40px,6vw,76px); max-width:620px; }
+  .themes-head .en { font-family:"Cormorant Garamond","Times New Roman",serif; font-size:clamp(44px,6vw,74px); font-weight:600; letter-spacing:.135em; line-height:1; color:var(--gold); }
+  .themes-head .kr { margin-top:clamp(20px,3vw,32px); font-size:clamp(20px,2.4vw,29px); font-weight:700; color:#f4eede; letter-spacing:.02em; }
+  .themes-head .desc { margin-top:14px; font-size:clamp(14px,1.5vw,16px); line-height:1.85; color:var(--muted); }
 
   /* 지점 탭 */
   .branch-tabs {
@@ -256,7 +244,7 @@
       <a href="location.html">매장안내</a>
       <a href="notice.html">공지</a>
     </nav>
-    <a class="qbtn" href="#">예약 확인 <span>→</span></a>
+    <a class="qbtn" href="check.html">예약 확인 <span>→</span></a>
   </header>
 
   <!-- ── 테마 본문 ── -->
@@ -298,9 +286,9 @@
       </div>
       <nav class="footer-nav">
         <a href="notice.html">공지사항</a>
-        <a href="#">예약확인</a>
-        <a href="#">제휴문의</a>
-        <a href="#">개인정보취급방침</a>
+        <a href="check.html">예약확인</a>
+        <a href="partnership.html">제휴문의</a>
+        <a href="privacy.html">개인정보취급방침</a>
       </nav>
     </div>
     <div class="footer-main">
