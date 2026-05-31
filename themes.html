@@ -165,10 +165,43 @@
   .tframe img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
   .tcard:hover .tframe img { transform: scale(1.05); }
   .tframe .genre {
-    position: absolute; top: 12px; left: 12px;
+    position: absolute; top: 12px; left: 12px; z-index: 2;
     background: rgba(5,7,15,.82); color: var(--gold);
     font-size: 12px; letter-spacing: .03em; padding: 4px 12px; border-radius: 20px;
+    transition: opacity .25s ease;
   }
+  .tcard:hover .tframe .genre { opacity: 0; }
+
+  /* 후버 상세정보 오버레이 (검정 반투명) */
+  .tinfo {
+    position: absolute; inset: 0; z-index: 3;
+    background: linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.82) 100%);
+    display: flex; flex-direction: column;
+    padding: clamp(18px, 2vw, 24px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .tcard:hover .tinfo { opacity: 1; pointer-events: auto; }
+  .tinfo .ti-genre { font-size: 12px; letter-spacing: .04em; color: var(--gold-d); margin-bottom: 8px; }
+  .tinfo .ti-name { font-size: clamp(17px, 1.7vw, 20px); font-weight: 700; color: var(--gold); margin-bottom: 12px; }
+  .tinfo .ti-desc {
+    font-size: 13px; line-height: 1.7; color: #e3dccd; flex: 1; overflow: hidden;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 8;
+  }
+  .tinfo .ti-meta {
+    margin: 14px 0; font-size: 13px; color: #cdd3e4;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .tinfo .ti-meta .ti-stars { color: var(--gold-d); letter-spacing: 2px; }
+  .tinfo .ti-meta .dot { opacity: .5; margin: 0 6px; }
+  .tinfo .ti-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 14px; border: 1px solid rgba(200,168,99,.6); border-radius: 6px;
+    background: rgba(200,168,99,.08);
+    color: var(--gold); text-decoration: none; font-weight: 700; font-size: 14px;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .tinfo .ti-btn:hover { background: var(--gold); color: #0a0e1c; border-color: var(--gold); }
 
   .tcap { padding: 16px 4px 0; text-align: center; }
   .tcap .name { font-size: clamp(16px, 1.7vw, 20px); font-weight: 700; color: #f4eede; }
@@ -182,6 +215,8 @@
   @media (max-width: 520px) {
     .grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
     .branch-tabs { gap: 16px; }
+    /* 터치 기기: 후버가 없으므로 상세정보를 항상 보이게 */
+    .tinfo { opacity: 1; pointer-events: auto; position: static; background: rgba(0,0,0,.4); }
   }
 
   /* ══════════════ FOOTER (메인/STORY와 동일) ══════════════ */
@@ -294,71 +329,84 @@
 
   <!-- ── JS ── -->
   <script>
-    // 지점별 테마 (themes-detail.md 기준) · poster = img/main/poster/{n}_a.jpg
+    // 지점별 테마 (themes-detail.md 기준) · poster = img/main/poster/{n}_a.jpg · desc = 사이트 소개문
     const P = "img/main/poster/";
     const themeData = {
       "대학로점": [
-        { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.jpg" },
-        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.jpg" },
-        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.jpg" },
+        { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.jpg", desc: "어두운 밤 속으로 발걸음을 내딛었다. 그리고 한없이 걸었다. 그 끝에서 한 목소리를 들었다." },
+        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.jpg", desc: "그들은 이미 알고 있었다. ※ 고소공포증 주의 · 초등학생 이용 불가" },
+        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.jpg", desc: "이 사건의 주인공은 나야 — EP.1 경찰이야기 / EP.2 도둑이야기. 같은 공간 두 개의 시점." },
       ],
       "분당서현점": [
-        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.jpg" },
-        { name: "HERE I AM", genre: "생존/탐험", diff: 3, players: "2~6인", time: "70분", img: P+"6_a.jpg" },
-        { name: "몽염 : 도망칠 수 없는 꿈", genre: "공포", diff: 4, players: "2~4인", time: "80분", img: P+"9_a.jpg" },
-        { name: "역만", genre: "미스터리", diff: 4, players: "2~6인", time: "90분", img: P+"11_a.jpg" },
-        { name: "셔플월드", genre: "게임/판타지", diff: 3, players: "2~6인", time: "70분", img: P+"8_a.jpg" },
-        { name: "전당포 조필두", genre: "스릴러", diff: 2, players: "2~6인", time: "60분", img: P+"5_a.jpg" },
+        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.jpg", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
+        { name: "HERE I AM", genre: "생존/탐험", diff: 3, players: "2~6인", time: "70분", img: P+"6_a.jpg", desc: "으으... 나 살아있는건가? 목말라... 낯선 곳에서 눈을 뜬 당신, 살아남아 이곳을 빠져나가라." },
+        { name: "몽염 : 도망칠 수 없는 꿈", genre: "공포", diff: 4, players: "2~4인", time: "80분", img: P+"9_a.jpg", desc: "나는 매일 꿈을 꾸었다. 온통 어두운 곳에서 그녀가 날 바라보는 꿈. 우리 사이엔 아무런 행동조차 오가지 않았다. 그저 바라만 보고 있었다." },
+        { name: "역만", genre: "미스터리", diff: 4, players: "2~6인", time: "90분", img: P+"11_a.jpg", desc: "이곳에는 어떤 이야기도 없습니다." },
+        { name: "셔플월드", genre: "게임/판타지", diff: 3, players: "2~6인", time: "70분", img: P+"8_a.jpg", desc: "평화로운 픽셀월드에 나타난 포탈들! 용사님! 픽셀월드가 삼켜지고 있어! 일어나봐 용사님!" },
+        { name: "전당포 조필두", genre: "스릴러", diff: 2, players: "2~6인", time: "60분", img: P+"5_a.jpg", desc: "지루한 매일의 연속.. 조필두는 한숨을 쉬며 자신의 가게인 전당포로 향한다. ※ 입문자용" },
       ],
       "광주점": [
-        { name: "영결식", genre: "공포", diff: 3, players: "2~6인", time: "60분", img: P+"14_a.jpg" },
-        { name: "시크릿 왕국의 스캔들", genre: "추리/잔혹동화", diff: 4, players: "2~5인", time: "80분", img: P+"15_a.jpg" },
-        { name: "호러맨스", genre: "로맨스/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"16_a.jpg" },
-        { name: "서울만가면된다", genre: "일상/코미디", diff: 4, players: "2~5인", time: "69분", img: P+"21_a.jpg" },
-        { name: "TITAN : 전쟁의경계", genre: "SF", diff: 4, players: "2~4인", time: "70분", img: P+"24_a.jpg" },
-        { name: "그럼에도 불구하고,", genre: "드라마", diff: 2, players: "2~5인", time: "70분", img: P+"22_a.jpg" },
+        { name: "영결식", genre: "공포", diff: 3, players: "2~6인", time: "60분", img: P+"14_a.jpg", desc: "現在去接你 — 지금 데리러 갑니다." },
+        { name: "시크릿 왕국의 스캔들", genre: "추리/잔혹동화", diff: 4, players: "2~5인", time: "80분", img: P+"15_a.jpg", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 소개하는 연회를 개최합니다. 부디 참석하여 기쁜 날을 함께 맞이해 주시오." },
+        { name: "호러맨스", genre: "로맨스/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"16_a.jpg", desc: "와 오늘은 데이트하는 날! 즐겁게 놀아야지! 그런데.. 자기야 뭐라고? ^^" },
+        { name: "서울만가면된다", genre: "일상/코미디", diff: 4, players: "2~5인", time: "69분", img: P+"21_a.jpg", desc: "민서: 팀장님 근데.. 저희 지금 여기 무슨 컨셉으로 만드는 중인거예요? / 석현: 음...." },
+        { name: "TITAN : 전쟁의경계", genre: "SF", diff: 4, players: "2~4인", time: "70분", img: P+"24_a.jpg", desc: "이곳에서 나는 자부심이 가득한 군인으로 일하고 있다. 그리고 오늘 나는 이 행성의 이름이 타이탄인 게 맞는지 의심이 가기 시작했다." },
+        { name: "그럼에도 불구하고,", genre: "드라마", diff: 2, players: "2~5인", time: "70분", img: P+"22_a.jpg", desc: "유감스럽게도, 당신은 결국 성공하지 못할 거예요." },
       ],
       "부평점": [
-        { name: "쇼쿠진", genre: "공포", diff: 4, players: "2~6인", time: "70분", img: P+"34_a.jpg" },
-        { name: "420번지", genre: "스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"33_a.jpg" },
-        { name: "흑신소", genre: "판타지/코미디", diff: 3, players: "2~6인", time: "70분", img: P+"35_a.jpg" },
-        { name: "행복목욕탕", genre: "드라마/판타지", diff: 4, players: "2~6인", time: "80분", img: P+"36_a.jpg" },
+        { name: "쇼쿠진", genre: "공포", diff: 4, players: "2~6인", time: "70분", img: P+"34_a.jpg", desc: "쇼쿠진님은 언제나 여러분들을 기다리고 있습니다." },
+        { name: "420번지", genre: "스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"33_a.jpg", desc: "눈을 떠보니 어둡고 기이한 방. 여긴 어디지? 난... 여기서 대체 무엇을 하고 있었지...?" },
+        { name: "흑신소", genre: "판타지/코미디", diff: 3, players: "2~6인", time: "70분", img: P+"35_a.jpg", desc: "돈도 여친도 직업도 없는 고시생 노령진. 극단적 선택을 하려던 그는 '흑역사 없애드립니다'라는 명함을 발견하고 전화를 거는데…" },
+        { name: "행복목욕탕", genre: "드라마/판타지", diff: 4, players: "2~6인", time: "80분", img: P+"36_a.jpg", desc: "행복목욕탕 절찬 운영 중 ♨" },
       ],
       "수원점": [
-        { name: "직박구리 : 남친탐구생활", genre: "코믹", diff: 3, players: "2~6인", time: "70분", img: P+"27_a.jpg" },
-        { name: "복도끝", genre: "공포", diff: 4, players: "2~6인", time: "75분", img: P+"26_a.jpg" },
-        { name: "혼숨", genre: "미스터리/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"28_a.jpg" },
-        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.jpg" },
-        { name: "영안실", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"30_a.jpg" },
-        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.jpg" },
+        { name: "직박구리 : 남친탐구생활", genre: "코믹", diff: 3, players: "2~6인", time: "70분", img: P+"27_a.jpg", desc: "회사 일 때문에 잠시 외출한 남자친구. 과연 남자친구의 컴퓨터에도 '그것'이 있을까? 어라..? 잠깐만, 이게 뭐야..!" },
+        { name: "복도끝", genre: "공포", diff: 4, players: "2~6인", time: "75분", img: P+"26_a.jpg", desc: "상문빌라의 입주민 회장인 당신은 평소처럼 집 303호로 올라가는 엘리베이터를 탄다. 그런데 뒤에서 들려오는 비명소리.." },
+        { name: "혼숨", genre: "미스터리/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"28_a.jpg", desc: "'괴담 모음집' 동아리에 새로 가입한 우리들은, 폐가로 유명한 옥석 산장으로 신입 환영회를 가게 되었다." },
+        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.jpg", desc: "오늘도 평화로운 DKDK COMPANY. 실적 문제로 혼난 쿵부장이 심대리·장사원에게 던진 '프로젝트 HEART'! 성공시켜 실적을 올릴 수 있을까?" },
+        { name: "영안실", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"30_a.jpg", desc: "안녕하십니까, 고객님의 마지막 여정을 함께하는 인계병원 영안실입니다. 편안한 밤 되시길 바랍니다." },
+        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.jpg", desc: "줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. 무대에서 뵙겠습니다." },
       ],
       "수원2호점": [
-        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.jpg" },
-        { name: "OKCUT", genre: "코메디", diff: 4, players: "2~6인", time: "90분", img: P+"42_a.jpg" },
-        { name: "성지기숙학원 : 특수교정반", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"37_a.jpg" },
-        { name: "춘화각 : 피할 수 없는 저주", genre: "공포", diff: 3, players: "2~6인", time: "80분", img: P+"40_a.jpg" },
-        { name: "낙화 : 떨어지는 꽃", genre: "스릴러", diff: 2, players: "2~6인", time: "80분", img: P+"38_a.jpg" },
-        { name: "HINDSIGHT", genre: "잠입/드라마", diff: 3, players: "2~4인", time: "80분", img: P+"41_a.jpg" },
+        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.jpg", desc: "세상에서 제일 한가한 마을 RCADE VILLAGE에 '우수마을 평가원이 한 시간 뒤 도착'이라는 소식이! 1시간 안에 정신 차릴 수 있을까?" },
+        { name: "OKCUT", genre: "코메디", diff: 4, players: "2~6인", time: "90분", img: P+"42_a.jpg", desc: "[Synopsis #3] 어느 한 저택을 수사하려는 주인공. (문이 닫히고 눈을 뜨며 시계를 본다) '주어진 시간이 얼마 없군.'" },
+        { name: "성지기숙학원 : 특수교정반", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"37_a.jpg", desc: "같은 기척, 같은 냄새, 같은 어둠. 나는 또다시 이 기숙학원에서 깨어났다." },
+        { name: "춘화각 : 피할 수 없는 저주", genre: "공포", diff: 3, players: "2~6인", time: "80분", img: P+"40_a.jpg", desc: "자네도 장원 급제를 위해서 이 춘화각을 찾았는가? 이쪽 끝방으로 들어가시게. ※ 직원 NPC와 함께 진행" },
+        { name: "낙화 : 떨어지는 꽃", genre: "스릴러", diff: 2, players: "2~6인", time: "80분", img: P+"38_a.jpg", desc: "수천 개의 플래시가 날 향하던 그 밤, 나는 꼭대기에 있었다. 누구보다 찬란했던 그 순간부터— 어쩌면 끝은 이미 정해져 있었는지도 모른다." },
+        { name: "HINDSIGHT", genre: "잠입/드라마", diff: 3, players: "2~4인", time: "80분", img: P+"41_a.jpg", desc: "여보세요, 도희 맞지? 거의 2년 만이네. 그날 뒤로 해킹에서 손 뗀 건 알지만... 우리 오랜만에 일 하나만 같이 할까?" },
       ],
     };
 
     const stars = d => "★".repeat(d) + "☆".repeat(5 - d);
+    const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
     function render(branch) {
       const grid = document.getElementById("grid");
-      grid.innerHTML = themeData[branch].map(t => `
+      grid.innerHTML = themeData[branch].map(t => {
+        const q = `reserve.html?branch=${encodeURIComponent(branch)}&theme=${encodeURIComponent(t.name)}`;
+        return `
         <article class="tcard">
           <div class="tframe">
-            <img src="${t.img}" alt="${t.name}" loading="lazy" />
-            <span class="genre">${t.genre}</span>
+            <img src="${t.img}" alt="${esc(t.name)}" loading="lazy" />
+            <span class="genre">${esc(t.genre)}</span>
+            <div class="tinfo">
+              <p class="ti-genre">${esc(t.genre)}</p>
+              <h3 class="ti-name">${esc(t.name)}</h3>
+              <p class="ti-desc">${esc(t.desc)}</p>
+              <div class="ti-meta">
+                <span class="ti-stars">난이도 ${stars(t.diff)}</span>
+                <span>${t.players}<span class="dot">·</span>${t.time}</span>
+              </div>
+              <a class="ti-btn" href="${q}">예약 바로가기 <span>→</span></a>
+            </div>
           </div>
           <div class="tcap">
-            <p class="name">${t.name}</p>
+            <p class="name">${esc(t.name)}</p>
             <p class="stars">${stars(t.diff)}</p>
             <p class="meta"><span>${t.players}</span><span class="dot">·</span><span>${t.time}</span></p>
           </div>
-        </article>
-      `).join("");
+        </article>`;
+      }).join("");
     }
 
     document.querySelectorAll("#branchTabs button").forEach(btn => {

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>상상의 문 — 예약</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --navy:#0a0e1c; --gold:#f2d7ac; --gold-d:#c8a863; --cream:#ece4d6; --muted:#9aa2bd; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--navy); color:var(--cream); font-family:'Paperozi',"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; overflow-x:hidden; }
+  img { display:block; }
+
+  /* 헤더 (themes/story와 동일) */
+  .topbar { position:sticky; top:0; z-index:100; height:78px; background:linear-gradient(180deg,#0c1124 0%,#080b18 100%); border-bottom:1px solid rgba(200,168,99,.18); display:flex; align-items:center; padding:0 clamp(20px,4vw,56px); }
+  .topbar .brand { display:flex; align-items:center; flex:none; }
+  .topbar .brand img { height:40px; width:auto; }
+  .topbar nav { flex:1; display:flex; align-items:center; justify-content:center; gap:38px; }
+  .topbar nav a { color:#d9d2c4; text-decoration:none; font-size:16px; font-weight:600; letter-spacing:1.5px; white-space:nowrap; transition:color .2s ease; }
+  .topbar nav a:hover, .topbar nav a.active { color:var(--gold); }
+  .topbar .qbtn { flex:none; display:inline-flex; align-items:center; gap:10px; height:44px; padding:0 22px; border:1px solid rgba(200,168,99,.55); border-radius:6px; color:var(--gold); text-decoration:none; font-size:15px; font-weight:600; letter-spacing:1px; transition:background .2s ease,border-color .2s ease; }
+  .topbar .qbtn:hover { background:rgba(200,168,99,.12); border-color:var(--gold); }
+  .topbar .qbtn span { font-size:18px; }
+  @media (max-width:860px){ .topbar{ height:64px; padding:0 16px; } .topbar nav{ gap:18px; } .topbar nav a{ font-size:14px; letter-spacing:.05em; } .topbar .qbtn{ display:none; } }
+
+  /* 본문 */
+  .reserve { min-height:calc(100vh - 78px - 120px); display:flex; align-items:center; justify-content:center; padding:80px 20px; text-align:center; }
+  .reserve-card { max-width:560px; width:100%; }
+  .reserve .en { font-family:"Cormorant Garamond",serif; font-size:clamp(40px,6vw,64px); font-weight:600; letter-spacing:.14em; color:var(--gold); }
+  .reserve .badge { display:inline-block; margin-top:22px; padding:8px 18px; border:1px solid rgba(200,168,99,.4); border-radius:30px; color:var(--gold-d); font-size:14px; letter-spacing:.05em; }
+  .reserve h1 { margin-top:26px; font-size:clamp(20px,2.6vw,28px); font-weight:700; color:#f4eede; }
+  .reserve p { margin-top:14px; font-size:15px; line-height:1.85; color:var(--muted); }
+  .reserve .pick { margin-top:26px; padding:18px 22px; background:rgba(10,14,32,.6); border:1px solid rgba(200,168,99,.18); border-radius:8px; font-size:15px; color:#dfe3ef; }
+  .reserve .pick b { color:var(--gold); }
+  .reserve .pick .empty { color:var(--muted); }
+  .reserve .actions { margin-top:30px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .reserve .btn { display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:6px; text-decoration:none; font-weight:700; font-size:15px; transition:filter .2s ease,background .2s ease; }
+  .reserve .btn-primary { background:var(--gold); color:#0a0e1c; }
+  .reserve .btn-primary:hover { filter:brightness(1.07); }
+  .reserve .btn-ghost { border:1px solid rgba(200,168,99,.5); color:var(--gold); }
+  .reserve .btn-ghost:hover { background:rgba(200,168,99,.12); }
+
+  /* 푸터 (간략) */
+  .footer { background:#0a0f24; color:#6f7794; text-align:center; padding:26px 20px; font-size:12px; border-top:1px solid rgba(255,255,255,.08); }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="index.html"><img src="img/main/logo.png" alt="상상의문 ESCAPE ROOM" /></a>
+    <nav>
+      <a href="story.html">상상의 문</a>
+      <a href="themes.html">테마</a>
+      <a href="reserve.html" class="active">예약</a>
+      <a href="#">매장안내</a>
+      <a href="#">공지</a>
+    </nav>
+    <a class="qbtn" href="#">예약 확인 <span>→</span></a>
+  </header>
+
+  <main class="reserve">
+    <div class="reserve-card">
+      <p class="en">RESERVATION</p>
+      <span class="badge">예약 페이지 준비중</span>
+      <h1>온라인 예약 페이지를 준비하고 있습니다</h1>
+      <p>아래 선택하신 테마 정보로 곧 예약이 가능해집니다.<br>지금은 각 지점으로 전화 예약을 도와드립니다.</p>
+
+      <div class="pick" id="pick"></div>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="themes.html">테마 더 보기</a>
+        <a class="btn btn-ghost" href="index.html">홈으로</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    © 2025 상상의문 ESCAPE ROOM. All rights reserved.
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const branch = params.get("branch");
+    const theme = params.get("theme");
+    const pick = document.getElementById("pick");
+    if (branch || theme) {
+      pick.innerHTML = `선택한 예약 &nbsp;—&nbsp; <b>${branch ? branch : ""}</b>${branch && theme ? " · " : ""}<b>${theme ? theme : ""}</b>`;
+    } else {
+      pick.innerHTML = `<span class="empty">테마 페이지에서 원하는 테마의 '예약 바로가기'를 눌러 시작하세요.</span>`;
+    }
+  </script>
+
+</body>
+</html>
