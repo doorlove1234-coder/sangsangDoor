@@ -34,7 +34,27 @@
                   font-size:15px; font-weight:600; letter-spacing:1px; transition:background .2s,border-color .2s; }
   .topbar .qbtn:hover { background:rgba(200,168,99,.12); border-color:var(--gold); }
   .topbar .qbtn span { font-size:18px; }
-  @media (max-width:860px){ .topbar{ height:64px; padding:0 16px; } .topbar nav{ gap:18px; } .topbar nav a{ font-size:14px; letter-spacing:.05em; } .topbar .qbtn{ display:none; } }
+  .nav-burger{ display:none; flex-direction:column; gap:5px; align-items:center; justify-content:center; width:42px; height:42px; flex:none; background:none; border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+  .nav-burger span{ width:20px; height:2px; background:var(--gold); border-radius:2px; transition:transform .25s, opacity .2s; }
+  .nav-burger.on span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav-burger.on span:nth-child(2){ opacity:0; }
+  .nav-burger.on span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  .topbar nav a.nav-cta{ display:none; }
+  @media (max-width:760px){
+    .topbar{ height:64px; padding:0 16px; justify-content:space-between; }
+    .nav-burger{ display:flex; }
+    .topbar > nav{ position:absolute; top:100%; left:0; right:0; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:0;
+                   background:linear-gradient(180deg,#0c1124,#080b18); border-bottom:1px solid var(--line); box-shadow:0 14px 28px rgba(0,0,0,.45);
+                   max-height:0; overflow:hidden; transition:max-height .32s ease; }
+    .topbar > nav.open{ max-height:400px; }
+    .topbar nav a{ padding:15px 22px; border-top:1px solid rgba(255,255,255,.06); font-size:15px; letter-spacing:0; }
+    .topbar nav a:first-child{ border-top:0; }
+    .topbar nav a.active::before{ display:none; }
+    .topbar nav a.active{ color:var(--gold); }
+    .topbar nav a.nav-cta{ display:block; color:var(--gold); font-weight:700; background:rgba(200,168,99,.08); }
+    .topbar .qbtn{ display:none; }
+  }
+  @media (max-width:860px){ .topbar nav a{ } }
 
   /* ── 배경 (단색) ── */
   .page { position:relative; padding-bottom:clamp(60px,7vw,100px); background:var(--navy); }
@@ -116,13 +136,15 @@
   <!-- 헤더 -->
   <header class="topbar">
     <a class="brand" href="index.html"><img src="img/main/logo.webp" alt="상상의문 ESCAPE ROOM" /></a>
-    <nav>
+    <nav id="navMenu">
       <a href="story.html">상상의 문</a>
       <a href="themes.html">테마</a>
       <a href="reserve.html">예약</a>
       <a href="location.html">매장안내</a>
       <a href="notice.html">공지</a>
+      <a href="check.html" class="nav-cta">예약 확인 →</a>
     </nav>
+    <button class="nav-burger" id="navBurger" type="button" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
     <a class="qbtn" href="check.html">예약 확인 <span>→</span></a>
   </header>
 
@@ -302,5 +324,6 @@
     </div>
   </footer>
 
+<script>(function(){var b=document.getElementById("navBurger"),n=document.getElementById("navMenu");if(b&&n){b.addEventListener("click",function(){b.classList.toggle("on");n.classList.toggle("open");});}})();</script>
 </body>
 </html>

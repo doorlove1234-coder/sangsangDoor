@@ -60,6 +60,29 @@
 
   .content{ padding:26px 28px 60px; max-width:1240px; width:100%; }
   @media(max-width:560px){ .content{ padding:18px 14px 50px; } .topbar{ padding:12px 14px; } }
+  /* ── 모바일 헤더/사이드바 정리 ── */
+  @media(max-width:900px){
+    .side{ position:sticky; top:0; z-index:30; padding:10px 12px; gap:4px; overflow-x:auto; }
+    .side .brand{ padding:4px 8px 4px 4px; }
+    .side a.item{ white-space:nowrap; font-size:13px; }
+    .side a.item .ic{ font-size:14px; }
+    .topbar{ flex-wrap:wrap; gap:10px 14px; }
+    .topbar .ttl{ font-size:16px; }
+    .topbar .view-site{ display:none; }
+    .branch-switch{ margin-left:auto; }
+  }
+  @media(max-width:560px){
+    .topbar .ttl small{ display:none; }
+    .branch-switch label{ display:none; }
+    .branch-switch select{ padding:8px 32px 8px 12px; font-size:13px; }
+    .toolbar{ gap:8px; }
+    .search{ min-width:100%; max-width:100%; order:-1; }
+    .kpi .val{ font-size:23px; }
+    .ds-head{ padding:14px 16px; }
+    .ds-body{ padding:6px 14px 16px; }
+    .slots{ grid-template-columns:repeat(auto-fill,minmax(98px,1fr)); }
+    .modal-b{ max-height:70vh; }
+  }
 
   .view{ display:none; }
   .view.on{ display:block; animation:fade .25s ease; }
