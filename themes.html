@@ -194,6 +194,8 @@
     padding-right: 6px;              /* 스크롤바 공간 */
     scrollbar-width: thin;
     scrollbar-color: rgba(200,168,99,.55) transparent;
+    word-break: keep-all;            /* 한글이 어절(공백) 단위에서만 줄바꿈 */
+    overflow-wrap: break-word;       /* 너무 긴 어절은 어쩔 수 없이 끊어줌 */
   }
   .tinfo .ti-desc::-webkit-scrollbar { width: 6px; }
   .tinfo .ti-desc::-webkit-scrollbar-track { background: transparent; }
@@ -348,7 +350,7 @@
     const themeData = {
       "대학로점": [
         { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.webp", desc: "어두운 밤 속으로 발걸음을 내딛었다. <br> 그리고 한없이 걸었다. <br> 그 끝에서 한 목소리를 들었다." },
-        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.webp", desc: "그들은 이미 알고 있었다. <br><br> ※ 고소공포증이 있는 경우 플레이에 지장이 있을 수 <br> 있습니다. <br> ※ 활동성이 높은 편이니 편한 복장을 추천드립니다. <br> ※ 초등학생 손님분들은 안전 문제로 이용이 <br> 불가합니다." },
+        { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.webp", desc: "그들은 이미 알고 있었다. <br><br> ※ 고소공포증이 있는 경우 플레이에 지장이 있을 수 있습니다. <br> ※ 활동성이 높은 편이니 편한 복장을 추천드립니다. <br> ※ 초등학생 손님분들은 안전 문제로 이용이 <br> 불가합니다." },
         { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.webp", desc: "이 사건의 주인공은 나야 <br> EP.1 경찰이야기 / EP.2 도둑이야기 <br> 같은 공간, 두 개의 시점. <br><br> ※ 첫 방문시에는 경찰이야기를, 다음 방문 시에는 <br> 할인된 가격에 도둑이야기를 체험하실 수 있습니다. <br> ※ 15세 미만의 청소년의 경우 보호자의 지도가 <br> 필요합니다. (폭력성,마약류등 소재)" },
       ],
       "분당서현점": [
