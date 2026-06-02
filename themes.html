@@ -162,9 +162,22 @@
     position: relative; aspect-ratio: 3 / 4; overflow: hidden;
     border: 2px solid rgba(200,168,99,.45); border-radius: 4px;
     background: #05070f; box-shadow: 0 12px 30px rgba(0,0,0,.55);
-    transition: transform .35s ease, border-color .35s ease;
+    transition: transform .35s ease, border-color .35s ease, box-shadow .8s ease;
   }
   .tcard:hover .tframe { transform: translateY(-8px); border-color: var(--gold); }
+  /* 메인에서 뽑힌 카드 강조: 둥근 모서리 따라가는 골드 글로우 + 둥둥 부유 애니메이션 */
+  @keyframes themePickFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+  .tframe.is-picked {
+    border-color: var(--gold);
+    box-shadow:
+      0 0 0 2px rgba(242,215,172,.55),
+      0 0 42px rgba(242,215,172,.45),
+      0 18px 38px rgba(0,0,0,.5);
+    animation: themePickFloat 2.6s ease-in-out infinite;
+  }
   .tframe img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
   .tcard:hover .tframe img { transform: scale(1.05); }
   .tframe .genre {
@@ -351,10 +364,10 @@
       "대학로점": [
         { name: "나이트워크", genre: "판타지", diff: 3, players: "2~6인", time: "100분", img: P+"10_a.webp", desc: "어두운 밤 속으로 발걸음을 내딛었다. <br> 그리고 한없이 걸었다. <br> 그 끝에서 한 목소리를 들었다." },
         { name: "스포일러", genre: "미스터리", diff: 5, players: "2~6인", time: "85분", img: P+"1_a.webp", desc: "그들은 이미 알고 있었다. <br><br> ※ 고소공포증이 있는 경우 플레이에 지장이 있을 수 있습니다. <br> ※ 활동성이 높은 편이니 편한 복장을 추천드립니다. <br> ※ 초등학생 손님분들은 안전 문제로 이용이 <br> 불가합니다." },
-        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.webp", desc: "이 사건의 주인공은 나야 <br> EP.1 경찰이야기 / EP.2 도둑이야기 <br> 같은 공간, 두 개의 시점. <br><br> ※ 첫 방문시에는 경찰이야기를, 다음 방문 시에는 <br> 할인된 가격에 도둑이야기를 체험하실 수 있습니다. <br> ※ 15세 미만의 청소년의 경우 보호자의 지도가 <br> 필요합니다. (폭력성,마약류등 소재)" },
+        { name: "경찰과 도둑", genre: "추리", diff: 3, players: "2~4인", time: "60분", img: P+"4_a.webp", desc: "이 사건의 주인공은 나야 <br> EP.1 경찰이야기 / EP.2 도둑이야기 <br> 같은 공간, 두 개의 시점. <br><br> ※ 첫 방문시에는 경찰이야기를, 다음 방문 시에는 할인된 가격에 도둑이야기를 체험하실 수 있습니다. <br> ※ 15세 미만의 청소년의 경우 보호자의 지도가 필요합니다. (폭력성,마약류등 소재)" },
       ],
       "분당서현점": [
-        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.webp", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 <br> 소개하는 연회를 개최합니다. <br> 부디 참석하여 기쁜 날을 함께 맞이해 주시오. <br><br> ※ 15세 미만의 청소년의 경우 보호자의 지도를 <br> 필요로 합니다." },
+        { name: "시크릿 왕국의 스캔들 (감독판)", genre: "추리/잔혹동화", diff: 4, players: "2~6인", time: "90분", img: P+"7_a.webp", desc: "시크릿 왕국의 프린스 왕자와 새 왕자비를 <br> 소개하는 연회를 개최합니다. <br> 부디 참석하여 기쁜 날을 함께 맞이해 주시오. <br><br> ※ 15세 미만의 청소년의 경우 보호자의 지도를 필요로 합니다." },
         { name: "HERE I AM", genre: "생존/탐험", diff: 3, players: "2~6인", time: "70분", img: P+"6_a.webp", desc: "으으... 나 살아있는건가? 목말라... <br> 낯선 곳에서 눈을 뜬 당신, <br> 살아남아 이곳을 빠져나가라." },
         { name: "몽염 : 도망칠 수 없는 꿈", genre: "공포", diff: 4, players: "2~4인", time: "80분", img: P+"9_a.webp", desc: "나는 매일 꿈을 꾸었다. <br> 온통 어두운 곳에서 그녀가 날 바라보는 꿈. <br> 우리 사이엔 아무런 행동조차 오가지 않았다. <br> 그저 바라만 보고 있었다." },
         { name: "역만", genre: "?", diff: 4, players: "2~6인", time: "90분", img: P+"11_a.webp", desc: "이곳에는 어떤 이야기도 없습니다." },
@@ -379,12 +392,12 @@
         { name: "직박구리 : 남친탐구생활", genre: "코믹", diff: 3, players: "2~6인", time: "70분", img: P+"27_a.webp", desc: "회사 일 때문에 잠시 외출한 남자친구. <br> 과연 남자친구의 컴퓨터에도 '그것'이 있을까? <br> 어라..? 잠깐만, 이게 뭐야..!" },
         { name: "복도끝", genre: "공포", diff: 4, players: "2~6인", time: "75분", img: P+"26_a.webp", desc: "상문빌라의 입주민 회장인 당신은 평소처럼 <br> 집 303호로 올라가는 엘리베이터를 탄다. <br> 그런데 뒤에서 들려오는 비명소리.." },
         { name: "혼숨", genre: "미스터리/스릴러", diff: 3, players: "2~6인", time: "70분", img: P+"28_a.webp", desc: "'괴담 모음집' 동아리에 새로 가입한 우리들은, <br> 폐가로 유명한 옥석 산장으로 신입 환영회를 <br> 가게 되었다." },
-        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.webp", desc: "오늘도 평화로운 DKDK COMPANY. <br> 언제나 그렇듯 영업2팀 직원들은 출근해서 <br> 시간만 때우고 있다. 그런데 하필 오늘 영업2팀 <br> 실적문제로 쿵부장은 쾅대표에게 호되게 혼나고 <br> 화가 난 쿵부장은 심대리와 장사원에게 팀 실적을 <br> 위해 프로젝트 하나를 던져주는데 <br> 이름하여 프로젝트 HEART! <br><br> 과연 심대리와 장사원은 무사히 프로젝트를 <br> 성공시키고 영업2팀 실적을 올릴 수 있을까?" },
+        { name: "DKDK컴퍼니", genre: "판타지/코미디", diff: 4, players: "2~6인", time: "80분", img: P+"29_a.webp", desc: "오늘도 평화로운 DKDK COMPANY. <br> 언제나 그렇듯 영업2팀 직원들은 출근해서 <br> 시간만 때우고 있다. <br> 그런데 하필 오늘 영업2팀 실적문제로 쿵부장은 쾅대표에게 호되게 혼나고 화가 난 쿵부장은 심대리와 장사원에게 팀 실적을 위해 프로젝트 하나를 던져주는데 <br> 이름하여 프로젝트 HEART! <br><br> 과연 심대리와 장사원은 무사히 프로젝트를 <br> 성공시키고 영업2팀 실적을 올릴 수 있을까?" },
         { name: "영안실", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"30_a.webp", desc: "안녕하십니까, <br> 고객님의 마지막 여정을 함께하는 <br> 인계병원 영안실입니다. <br> 편안한 밤 되시길 바랍니다." },
-        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.webp", desc: "줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. 무대에서 뵙겠습니다." },
+        { name: "퍼펫쇼", genre: "미스터리", diff: 3, players: "2~6인", time: "70분", img: P+"31_a.webp", desc: "줄 없는 꼭두각시극에 도전할 새 단원을 모집합니다. <br> 무대에서 뵙겠습니다." },
       ],
       "수원2호점": [
-        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.webp", desc: "[배낚시 가면 사다리]에 자리한 세상에서 제일 <br> 한가한 마을, RCADE VILLAGE. <br> 물고기도 심심해서 잡히는 이 평화로운 마을에, <br> 어느 날 청천벽력 같은 소식이 떨어진다! <br><br>  마을 이장 A에게 전해진 충격의 소식: '우수마을 평가원이... 한! 시! 간! 뒤에 도착한답니다~!' <br><br> 예? 갑자기요? <br> 이대로 가다간 [배낚시청 우수마을 운동]에서 <br> 탈락 → 내년 예산 ZERO → 마을 파산 콤보! <br><br> 그 소식을 들은 A는 뒷목 잡고 쓰러질 뻔하다가, 벌떡 일어나 외친다. <br> '모두 비상사태야! 당장 꽃심고, 쓰레기 줍고, NPC 대사 리허설 들어가!!!' <br><br> 하지만... <br> 이 마을 주민들, 과연 1시간 안에 <br> 정신 차릴 수 있을까?" },
+        { name: "알케이드 빌리지", genre: "아케이드", diff: 4, players: "2~6인", time: "80분", img: P+"39_a.webp", desc: "[배낚시 가면 사다리]에 자리한 세상에서 제일 <br> 한가한 마을, RCADE VILLAGE. <br> 물고기도 심심해서 잡히는 이 평화로운 마을에, 어느 날 청천벽력 같은 소식이 떨어진다! <br><br>  마을 이장 A에게 전해진 충격의 소식: '우수마을 평가원이... 한! 시! 간! 뒤에 도착한답니다~!' <br><br> 예? 갑자기요? <br> 이대로 가다간 [배낚시청 우수마을 운동]에서 <br> 탈락 → 내년 예산 ZERO → 마을 파산 콤보! <br><br> 그 소식을 들은 A는 뒷목 잡고 쓰러질 뻔하다가, 벌떡 일어나 외친다. <br> '모두 비상사태야! 당장 꽃심고, 쓰레기 줍고, NPC 대사 리허설 들어가!!!' <br><br> 하지만... <br> 이 마을 주민들, 과연 1시간 안에 <br> 정신 차릴 수 있을까?" },
         { name: "OKCUT", genre: "코메디", diff: 4, players: "2~6인", time: "90분", img: P+"42_a.webp", desc: "[Synopsis #3] <br> 어느 한 저택을 수사하려는 주인공. <br> 주인공: (문이 닫히고 눈을 뜨며 시계를 본다) <br> '주어진 시간이 얼마 없군.'" },
         { name: "성지기숙학원 : 특수교정반", genre: "공포", diff: 4, players: "2~6인", time: "80분", img: P+"37_a.webp", desc: "같은 기척, 같은 냄새, 같은 어둠. <br> 나는 또다시 이 기숙학원에서 깨어났다." },
         { name: "춘화각 : 피할 수 없는 저주", genre: "공포", diff: 3, players: "2~6인", time: "80분", img: P+"40_a.webp", desc: "자네도 장원 급제를 위해서 이 춘화각을 찾았는가? <br> 이쪽 끝방으로 들어가시게. <br><br> ※ 해당 테마는 직원 NPC와 함께하는 테마입니다." },
@@ -392,6 +405,9 @@
         { name: "HINDSIGHT", genre: "잠입/드라마", diff: 3, players: "2~4인", time: "80분", img: P+"41_a.webp", desc: "여보세요, 도희 맞지? 거의 2년 만이네. <br><br> 그날 뒤로 해킹에서 손 뗀 건 알지만... <br> 우리 오랜만에 일 하나만 같이 할까?" },
       ],
     };
+
+    // 다른 페이지(reserve.html 등)에서 동일한 desc 를 쓸 수 있도록 themeData 통째로 공유
+    try { localStorage.setItem("themesData", JSON.stringify(themeData)); } catch (e) {}
 
     const stars = d => "★".repeat(d) + "☆".repeat(5 - d);
     const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -423,6 +439,18 @@
           </div>
         </article>`;
       }).join("");
+      // "예약 바로가기" 클릭 시 그 테마의 본문(desc)을 reserve.html이 읽을 수 있도록 sessionStorage 에 저장
+      grid.querySelectorAll(".ti-btn").forEach(function (btn, i) {
+        btn.addEventListener("click", function () {
+          var t = themeData[branch][i];
+          var descHtml = Array.isArray(t.desc)
+            ? t.desc.map(function (l) { return l === "" ? "<br>" : l; }).join("<br> ")
+            : t.desc;
+          sessionStorage.setItem("pickedTheme", JSON.stringify({
+            branch: branch, name: t.name, desc: descHtml
+          }));
+        });
+      });
     }
 
     document.querySelectorAll("#branchTabs button").forEach(btn => {
@@ -450,10 +478,11 @@
               var nameEl = cards[i].querySelector('.ti-name') || cards[i].querySelector('.name');
               if (nameEl && nameEl.textContent.trim() === qTheme) {
                 cards[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                cards[i].style.outline = '2px solid #f2d7ac';
-                cards[i].style.boxShadow = '0 0 32px rgba(242,215,172,.5)';
-                cards[i].style.transition = 'outline .25s ease, box-shadow .25s ease';
-                (function (c) { setTimeout(function () { c.style.outline = ''; c.style.boxShadow = ''; }, 2800); })(cards[i]);
+                var frame = cards[i].querySelector('.tframe');
+                if (frame) {
+                  frame.classList.add('is-picked');
+                  (function(f){ setTimeout(function(){ f.classList.remove('is-picked'); }, 10000); })(frame);
+                }
                 break;
               }
             }

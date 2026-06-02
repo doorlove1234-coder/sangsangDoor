@@ -371,6 +371,22 @@
     const fearTxt = f => f <= 1 ? "거의 없음" : f === 2 ? "낮음" : f === 3 ? "보통" : f === 4 ? "높음" : "매우 높음";
     const actTxt  = a => a <= 1 ? "낮음" : a === 2 ? "보통" : a === 3 ? "다소 높음" : a === 4 ? "높음" : "매우 높음";
     const stars = d => "★".repeat(d) + "☆".repeat(5 - d);
+
+    // themes.html 카드용 <br> 줄바꿈을 reserve.html 넓은 본문에 맞게 정리:
+    //   - 단일 <br>  → 공백 (CSS 가 폭에 맞춰 자연 줄바꿈하게)
+    //   - <br><br>+ → <br><br> 유지 (단락 구분)
+    function formatDescForReserve(s) {
+      if (!s || typeof s !== 'string') return s;
+      var PARA = '@@PARA@@';
+      return s
+        .replace(/<br\s*\/?>/gi, '<BR>')
+        .replace(/<BR>(?:\s*<BR>)+/g, PARA)
+        .replace(/<BR>/g, ' ')
+        .replace(new RegExp(PARA, 'g'), '<br><br>')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/([^>\s])\s*※/g, '$1<br>※')   // 각 ※ 안내문을 새 줄로 (앞이 <br>/문장시작이면 그대로)
+        .trim();
+    }
     const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
     // 지점 정보 + 테마(themes-detail.md) + 시작시간(imaginary_door_reservation_schedule.md)
@@ -419,6 +435,24 @@
         { n:"HINDSIGHT", g:"잠입/드라마", d:3, p:"2~4명", t:"80분", f:1, a:3, img:P+"41_a.webp", desc:"여보세요, 도희 맞지? 거의 2년 만이네. 그날 뒤로 해킹에서 손 뗀 건 알지만... 우리 오랜만에 일 하나만 같이 할까?", slots:["10:10","11:40","13:10","14:40","16:10","17:40","19:10","20:40","22:10"] },
       ]},
     };
+
+    // themes.html 이 공유한 themeData(localStorage) 가 있으면, 그 desc 로 BR 의 desc 를 일괄 덮어쓰기 → 양쪽 본문 동기화
+    try {
+      const shared = JSON.parse(localStorage.getItem("themesData") || "null");
+      if (shared) {
+        Object.keys(BR).forEach(function(branch){
+          if (!shared[branch]) return;
+          BR[branch].themes.forEach(function(t){
+            const m = shared[branch].find(function(s){ return s.name === t.n; });
+            if (m && m.desc != null) {
+              t.desc = Array.isArray(m.desc)
+                ? m.desc.map(function(l){ return l === "" ? "<br>" : l; }).join("<br> ")
+                : m.desc;
+            }
+          });
+        });
+      }
+    } catch (e) {}
 
     const state = { branch:null, theme:0, count:2, slot:null, cal:{ y:0, m:0, sel:null } };
     const today = new Date(); today.setHours(0,0,0,0);
@@ -476,7 +510,16 @@
         <div class="row"><span class="k">난이도</span><span class="v stars">${stars(t.d)}</span></div>
         <div class="row"><span class="k">공포</span><span class="v">${fearTxt(t.f)}</span></div>
         <div class="row"><span class="k">활동성</span><span class="v">${actTxt(t.a)}</span></div>`;
-      document.getElementById("dDesc").textContent = t.desc;
+      // themes.html 에서 "예약 바로가기"로 진입한 경우, 그 테마의 본문을 sessionStorage 에서 받아 우선 표시
+      var _descHtml = t.desc;
+      try {
+        var _picked = JSON.parse(sessionStorage.getItem("pickedTheme") || "null");
+        if (_picked && _picked.branch === state.branch && _picked.name === t.n && _picked.desc) {
+          _descHtml = _picked.desc;
+        }
+      } catch (e) {}
+      _descHtml = formatDescForReserve(_descHtml);
+      document.getElementById("dDesc").innerHTML = _descHtml;
       const [mn] = parseRange(t.p);
       state.count = mn;
       updateCount();
