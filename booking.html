@@ -166,11 +166,12 @@
   .done-mask { position:fixed; inset:0; z-index:200; background:rgba(4,6,14,.82); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:24px; }
   .done-mask.on { display:flex; }
   .done { width:100%; max-width:480px; background:linear-gradient(180deg,#121732,#0c1022); border:1px solid var(--line); border-radius:16px; padding:clamp(30px,5vw,46px); text-align:center; box-shadow:0 40px 90px rgba(0,0,0,.6); }
-  .done .seal { width:74px; height:74px; margin:0 auto 20px; border-radius:50%; background:radial-gradient(circle at 35% 30%, rgba(200,168,99,.4), rgba(200,168,99,.08)); border:1px solid rgba(200,168,99,.5); display:flex; align-items:center; justify-content:center; font-size:34px; color:var(--gold); }
+  .done .seal { width:74px; height:74px; margin:0 auto 20px; border-radius:50%; background:radial-gradient(circle at 35% 30%, rgba(200,168,99,.4), rgba(200,168,99,.08)); border:1px solid rgba(200,168,99,.5); display:flex; align-items:center; justify-content:center; color:var(--gold); }
+  .done .seal svg { display:block; width:38px; height:38px; }
   .done .en { font-family:"Cormorant Garamond",serif; font-size:32px; letter-spacing:.1em; color:var(--gold); }
   .done .t { margin-top:8px; font-size:18px; font-weight:700; color:#f4eede; }
-  .done .num { margin:18px auto; padding:12px; max-width:260px; background:rgba(10,14,28,.7); border:1px dashed rgba(200,168,99,.4); border-radius:8px; font-size:15px; color:#f0e8d6; letter-spacing:.05em; }
-  .done .num b { color:var(--gold); font-family:"Cormorant Garamond",serif; font-size:19px; letter-spacing:.12em; }
+  .done .num { margin:18px auto; padding:12px 18px; width:max-content; max-width:90%; background:rgba(10,14,28,.7); border:1px dashed rgba(200,168,99,.4); border-radius:8px; font-size:15px; color:#f0e8d6; letter-spacing:.05em; text-align:center; }
+  .done .num b { display:inline-block; margin-top:5px; white-space:nowrap; color:var(--gold); font-family:"Cormorant Garamond",serif; font-size:19px; letter-spacing:.12em; }
   .done .recap { font-size:13.5px; color:#c2c8da; line-height:1.85; }
   .done .recap b { color:#e8e2d3; }
   .done .acts { margin-top:24px; display:flex; gap:10px; }
@@ -275,11 +276,8 @@
           <div class="panel">
             <div class="panel-h"><span class="num">03</span><span class="t">결제 수단</span></div>
             <div class="pays" id="pays">
-              <label class="pay sel"><input type="radio" name="pay" value="신용/체크카드" checked><span class="dot"></span>신용 / 체크카드</label>
-              <label class="pay"><input type="radio" name="pay" value="카카오페이"><span class="dot"></span>카카오페이</label>
-              <label class="pay"><input type="radio" name="pay" value="네이버페이"><span class="dot"></span>네이버페이</label>
-              <label class="pay"><input type="radio" name="pay" value="계좌이체"><span class="dot"></span>계좌이체</label>
-              <label class="pay"><input type="radio" name="pay" value="현장 결제"><span class="dot"></span>현장 결제 (현금/카드)</label>
+              <label class="pay sel" data-pay="현장 결제"><input type="radio" name="pay" value="현장 결제" checked><span class="dot"></span>현장 결제 (현금/카드)</label>
+              <label class="pay" data-pay="무통장 입금"><input type="radio" name="pay" value="무통장 입금"><span class="dot"></span>무통장 입금</label>
             </div>
 
             <div class="agree">
@@ -324,10 +322,10 @@
   <!-- 완료 모달 -->
   <div class="done-mask" id="doneMask">
     <div class="done">
-      <div class="seal">🗝</div>
+      <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg></div>
       <div class="en">RESERVED</div>
       <div class="t">예약이 완료되었습니다</div>
-      <div class="num">예약번호 <b id="rNum">—</b></div>
+      <div class="num">예약번호<br><b id="rNum">—</b></div>
       <div class="recap" id="rRecap"></div>
       <div class="acts">
         <a class="ghost" href="check.html">예약 확인</a>
@@ -356,17 +354,12 @@
         <p>상상 그 이상의 공간</p>
       </div>
       <div class="footer-stores">
-        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>대학로점</b> 02-765-7771<br>서울특별시 종로구 창경궁로34길 18-5, 지하3층</div>
         <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
         <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
         <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
-        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
-        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
-      </div>
-      <div class="footer-social">
-        <a href="#" aria-label="인스타그램">IG</a>
-        <a href="#" aria-label="네이버 블로그">N</a>
-        <a href="#" aria-label="카카오톡">K</a>
+        <div><b>부평점</b> 010-3242-3218<br>인천광역시 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기도 수원시 팔달구 효원로249번길 46-18 3층</div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -398,6 +391,16 @@
       max:    parseInt(get("max","6")) || 6,
     };
     let count = Math.min(Math.max(parseInt(get("count","2"))||2, D.min), D.max);
+
+    // 수원점·수원2호점은 현장 결제만 제공 (무통장 입금 제거)
+    if (D.branch === "수원점" || D.branch === "수원2호점") {
+      const bank = document.querySelector('.pay[data-pay="무통장 입금"]');
+      if (bank) bank.remove();
+      const onsite = document.querySelector('.pay[data-pay="현장 결제"]');
+      if (onsite) { onsite.classList.add("sel"); onsite.querySelector("input").checked = true; }
+      const pays = document.getElementById("pays");
+      if (pays) pays.style.gridTemplateColumns = "1fr";   // 1개만 남으면 한 칸 꽉 채움
+    }
 
     // 주말 여부
     function isWeekend(dstr){
@@ -442,9 +445,22 @@
     // 약관 체크
     const chks = ["chk1","chk2","chk3"].map(id=>document.getElementById(id));
     const all  = document.getElementById("chkAll");
-    function syncAll(){ all.classList.toggle("on", chks.every(c=>c.querySelector("input").checked)); all.querySelector("input").checked = chks.every(c=>c.querySelector("input").checked); }
-    chks.forEach(c=>c.addEventListener("click",()=>{ const i=c.querySelector("input"); c.classList.toggle("on", i.checked); syncAll(); }));
-    all.addEventListener("click",()=>{ const on=!chks.every(c=>c.querySelector("input").checked); chks.forEach(c=>{ c.querySelector("input").checked=on; c.classList.toggle("on",on); }); all.classList.toggle("on",on); all.querySelector("input").checked=on; });
+    const allInput = all.querySelector("input");
+    function syncAll(){
+      const every = chks.every(c=>c.querySelector("input").checked);
+      allInput.checked = every;
+      all.classList.toggle("on", every);
+    }
+    // label click 대신 input change 사용 → 라벨-인풋 이중 발화로 인한 토글 상쇄 방지
+    chks.forEach(c=>{
+      const i = c.querySelector("input");
+      i.addEventListener("change",()=>{ c.classList.toggle("on", i.checked); syncAll(); });
+    });
+    allInput.addEventListener("change",()=>{
+      const on = allInput.checked;
+      chks.forEach(c=>{ c.querySelector("input").checked = on; c.classList.toggle("on", on); });
+      all.classList.toggle("on", on);
+    });
 
     // 전화번호 자동 하이픈
     document.getElementById("fPhone").addEventListener("input",e=>{

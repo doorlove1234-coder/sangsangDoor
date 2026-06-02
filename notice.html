@@ -84,26 +84,35 @@
   .panel { display:none; }
   .panel.on { display:block; }
 
-  /* 아코디언 */
-  .acc { border-top:1px solid rgba(255,255,255,.07); }
-  .acc-item { border-bottom:1px solid rgba(255,255,255,.07); }
+  /* 아코디언 — 배경 이미지와 분리되도록 박스 처리 */
+  .acc { background:rgba(10,14,28,.86); border:1px solid var(--line); border-radius:14px;
+         padding:6px clamp(16px,2.2vw,30px); box-shadow:0 20px 50px rgba(0,0,0,.45);
+         -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+  .acc-item { border-bottom:1px solid rgba(255,255,255,.09); }
+  .acc-item:last-child { border-bottom:0; }
   .acc-q { width:100%; background:none; border:0; cursor:pointer; font-family:inherit; color:inherit;
            display:flex; align-items:center; gap:16px; padding:22px 6px; text-align:left; transition:color .2s; }
   .acc-q:hover { color:var(--gold); }
-  .acc-q .cat { flex:none; font-size:12px; font-weight:700; padding:4px 11px; border-radius:20px;
+  .acc-q .cat { flex:none; min-width:60px; box-sizing:border-box; text-align:center;
+                font-size:12px; font-weight:700; padding:4px 11px; border-radius:20px;
                 background:rgba(200,168,99,.14); color:var(--gold); border:1px solid rgba(200,168,99,.3); }
   .acc-q .cat.event { background:rgba(150,120,219,.16); color:#c3b3ec; border-color:rgba(150,120,219,.35); }
   .acc-q .q-mark { flex:none; width:24px; font-family:"Cormorant Garamond",serif; font-size:20px; font-weight:700; color:var(--gold-d); }
   .acc-q .title { flex:1; font-size:clamp(15px,1.7vw,17px); font-weight:600; color:#e9e4d6; line-height:1.5; }
-  .acc-q .date { flex:none; font-size:13px; color:#7c84a0; }
+  .acc-q .date { flex:none; font-size:13px; color:#aeb6cc; }
   .acc-q .chev { flex:none; width:11px; height:11px; border-right:2px solid var(--gold-d); border-bottom:2px solid var(--gold-d);
                  transform:rotate(45deg); transition:transform .3s ease; margin-left:4px; }
   .acc-item.open .acc-q .chev { transform:rotate(-135deg); }
   .acc-a { max-height:0; overflow:hidden; transition:max-height .35s ease; }
   .acc-item.open .acc-a { max-height:400px; }
-  .acc-a .inner { padding:0 6px 24px 40px; font-size:14.5px; line-height:1.8; color:#bcc2d4; white-space:pre-line; }
+  .acc-a .inner { padding:0 6px 24px; font-size:14.5px; line-height:1.8; color:#bcc2d4; white-space:pre-line; }
   .acc-q .title-wrap { flex:1; display:flex; align-items:center; gap:14px; min-width:0; }
   .acc-q .title-wrap .title { flex:1; }
+  /* 답 텍스트를 질문 제목 시작 위치에 맞춰 들여쓰기 (배지/Q마크 + 간격 만큼) */
+  @media (min-width:561px){
+    #panel-notice .acc-a .inner { padding-left:82px; }  /* acc-q pad 6 + 배지 60 + gap 16 */
+    #panel-faq    .acc-a .inner { padding-left:46px; }  /* acc-q pad 6 + Q마크 24 + gap 16 */
+  }
   @media (max-width:560px){
     .acc-q { flex-wrap:wrap; gap:10px; }
     .acc-q .date { order:3; width:100%; padding-left:40px; }
@@ -200,17 +209,12 @@
         <p>상상 그 이상의 공간</p>
       </div>
       <div class="footer-stores">
-        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>대학로점</b> 02-765-7771<br>서울특별시 종로구 창경궁로34길 18-5, 지하3층</div>
         <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
         <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
         <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
-        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
-        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
-      </div>
-      <div class="footer-social">
-        <a href="#" aria-label="인스타그램">IG</a>
-        <a href="#" aria-label="네이버 블로그">N</a>
-        <a href="#" aria-label="카카오톡">K</a>
+        <div><b>부평점</b> 010-3242-3218<br>인천광역시 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기도 수원시 팔달구 효원로249번길 46-18 3층</div>
       </div>
     </div>
     <div class="footer-bottom">

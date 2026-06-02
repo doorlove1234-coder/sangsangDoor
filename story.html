@@ -217,7 +217,26 @@
   }
 
   /* ══════════════ 열쇠 패널 ══════════════ */
-  .key-wrap { padding: 0 16px clamp(70px, 10vw, 140px); }
+  .key-wrap { padding: clamp(30px,5vw,70px) 16px clamp(70px, 10vw, 140px); text-align: center; }
+  /* 팻말 위 별들 (동일 크기 SVG, 위가 가장 진함, 스크롤 시 하나씩 등장) */
+  .key-stars { display: flex; flex-direction: column; align-items: center;
+               gap: clamp(22px, 3vw, 40px);          /* 간격 넓힘 */
+               margin: 0 auto clamp(26px, 4vw, 50px);
+               transform: translateY(-28px); }       /* 별 그룹만 위로 (위 이미지·아래 팻말은 그대로) */
+  .key-stars svg { display: block; width: 22px; height: 22px; color: var(--gold);
+                   opacity: var(--op);
+                   filter: drop-shadow(0 0 8px rgba(242,215,172,.5)); }
+  .key-stars svg:nth-child(1){ --op:1;   }
+  .key-stars svg:nth-child(2){ --op:.82; }
+  .key-stars svg:nth-child(3){ --op:.65; }
+  .key-stars svg:nth-child(4){ --op:.45; }
+  /* 펄스: (1·3) 그룹과 (2·4) 그룹이 시간차로 살짝 커졌다 작아짐.
+     등장 시 GSAP가 svg의 transform을 쓰므로, 충돌 피하려 안쪽 path를 스케일 */
+  .key-stars svg path { transform-box: fill-box; transform-origin: center;
+                        animation: starPulse 2s ease-in-out infinite; }
+  .key-stars svg:nth-child(2) path,
+  .key-stars svg:nth-child(4) path { animation-delay: 1s; }
+  @keyframes starPulse { 0%, 100% { transform: scale(0.85); } 50% { transform: scale(1.45); } }
   .key-panel {
     position: relative;
     width: 100%; max-width: 540px; margin: 0 auto;
@@ -232,7 +251,7 @@
     font-weight: 500; font-size: 6.2cqw; line-height: 1.65;
     color: #efe6d2; letter-spacing: .02em;
     text-shadow: 0 2px 10px rgba(0,0,0,.6);
-    padding: 0 12% 0 16%;
+    padding: 0 14%;
   }
   .key-img {
     position: absolute;
@@ -357,6 +376,12 @@
 
   <!-- ── 열쇠 패널 ── -->
   <div class="key-wrap">
+    <div class="key-stars" aria-hidden="true">
+      <svg class="anim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 5.9 5.4 10.6 12 12-6.6 1.4-11.3 6.1-12 12-.7-5.9-5.4-10.6-12-12 6.6-1.4 11.3-6.1 12-12z"/></svg>
+      <svg class="anim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 5.9 5.4 10.6 12 12-6.6 1.4-11.3 6.1-12 12-.7-5.9-5.4-10.6-12-12 6.6-1.4 11.3-6.1 12-12z"/></svg>
+      <svg class="anim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 5.9 5.4 10.6 12 12-6.6 1.4-11.3 6.1-12 12-.7-5.9-5.4-10.6-12-12 6.6-1.4 11.3-6.1 12-12z"/></svg>
+      <svg class="anim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 5.9 5.4 10.6 12 12-6.6 1.4-11.3 6.1-12 12-.7-5.9-5.4-10.6-12-12 6.6-1.4 11.3-6.1 12-12z"/></svg>
+    </div>
     <div class="key-panel anim" data-anim="up">
       <div class="key-img anim" data-anim="keyin"><img src="img/story/story_key.webp" alt="열쇠" /></div>
       <p class="key-text anim" data-anim="appear">당신의 상상력이<br>새로운 이야기를 여는<br>열쇠가 될 것 입니다.</p>
@@ -385,18 +410,13 @@
       </div>
       <!-- 지점 연락처 (상상의문 공식 사이트 기준) -->
       <div class="footer-stores">
-        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>대학로점</b> 02-765-7771<br>서울특별시 종로구 창경궁로34길 18-5, 지하3층</div>
         <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
-        <div><b>홍대점</b> 02-336-9007<br>서울시 마포구 홍익로 19, 2층</div>
+        <div><b>홍대점</b> 02-336-9007<br>서울특별시 마포구 홍익로 19, 2층</div>
         <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
         <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
-        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
-        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
-      </div>
-      <div class="footer-social">
-        <a href="#" aria-label="인스타그램">IG</a>
-        <a href="#" aria-label="네이버 블로그">N</a>
-        <a href="#" aria-label="카카오톡">K</a>
+        <div><b>부평점</b> 010-3242-3218<br>인천광역시 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기도 수원시 팔달구 효원로249번길 46-18 3층</div>
       </div>
     </div>
 
@@ -479,6 +499,17 @@
         tl.to(keyImg, { rotate: -8, duration: 0.2,  ease: 'sine.inOut' });           // ③ 살짝 비틀고
         tl.to(keyImg, { rotate: 0,  duration: 0.35, ease: 'sine.inOut' });           //    제자리로
         tl.add(function () { reveal(keyText, 'appear', 1.1); }, '+=0.05');           // ④ 그 다음 텍스트 생김
+      } });
+
+    // 별: 스크롤 시 위에서부터 하나씩 떨어지듯 등장
+    var keyStars = gsap.utils.toArray('.key-stars svg');
+    ScrollTrigger.create({ trigger: '.key-stars', start: 'top 88%', once: true,
+      onEnter: function () {
+        keyStars.forEach(function (s, i) {
+          var op = parseFloat(getComputedStyle(s).getPropertyValue('--op')) || 1;
+          gsap.fromTo(s, { y: -16, opacity: 0 },
+            { y: 0, opacity: op, duration: .7, ease: 'power2.out', delay: i * 0.3, clearProps: 'transform' });
+        });
       } });
 
     window.addEventListener('load', function () { ScrollTrigger.refresh(); });

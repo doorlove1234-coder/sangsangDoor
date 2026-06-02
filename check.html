@@ -86,7 +86,8 @@
             font-size:16px; font-weight:700; cursor:pointer; transition:filter .2s; }
   .lookup .submit:hover { filter:brightness(1.06); }
   .lookup .submit span { font-size:18px; }
-  .hint { margin-top:14px; font-size:12.5px; color:#7c84a0; line-height:1.6; }
+  .hint { position:relative; margin-top:14px; padding-left:1.1em; font-size:12.5px; color:#7c84a0; line-height:1.6; }
+  .hint::before { content:"*"; position:absolute; left:.2em; top:0; }
   .hint b { color:var(--gold-d); }
 
   .msg { margin-top:16px; padding:13px 16px; border-radius:8px; font-size:13.5px; display:none; }
@@ -181,7 +182,7 @@
             </div>
           </div>
           <button class="submit" id="lookupBtn">예약 조회 <span>→</span></button>
-          <p class="hint">* 데모 환경에서는 이 브라우저에서 진행한 예약만 조회됩니다. 실제 운영 시 <b>예약번호 또는 이름+연락처</b>로 조회됩니다.</p>
+          <p class="hint">데모 환경에서는 이 브라우저에서 진행한 예약만 조회됩니다.<br>실제 운영 시 <b>예약번호 또는 이름+연락처</b>로 조회됩니다.</p>
           <div class="msg" id="msg"></div>
         </div>
 
@@ -215,17 +216,12 @@
         <p>상상 그 이상의 공간</p>
       </div>
       <div class="footer-stores">
-        <div><b>대학로점</b> 02-765-7771<br>서울 종로구 창경궁로34길 18-5, 지하3층</div>
+        <div><b>대학로점</b> 02-765-7771<br>서울특별시 종로구 창경궁로34길 18-5, 지하3층</div>
         <div><b>분당서현점</b> 031-708-1777<br>경기도 성남시 분당구 황새울로342번길 11 금호리빙스텔 지하1층</div>
         <div><b>광주점</b> 062-226-1126<br>광주광역시 동구 충장로 80-5, 6층</div>
         <div><b>수원점</b> 010-4397-3057<br>경기도 수원시 팔달구 인계로138번길 44, 4층</div>
-        <div><b>부평점</b> 010-3242-3218<br>인천 부평구 시장로12번길 7 보광빌딩 4층</div>
-        <div><b>수원2호점</b> 010-9360-4148<br>경기 수원시 팔달구 효원로249번길 46-18 3층</div>
-      </div>
-      <div class="footer-social">
-        <a href="#" aria-label="인스타그램">IG</a>
-        <a href="#" aria-label="네이버 블로그">N</a>
-        <a href="#" aria-label="카카오톡">K</a>
+        <div><b>부평점</b> 010-3242-3218<br>인천광역시 부평구 시장로12번길 7 보광빌딩 4층</div>
+        <div><b>수원2호점</b> 010-9360-4148<br>경기도 수원시 팔달구 효원로249번길 46-18 3층</div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -317,10 +313,10 @@
       else e.target.value=v.slice(0,3)+"-"+v.slice(3,7)+"-"+v.slice(7);
     });
 
-    // 진입 시: 저장된 예약이 있으면 전체를 미리 보여줌(데모 편의)
+    // 진입 시에는 결과를 표시하지 않음 — '예약 조회' 버튼을 눌러야 결과가 보임
     (function init(){
-      const all=load();
-      if(all.length){ render(all); } else { empty.style.display="block"; }
+      results.innerHTML="";
+      empty.style.display="none";
     })();
   </script>
 
