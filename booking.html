@@ -395,15 +395,18 @@
     };
     let count = Math.min(Math.max(parseInt(get("count","2"))||2, D.min), D.max);
 
-    // 수원점·수원2호점은 현장 결제만 제공 (무통장 입금 제거)
-    if (D.branch === "수원점" || D.branch === "수원2호점") {
-      const bank = document.querySelector('.pay[data-pay="무통장 입금"]');
-      if (bank) bank.remove();
-      const onsite = document.querySelector('.pay[data-pay="현장 결제"]');
-      if (onsite) { onsite.classList.add("sel"); onsite.querySelector("input").checked = true; }
+    // 지점별 결제수단 — 수원점·수원2호점은 현장 결제만, 그 외 지점은 무통장 입금만
+    (function () {
+      const isSuwon = (D.branch === "수원점" || D.branch === "수원2호점");
+      const keep = isSuwon ? "현장 결제" : "무통장 입금";
+      const drop = isSuwon ? "무통장 입금" : "현장 결제";
+      const dropEl = document.querySelector('.pay[data-pay="' + drop + '"]');
+      if (dropEl) dropEl.remove();
+      const keepEl = document.querySelector('.pay[data-pay="' + keep + '"]');
+      if (keepEl) { keepEl.classList.add("sel"); keepEl.querySelector("input").checked = true; }
       const pays = document.getElementById("pays");
       if (pays) pays.style.gridTemplateColumns = "1fr";   // 1개만 남으면 한 칸 꽉 채움
-    }
+    })();
 
     // 주말 여부
     function isWeekend(dstr){
