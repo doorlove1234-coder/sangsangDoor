@@ -6,6 +6,9 @@
 <title>상상의 문 — 예약 결제</title>
 
 <link rel="stylesheet" href="css/fonts.css" />
+<!-- Supabase 연동 (예약 데이터 클라우드 공유) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -492,12 +495,14 @@
         return showErr("필수 약관에 동의해주세요.");
       const pay=document.querySelector('input[name=pay]:checked').value;
       const num=makeNum();
-      // 데모: 예약 확인 페이지에서 조회할 수 있도록 로컬에 저장
+      const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, status:"confirm", cancelled:false, ts:Date.now() };
+      // 로컬 백업 저장 (최근 30건) — 예약 확인 페이지 조회용
       try{
-        const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, ts:Date.now() };
         const all=JSON.parse(localStorage.getItem("sd_reservations")||"[]"); all.unshift(rec);
         localStorage.setItem("sd_reservations", JSON.stringify(all.slice(0,30)));
       }catch(e){}
+      // Supabase 클라우드 저장 (모든 기기 공유)
+      try{ if(window.SD) window.SD.save(rec); }catch(e){}
       document.getElementById("rNum").textContent=num;
       document.getElementById("rRecap").innerHTML =
         `<b>${esc(D.branch)}</b> · <b>${esc(D.theme)}</b><br>${esc(D.date)} ${esc(D.time)} · ${count}명<br>`+
