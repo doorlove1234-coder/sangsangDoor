@@ -167,6 +167,9 @@
   .badge.cancel{ background:var(--line2); color:var(--mut); }
   .badge.noshow{ background:var(--red-bg); color:var(--red); }
   .badge.done{ background:var(--blue-bg); color:var(--blue); }
+  .badge.pending{ background:#fff4e0; color:#b8791b; }
+  .badge.nopay{ background:var(--line2); color:var(--red); }
+  .badge.overdue{ background:var(--red-bg); color:var(--red); }
   .badge.pay{ background:var(--brand-bg); color:var(--brand-d); }
   .row-acts{ display:flex; gap:6px; }
   .mini{ border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:6px 10px; font-size:12px; color:var(--sub); transition:all .15s; }
@@ -401,10 +404,11 @@
           <div class="search"><input id="resvSearch" placeholder="예약번호·이름·연락처·테마 검색" /></div>
           <div class="filter" id="resvFilter">
             <button class="chip on" data-f="all">전체</button>
+            <button class="chip" data-f="pending">입금대기</button>
             <button class="chip" data-f="confirm">예약확정</button>
-            <button class="chip" data-f="done">방문완료</button>
-            <button class="chip" data-f="cancel">취소</button>
             <button class="chip" data-f="noshow">노쇼</button>
+            <button class="chip" data-f="cancel">취소</button>
+            <button class="chip" data-f="nopay">미입금취소</button>
           </div>
           <div class="spacer" style="flex:1"></div>
           <button class="btn ghost" id="seedBtn">샘플 예약 생성</button>
@@ -416,7 +420,7 @@
             <tbody id="resvBody"></tbody>
           </table>
         </div>
-        <p class="sub-note">* 상태를 바꾸면 예약 확인(check.html) 페이지에도 반영됩니다. ‘노쇼’는 미방문 처리로, 통계에서 별도 집계됩니다.</p>
+        <p class="sub-note">* 신규 예약은 ‘입금대기/확인대기’로 들어옵니다. [상세]에서 입금·정보 확인 후 ‘예약확정’ 시 매출에 반영됩니다. 입금대기 중 예약시간이 지난 건은 <b>⏰초과</b>로 표시되니 미입금취소 처리하세요. 무통장 노쇼는 예약금만, 현장(수원) 노쇼는 0원으로 집계됩니다.</p>
       </section>
 
       <!-- ===== 예약 현황 (캘린더) ===== -->
@@ -696,9 +700,9 @@ function todayStr(){ const t=new Date(); return `${t.getFullYear()}.${String(t.g
 function renderDash(){
   const rs = resvOf();
   const today = todayStr();
-  const active = rs.filter(r=>!r.cancelled && r.status!=="cancel");
+  const active = rs.filter(r=>!isVoid(r));
   const todays = active.filter(r=>r.date===today);
-  const revenue = active.filter(r=>r.status!=="cancel"&&!r.cancelled).reduce((s,r)=>s+(+r.total||0),0);
+  const revenue = rs.reduce((s,r)=>s+revenueOf(r),0);
   // 이번주 예약 수
   const now=new Date(); const weekAgo=new Date(now); weekAgo.setDate(now.getDate()-6);
   const parse=d=>{ const m=(d||"").match(/(\d+)\.(\d+)\.(\d+)/); return m?new Date(+m[1],+m[2]-1,+m[3]):null; };
@@ -708,7 +712,7 @@ function renderDash(){
   const kpi=[
     {lab:"오늘 예약",val:todays.length,unit:"건",ic:"📅",bg:"var(--blue-bg)",col:"var(--blue)",delta:`예약 인원 ${todays.reduce((s,r)=>s+(+r.count||0),0)}명`},
     {lab:"전체 누적 예약",val:active.length,unit:"건",ic:"🎟️",bg:"var(--brand-bg)",col:"var(--brand-d)",delta:`${BR} 기준`},
-    {lab:"누적 매출",val:won(revenue),unit:"원",ic:"💰",bg:"var(--green-bg)",col:"var(--green)",delta:`확정 예약 합계`},
+    {lab:"누적 매출",val:won(revenue),unit:"원",ic:"💰",bg:"var(--green-bg)",col:"var(--green)",delta:`확정 + 노쇼 예약금 반영`},
     {lab:"노쇼",val:noshow,unit:"건",ic:"⚠️",bg:"var(--red-bg)",col:"var(--red)",delta:noshow?`관리 필요`:`없음`},
   ];
   $("#kpis").innerHTML = kpi.map(k=>`<div class="kpi"><div class="top"><span class="lab">${k.lab}</span><span class="ic" style="background:${k.bg};color:${k.col}">${k.ic}</span></div><div class="val">${k.val}<small> ${k.unit}</small></div><div class="delta">${k.delta}</div></div>`).join("");
@@ -742,8 +746,27 @@ function renderDash(){
 
 /* ============ 예약 관리 ============ */
 function statusOf(r){ if(r.status) return r.status; return (r.cancelled?"cancel":"confirm"); }
+// ── 결제·매출 정책 ──────────────────────────────────────────
+const ONSITE_BRANCHES=["수원점","수원2호점"];                 // 현장 결제 지점
+function isOnsite(b){ return ONSITE_BRANCHES.includes(b); }
+function depositOf(b){ return isOnsite(b)?0:(b==="분당서현점"?10000:20000); } // 무통장 예약금
+// 예약 1건이 대시보드 매출에 반영하는 금액
+function revenueOf(r){
+  const s=statusOf(r);
+  if(s==="confirm"||s==="done") return +r.total||0;            // 확정 → 테마 전체
+  if(s==="noshow") return isOnsite(r.branch)?0:depositOf(r.branch); // 노쇼 → 무통장은 예약금만, 현장은 0
+  return 0;                                                     // 입금대기/취소/미입금취소
+}
+// 취소류(취소·미입금취소)는 예약 수·슬롯 집계에서 제외
+function isVoid(r){ const s=statusOf(r); return s==="cancel"||s==="nopay"||r.cancelled; }
+// 입금대기인데 예약시간이 지난 건 (입금기한 초과)
+function resvDateTime(r){ const m=(r.date||"").match(/(\d+)\.(\d+)\.(\d+)/); if(!m) return null;
+  const t=(r.time||"").match(/(\d+):(\d+)/); return new Date(+m[1],+m[2]-1,+m[3], t?+t[1]:23, t?+t[2]:59); }
+function isOverdue(r){ if(statusOf(r)!=="pending") return false; const dt=resvDateTime(r); return !!dt && dt.getTime()<Date.now(); }
+function pendingLabel(r){ return isOnsite(r.branch)?"확인대기":"입금대기"; }
 function statusBadge(r){ const s=statusOf(r);
-  const map={confirm:["confirm","예약확정"],done:["done","방문완료"],cancel:["cancel","취소"],noshow:["noshow","노쇼"]};
+  if(s==="pending"){ const od=isOverdue(r); return `<span class="badge ${od?'overdue':'pending'}">${pendingLabel(r)}${od?' ⏰초과':''}</span>`; }
+  const map={confirm:["confirm","예약확정"],done:["done","방문완료"],cancel:["cancel","취소"],noshow:["noshow","노쇼"],nopay:["nopay","미입금취소"]};
   const m=map[s]||map.confirm; return `<span class="badge ${m[0]}">${m[1]}</span>`; }
 let resvFilterVal="all", resvQuery="";
 function renderResv(){
@@ -764,7 +787,6 @@ function renderResv(){
     <td>${statusBadge(r)}</td>
     <td><div class="row-acts">
       <button class="mini" data-act="detail">상세</button>
-      <button class="mini" data-act="status">상태</button>
       <button class="mini danger" data-act="del">삭제</button>
     </div></td></tr>`).join("") : `<tr><td colspan="10" class="empty-row">예약이 없습니다. ‘샘플 예약 생성’으로 데모 데이터를 만들어 보세요.</td></tr>`;
 }
@@ -772,16 +794,19 @@ $("#resvFilter").addEventListener("click",e=>{ const c=e.target.closest(".chip")
   $$("#resvFilter .chip").forEach(x=>x.classList.remove("on")); c.classList.add("on"); resvFilterVal=c.dataset.f; renderResv(); });
 $("#resvSearch").addEventListener("input",e=>{ resvQuery=e.target.value.trim(); renderResv(); });
 
-const STATUS_CYCLE=["confirm","done","noshow","cancel"];
-const STATUS_LAB={confirm:"예약확정",done:"방문완료",noshow:"노쇼",cancel:"취소"};
+const STATUS_LAB={pending:"입금대기",confirm:"예약확정",done:"방문완료",noshow:"노쇼",cancel:"취소",nopay:"미입금취소"};
+// 상태 변경 (로컬 + 클라우드 + 화면 갱신)
+function setStatus(num, st){
+  const all=getResv(); const r=all.find(x=>x.num===num); if(!r) return;
+  r.status=st; r.cancelled=(st==="cancel"||st==="nopay");
+  setResv(all); renderResv(); if(curView==="dash") renderDash(); if(curView==="cal") renderCal();
+  if(window.SD) window.SD.update(num,{status:st, cancelled:r.cancelled});
+  toast("상태 → "+(STATUS_LAB[st]||st));
+}
 $("#resvBody").addEventListener("click",e=>{
   const btn=e.target.closest("button[data-act]"); if(!btn) return;
   const num=btn.closest("tr").dataset.num; const all=getResv(); const r=all.find(x=>x.num===num); if(!r) return;
-  if(btn.dataset.act==="status"){
-    const cur=statusOf(r); const next=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length];
-    r.status=next; r.cancelled=(next==="cancel"); setResv(all); renderResv(); toast("상태 → "+STATUS_LAB[next]);
-    if(window.SD) window.SD.update(num,{status:next, cancelled:(next==="cancel")});
-  } else if(btn.dataset.act==="del"){
+  if(btn.dataset.act==="del"){
     setResv(all.filter(x=>x.num!==num)); renderResv(); toast("예약을 삭제했습니다");
     if(window.SD) window.SD.remove(num);
   } else if(btn.dataset.act==="detail"){
@@ -803,8 +828,13 @@ function openResvDetail(r){
       ${detailRow("예약자",esc(r.name||"-"))}
       ${detailRow("연락처",esc(r.phone||"-"))}
       ${detailRow("결제수단",esc(r.pay||"-"))}
-      ${detailRow("결제금액",`${won(r.total)}원`)}
+      ${detailRow("테마 금액",`${won(r.total)}원`)}
+      ${isOnsite(r.branch)
+        ? detailRow("결제 방식","현장 결제")
+        : detailRow("예약금(입금)",`${won(depositOf(r.branch))}원`)+detailRow("잔금(현장)",`${won(Math.max(0,(+r.total||0)-depositOf(r.branch)))}원`)}
+      ${detailRow("매출 반영액",`<b>${won(revenueOf(r))}원</b>`)}
     </div>
+    ${statusActions(r)}
     <div class="fld full" style="margin-top:16px"><label>예약자 요청사항</label>
       <div style="border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:var(--line2);min-height:44px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:${(r.request&&String(r.request).trim())?"var(--ink)":"var(--mut)"}">${(r.request&&String(r.request).trim())?esc(r.request):"요청사항 없음"}</div></div>
     <div class="fld full" style="margin-top:16px"><label>관리자 메모</label>
@@ -812,6 +842,21 @@ function openResvDetail(r){
   $("#resvMask").classList.add("on");
 }
 function detailRow(k,v){ return `<div style="display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13.5px"><span style="color:var(--sub)">${k}</span><span style="font-weight:600;text-align:right">${v}</span></div>`; }
+// 상태별 액션 버튼
+function statusActions(r){
+  const s=statusOf(r); let b="";
+  if(s==="pending"){ b=`<button class="btn" data-st="confirm">예약확정</button><button class="btn ghost" data-st="nopay">미입금취소</button>`; }
+  else if(s==="confirm"||s==="done"){ b=`<button class="btn ghost" data-st="noshow">노쇼</button><button class="btn ghost" data-st="cancel">취소</button>`; }
+  else { b=`<button class="btn ghost" data-st="confirm">예약확정으로 되돌리기</button>`; }
+  const od=isOverdue(r)?`<div style="color:var(--red);font-size:12.5px;margin-bottom:8px">⏰ 예약시간이 지났습니다. 입금 미확인 시 [미입금취소] 처리하세요.</div>`:"";
+  return `<div style="margin-top:16px">${od}<div style="display:flex;gap:8px;flex-wrap:wrap">${b}</div></div>`;
+}
+// 상세 모달 내 상태 버튼 클릭
+$("#resvDetail").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-st]"); if(!b||!editingResv) return;
+  setStatus(editingResv, b.dataset.st);
+  const r=getResv().find(x=>x.num===editingResv); if(r) openResvDetail(r);
+});
 $("#saveMemo").addEventListener("click",()=>{ const all=getResv(); const r=all.find(x=>x.num===editingResv); if(r){ r.memo=$("#memoBox").value; setResv(all); if(window.SD) window.SD.update(r.num,{memo:r.memo}); } closeMasks(); toast("메모를 저장했습니다"); });
 
 // 샘플 예약 생성
@@ -827,18 +872,18 @@ $("#seedBtn").addEventListener("click",()=>{
     const slots=(t.slots||"14:00").split(",").map(s=>s.trim());
     const time=slots[Math.floor(Math.random()*slots.length)];
     const count=t.min+Math.floor(Math.random()*(t.max-t.min+1));
-    const st=["confirm","confirm","confirm","done","noshow"][Math.floor(Math.random()*5)];
+    const st=["pending","confirm","confirm","noshow","cancel"][Math.floor(Math.random()*5)];
     const num="SD-"+date.replace(/\./g,"").slice(2)+"-"+Math.random().toString(36).toUpperCase().slice(2,8);
     all.unshift({num,name:names[Math.floor(Math.random()*names.length)],phone:"010-"+(1000+Math.floor(Math.random()*9000))+"-"+(1000+Math.floor(Math.random()*9000)),
-      branch:BR,theme:t.n,date,time,count,pay:pays[Math.floor(Math.random()*pays.length)],total:(t.price||25000)*count,status:st,cancelled:st==="cancel",ts:Date.now()-Math.floor(Math.random()*1e8)});
+      branch:BR,theme:t.n,date,time,count,pay:pays[Math.floor(Math.random()*pays.length)],total:(t.price||25000)*count,status:st,cancelled:(st==="cancel"||st==="nopay"),ts:Date.now()-Math.floor(Math.random()*1e8)});
   }
   setResv(all); renderResv(); if(curView==="dash") renderDash(); toast("샘플 예약 8건을 생성했습니다");
 });
 // CSV
 $("#exportBtn").addEventListener("click",()=>{
   const rs=resvOf(); if(!rs.length){ toast("내보낼 예약이 없습니다"); return; }
-  const head=["예약번호","지점","테마","예약일","시간","인원","예약자","연락처","결제수단","금액","상태"];
-  const rows=rs.map(r=>[r.num,r.branch,r.theme,r.date,r.time,r.count,r.name,r.phone,r.pay,r.total,STATUS_LAB[statusOf(r)]]);
+  const head=["예약번호","지점","테마","예약일","시간","인원","예약자","연락처","결제수단","테마금액","매출반영","상태"];
+  const rows=rs.map(r=>[r.num,r.branch,r.theme,r.date,r.time,r.count,r.name,r.phone,r.pay,r.total,revenueOf(r),STATUS_LAB[statusOf(r)]]);
   const csv="﻿"+[head,...rows].map(a=>a.map(v=>`"${(v==null?"":v).toString().replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement("a");
   a.href=URL.createObjectURL(blob); a.download=`예약내역_${BR}_${todayStr()}.csv`; a.click(); toast("CSV를 내보냈습니다");
@@ -854,7 +899,7 @@ function blockWhy(dateStr){ const b=(BLOCKS[BR]||[]).find(x=>x.date===dateStr); 
 function dayStats(dateStr){
   const ths=themesOf().filter(t=>t.active!==false);
   let total=0; ths.forEach(t=>{ total += (t.slots||"").split(",").filter(s=>s.trim()).length; });
-  const booked = resvOf().filter(r=>r.date===dateStr && statusOf(r)!=="cancel").length;
+  const booked = resvOf().filter(r=>r.date===dateStr && !isVoid(r)).length;
   return { total, booked, ths };
 }
 function renderCal(){
@@ -889,7 +934,7 @@ function renderCal(){
   $$("#calGrid .cal-cell[data-d]").forEach(c=>c.addEventListener("click",()=>{ calState.sel=c.dataset.d; renderCal(); renderDaySheet(c.dataset.d); }));
   // 월 요약
   let mTotal=0,mBooked=0,mPeople=0,mRev=0;
-  resvOf().forEach(r=>{ const mm=(r.date||"").match(/(\d+)\.(\d+)\./); if(mm && +mm[1]===y && +mm[2]===m+1 && statusOf(r)!=="cancel"){ mBooked++; mPeople+=(+r.count||0); mRev+=(+r.total||0); } });
+  resvOf().forEach(r=>{ const mm=(r.date||"").match(/(\d+)\.(\d+)\./); if(mm && +mm[1]===y && +mm[2]===m+1){ if(!isVoid(r)){ mBooked++; mPeople+=(+r.count||0); } mRev+=revenueOf(r); } });
   $("#calSummary").innerHTML=`
     <div class="srow"><span class="k">이번 달 예약</span><span class="v">${mBooked}건</span></div>
     <div class="srow"><span class="k">예약 인원</span><span class="v">${mPeople}명</span></div>
@@ -901,7 +946,7 @@ function renderDaySheet(dateStr){
   const dowN=["일","월","화","수","목","금","토"][new Date(d[0],d[1]-1,d[2]).getDay()];
   $("#dsDate").textContent=`${dateStr} (${dowN})`;
   const blocked=isBlocked(dateStr);
-  const rs=resvOf().filter(r=>r.date===dateStr && statusOf(r)!=="cancel");
+  const rs=resvOf().filter(r=>r.date===dateStr && !isVoid(r));
   const ths=themesOf().filter(t=>t.active!==false);
   let totalSlots=0; ths.forEach(t=>totalSlots+=(t.slots||"").split(",").filter(s=>s.trim()).length);
   $("#dsSub").textContent = blocked ? `휴무일 — ${blockWhy(dateStr)||"운영하지 않음"}` : `예약 ${rs.length}건 · 빈 슬롯 ${Math.max(0,totalSlots-rs.length)}개`;

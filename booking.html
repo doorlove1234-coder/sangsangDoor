@@ -311,11 +311,12 @@
           <div class="s-price">
             <div class="line"><span id="sUnitLab">1인 요금</span><span class="v" id="sUnit">—</span></div>
             <div class="line"><span>인원</span><span class="v" id="sQty">—</span></div>
-            <div class="s-total"><span class="k">최종 결제 금액</span><span class="v" id="sTotal">—<small>원</small></span></div>
+            <div class="s-total"><span class="k">테마 금액</span><span class="v" id="sTotal">—<small>원</small></span></div>
+            <div id="sPayInfo"></div>
           </div>
-          <p class="pay-note">* 주말·공휴일은 1인 요금이 다르게 적용됩니다. 현장 결제 선택 시 방문 당일 결제하며, 노쇼 방지를 위해 연락처 인증이 필요합니다.</p>
+          <p class="pay-note">* 주말·공휴일은 1인 요금이 다르게 적용됩니다. 무통장 입금 지점은 <b>예약금 입금 확인 후 예약이 확정</b>되며, 잔금은 현장에서 결제합니다. 수원·수원2호점은 현장 결제입니다.</p>
           <div class="err-msg" id="errMsg"></div>
-          <button class="submit" id="payBtn">결제하고 예약 확정 <span>→</span></button>
+          <button class="submit" id="payBtn">예약 신청하기 <span>→</span></button>
         </aside>
       </div>
 
@@ -327,7 +328,7 @@
     <div class="done">
       <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg></div>
       <div class="en">RESERVED</div>
-      <div class="t">예약이 완료되었습니다</div>
+      <div class="t">예약 신청이 접수되었습니다</div>
       <div class="num">예약번호<br><b id="rNum">—</b></div>
       <div class="recap" id="rRecap"></div>
       <div class="acts">
@@ -418,6 +419,11 @@
     const weekend = isWeekend(D.date);
     const unit = weekend ? UNIT_WEEKEND : UNIT_WEEKDAY;
 
+    // 결제 정책: 수원·수원2호점 = 현장 결제(예약금 없음), 그 외 = 무통장 예약금 선결제
+    //  · 예약금: 분당서현점 10,000원 / 그 외 무통장 지점 20,000원
+    const ONSITE  = (D.branch==="수원점" || D.branch==="수원2호점");
+    const DEPOSIT = ONSITE ? 0 : (D.branch==="분당서현점" ? 10000 : 20000);
+
     // 요약 채우기
     document.getElementById("sGenre").textContent = D.genre || "";
     document.getElementById("sName").textContent  = D.theme;
@@ -437,6 +443,17 @@
       document.getElementById("sCount").textContent = count+"명";
       document.getElementById("sQty").textContent   = count+"명";
       document.getElementById("sTotal").innerHTML   = won(unit*count)+'<small>원</small>';
+      const payInfo=document.getElementById("sPayInfo");
+      if(payInfo){
+        if(ONSITE){
+          payInfo.innerHTML = `<div class="line"><span>결제 방식</span><span class="v">현장 결제</span></div>`;
+        } else {
+          const bal=Math.max(0, unit*count - DEPOSIT);
+          payInfo.innerHTML =
+            `<div class="line"><span>예약금 (입금)</span><span class="v" style="color:var(--gold)">${won(DEPOSIT)}원</span></div>`+
+            `<div class="line"><span>잔금 (현장 결제)</span><span class="v">${won(bal)}원</span></div>`;
+        }
+      }
     }
     document.getElementById("minus").addEventListener("click",()=>{ if(count>D.min){count--; refreshPrice();} });
     document.getElementById("plus").addEventListener("click", ()=>{ if(count<D.max){count++; refreshPrice();} });
@@ -499,7 +516,7 @@
       const pay=document.querySelector('input[name=pay]:checked').value;
       const request=document.getElementById("fMemo").value.trim();
       const num=makeNum();
-      const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, status:"confirm", cancelled:false, request, ts:Date.now() };
+      const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, status:"pending", cancelled:false, request, ts:Date.now() };
       // 로컬 백업 저장 (최근 30건) — 예약 확인 페이지 조회용
       try{
         const all=JSON.parse(localStorage.getItem("sd_reservations")||"[]"); all.unshift(rec);
@@ -510,7 +527,10 @@
       document.getElementById("rNum").textContent=num;
       document.getElementById("rRecap").innerHTML =
         `<b>${esc(D.branch)}</b> · <b>${esc(D.theme)}</b><br>${esc(D.date)} ${esc(D.time)} · ${count}명<br>`+
-        `결제수단 <b>${esc(pay)}</b> · 결제금액 <b>${won(unit*count)}원</b>`;
+        `테마 금액 <b>${won(unit*count)}원</b><br>`+
+        (ONSITE
+          ? `현장 결제<br><span style="color:#c8a863">관리자 확인 후 예약이 확정됩니다.</span>`
+          : `예약금 <b>${won(DEPOSIT)}원</b> 입금 · 잔금 <b>${won(Math.max(0,unit*count-DEPOSIT))}원</b> 현장 결제<br><span style="color:#c8a863">예약금 입금 확인 후 예약이 확정됩니다.</span>`);
       document.getElementById("doneMask").classList.add("on");
     });
   </script>
