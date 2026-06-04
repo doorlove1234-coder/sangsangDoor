@@ -85,7 +85,7 @@
     .ds-head{ padding:14px 16px; }
     .ds-body{ padding:6px 14px 16px; }
     .slots{ grid-template-columns:repeat(auto-fill,minmax(98px,1fr)); }
-    .modal-b{ max-height:70vh; }
+    .modal-b{ max-height:calc(100vh - 124px); }
   }
 
   .view{ display:none; }
@@ -236,17 +236,17 @@
   .cal-summary .srow .k{ color:var(--sub); } .cal-summary .srow .v{ font-weight:700; }
 
   .daysheet{ overflow:hidden; }
-  .ds-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:18px 20px; border-bottom:1px solid var(--line2); flex-wrap:wrap; }
+  .ds-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:13px 18px; border-bottom:1px solid var(--line2); flex-wrap:wrap; }
   .ds-date{ font-size:17px; font-weight:800; }
   .ds-sub{ font-size:12.5px; color:var(--sub); margin-top:3px; }
   .ds-legend{ display:flex; gap:13px; font-size:12px; color:var(--sub); flex-wrap:wrap; }
   .ds-legend span{ display:flex; align-items:center; gap:6px; }
   .slot-dot{ width:10px; height:10px; border-radius:3px; display:inline-block; }
   .slot-dot.booked{ background:var(--navy); } .slot-dot.open{ background:#fff; border:1.5px solid var(--line); } .slot-dot.blocked{ background:var(--red-bg); border:1.5px solid #f0c4c0; }
-  .ds-body{ padding:8px 20px 20px; max-height:62vh; overflow-y:auto; }
-  .ds-theme{ padding:16px 0; border-bottom:1px solid var(--line2); }
+  .ds-body{ padding:6px 18px 16px; max-height:calc(100vh - 210px); overflow-y:auto; }
+  .ds-theme{ padding:11px 0; border-bottom:1px solid var(--line2); }
   .ds-theme:last-child{ border-bottom:0; }
-  .ds-theme .th-top{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .ds-theme .th-top{ display:flex; align-items:center; gap:12px; margin-bottom:9px; }
   .ds-theme .th-top img{ width:36px; height:48px; border-radius:5px; object-fit:cover; flex:none; background:var(--line); }
   .ds-theme .th-top .nm{ font-size:14.5px; font-weight:700; }
   .ds-theme .th-top .gn{ font-size:12px; color:var(--sub); }
@@ -254,8 +254,8 @@
   .ds-theme .th-top .occ.low{ background:var(--green-bg); color:var(--green); }
   .ds-theme .th-top .occ.mid{ background:var(--amber-bg); color:var(--amber); }
   .ds-theme .th-top .occ.high{ background:var(--red-bg); color:var(--red); }
-  .slots{ display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; }
-  .slot-cell{ border:1px solid var(--line); border-radius:9px; padding:9px 11px; font-size:13px; cursor:default; transition:all .12s; }
+  .slots{ display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:7px; }
+  .slot-cell{ border:1px solid var(--line); border-radius:9px; padding:7px 10px; font-size:13px; cursor:default; transition:all .12s; }
   .slot-cell .tm{ font-weight:700; font-size:13.5px; }
   .slot-cell .who{ font-size:11.5px; color:var(--sub); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .slot-cell.open{ border-style:dashed; color:var(--mut); }
@@ -268,33 +268,33 @@
   .ds-empty .ic{ font-size:32px; margin-bottom:12px; opacity:.6; }
 
   /* ===== 모달 ===== */
-  .mask{ position:fixed; inset:0; background:rgba(20,25,40,.45); backdrop-filter:blur(2px); display:none; align-items:flex-start; justify-content:center; padding:40px 20px; z-index:100; overflow-y:auto; }
+  .mask{ position:fixed; inset:0; background:rgba(20,25,40,.45); backdrop-filter:blur(2px); display:none; align-items:flex-start; justify-content:center; padding:20px 16px; z-index:100; overflow-y:auto; }
   .mask.on{ display:flex; }
   .modal{ width:100%; max-width:620px; background:var(--panel); border-radius:16px; box-shadow:0 30px 80px rgba(20,25,40,.3); overflow:hidden; }
-  .modal-h{ display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--line); }
+  .modal-h{ display:flex; align-items:center; justify-content:space-between; padding:14px 22px; border-bottom:1px solid var(--line); }
   .modal-h h3{ font-size:17px; font-weight:700; }
   .modal-h .x{ width:32px; height:32px; border-radius:8px; border:0; background:var(--line2); color:var(--sub); font-size:18px; }
   .modal-h .x:hover{ background:var(--red-bg); color:var(--red); }
-  .modal-b{ padding:24px; max-height:64vh; overflow-y:auto; }
-  .modal-f{ display:flex; gap:10px; justify-content:flex-end; padding:18px 24px; border-top:1px solid var(--line); background:#fbfbfd; }
+  .modal-b{ padding:16px 22px; max-height:calc(100vh - 132px); overflow-y:auto; }
+  .modal-f{ display:flex; gap:10px; justify-content:flex-end; padding:13px 22px; border-top:1px solid var(--line); background:#fbfbfd; }
 
-  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:11px 14px; }
   @media(max-width:520px){ .form-grid{ grid-template-columns:1fr; } }
-  .fld{ display:flex; flex-direction:column; gap:7px; }
+  .fld{ display:flex; flex-direction:column; gap:5px; }
   .fld.full{ grid-column:1/-1; }
   .fld label{ font-size:12.5px; font-weight:600; color:var(--sub); }
   .fld label .req{ color:var(--red); }
-  .fld input,.fld select,.fld textarea{ border:1px solid var(--line); border-radius:9px; padding:11px 13px; background:var(--panel); }
+  .fld input,.fld select,.fld textarea{ border:1px solid var(--line); border-radius:9px; padding:9px 12px; background:var(--panel); }
   .fld input:focus,.fld select:focus,.fld textarea:focus{ outline:none; border-color:var(--brand); }
-  .fld textarea{ resize:vertical; min-height:80px; line-height:1.6; }
+  .fld textarea{ resize:vertical; min-height:54px; line-height:1.55; }
   .fld .hint{ font-size:11.5px; color:var(--mut); }
 
   /* 이미지 업로드 */
-  .imgup{ display:flex; gap:16px; align-items:flex-start; }
-  .imgup .preview{ width:110px; aspect-ratio:3/4; border-radius:9px; overflow:hidden; border:1px solid var(--line); background:var(--line2); flex:none; display:flex; align-items:center; justify-content:center; color:var(--mut); font-size:12px; }
+  .imgup{ display:flex; gap:13px; align-items:flex-start; }
+  .imgup .preview{ width:84px; aspect-ratio:3/4; border-radius:9px; overflow:hidden; border:1px solid var(--line); background:var(--line2); flex:none; display:flex; align-items:center; justify-content:center; color:var(--mut); font-size:12px; }
   .imgup .preview img{ width:100%; height:100%; object-fit:cover; }
-  .imgup .up-right{ flex:1; display:flex; flex-direction:column; gap:9px; }
-  .imgup .dropzone{ border:2px dashed var(--line); border-radius:9px; padding:16px; text-align:center; color:var(--sub); font-size:13px; cursor:pointer; transition:all .15s; }
+  .imgup .up-right{ flex:1; display:flex; flex-direction:column; gap:7px; }
+  .imgup .dropzone{ border:2px dashed var(--line); border-radius:9px; padding:9px; text-align:center; color:var(--sub); font-size:13px; cursor:pointer; transition:all .15s; }
   .imgup .dropzone:hover,.imgup .dropzone.drag{ border-color:var(--brand); background:var(--brand-bg); color:var(--brand-d); }
 
   /* 난이도 별점 선택 */
@@ -520,7 +520,7 @@
   <div class="modal">
     <div class="modal-h"><h3 id="themeModalTitle">새 테마 추가</h3><button class="x" data-close>×</button></div>
     <div class="modal-b">
-      <div class="fld full" style="margin-bottom:16px">
+      <div class="fld full" style="margin-bottom:11px">
         <label>포스터 이미지</label>
         <div class="imgup">
           <div class="preview" id="imgPreview">미리보기</div>
@@ -559,7 +559,7 @@
         </div>
         <div class="fld full"><label>소개 문구</label><textarea id="fDesc" placeholder="테마 시놉시스를 입력하세요."></textarea></div>
         <div class="fld full"><label>시작 시간 (쉼표로 구분)</label><input type="text" id="fSlots" placeholder="10:00, 12:00, 14:00, 16:00, 18:00, 20:00"></div>
-        <div class="fld full" style="flex-direction:row;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:9px;padding:11px 14px">
+        <div class="fld full" style="flex-direction:row;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:9px;padding:9px 13px">
           <div><label style="margin:0">예약 노출</label><div class="hint">끄면 사이트 예약/테마 목록에서 숨겨집니다</div></div>
           <label class="toggle"><input type="checkbox" id="fActive" checked><span class="tk"></span></label>
         </div>
@@ -837,7 +837,7 @@ let editingResv=null;
 function openResvDetail(r){
   editingResv=r.num;
   $("#resvDetail").innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:11px">
+    <div style="display:flex;flex-direction:column;gap:6px">
       ${detailRow("예약번호",`<b class="num">${esc(r.num)}</b>`)}
       ${detailRow("상태",statusBadge(r))}
       ${detailRow("지점",esc(r.branch))}
@@ -855,13 +855,13 @@ function openResvDetail(r){
     </div>
     ${settleSection(r)}
     ${statusActions(r)}
-    <div class="fld full" style="margin-top:16px"><label>예약자 요청사항</label>
+    <div class="fld full" style="margin-top:12px"><label>예약자 요청사항</label>
       <div style="border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:var(--line2);min-height:44px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:${(r.request&&String(r.request).trim())?"var(--ink)":"var(--mut)"}">${(r.request&&String(r.request).trim())?esc(r.request):"요청사항 없음"}</div></div>
-    <div class="fld full" style="margin-top:16px"><label>관리자 메모</label>
+    <div class="fld full" style="margin-top:12px"><label>관리자 메모</label>
       <textarea id="memoBox" placeholder="고객 특이사항·요청을 기록하세요">${esc(r.memo||"")}</textarea></div>`;
   $("#resvMask").classList.add("on");
 }
-function detailRow(k,v){ return `<div style="display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13.5px"><span style="color:var(--sub)">${k}</span><span style="font-weight:600;text-align:right">${v}</span></div>`; }
+function detailRow(k,v){ return `<div style="display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid var(--line2);font-size:13.5px"><span style="color:var(--sub)">${k}</span><span style="font-weight:600;text-align:right">${v}</span></div>`; }
 // 예약시간 24시간 이내 여부 (취소 시 예약금 몰수 적용 기준)
 function within24h(r){ const dt=resvDateTime(r); return !!dt && (dt.getTime()-Date.now() < 24*3600*1000); }
 // 정산 (인원 조절 + 직접 입력) — 진행 중 예약만
@@ -869,7 +869,7 @@ function settleSection(r){
   if(isVoid(r)) return "";
   const total=+r.total||0; const unit = r.count ? Math.round(total/r.count) : 0;
   const even = r.count && (unit*r.count===total);   // 인당 균등가면 단가 표시, 아니면 직접입력 정산
-  return `<div style="margin-top:16px;padding:13px 15px;background:var(--line2);border-radius:10px">
+  return `<div style="margin-top:12px;padding:11px 14px;background:var(--line2);border-radius:10px">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
       <span style="font-size:12.5px;font-weight:700;color:var(--sub)">정산 (인원·금액)</span>
       <div style="display:flex;align-items:center;gap:6px">
@@ -902,7 +902,7 @@ function statusActions(r){
   } else {
     btns=`<button class="btn ghost" data-st="confirm">예약확정으로 되돌리기</button>`;
   }
-  return `<div style="margin-top:16px">${note}<div style="display:flex;gap:8px;flex-wrap:wrap">${btns}</div></div>`;
+  return `<div style="margin-top:12px">${note}<div style="display:flex;gap:8px;flex-wrap:wrap">${btns}</div></div>`;
 }
 // 상세 모달 내 정산(인원·금액) 버튼 클릭
 $("#resvDetail").addEventListener("click",e=>{
