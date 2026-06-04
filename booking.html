@@ -423,6 +423,14 @@
     //  · 예약금: 분당서현점 10,000원 / 그 외 무통장 지점 20,000원
     const ONSITE  = (D.branch==="수원점" || D.branch==="수원2호점");
     const DEPOSIT = ONSITE ? 0 : (D.branch==="분당서현점" ? 10000 : 20000);
+    // 무통장 입금 계좌 (현장 결제 지점은 계좌 없음)
+    const ACCOUNTS = {
+      "대학로점":"신한 140-013-822758 상상의문 대학로점",
+      "분당서현점":"국민 534201-04-185148 김리나",
+      "광주점":"국민 754201-04-128031 조준호",
+      "부평점":"우리은행 1002-355-497203 이원일"
+    };
+    const ACCOUNT = ACCOUNTS[D.branch] || "";
 
     // 요약 채우기
     document.getElementById("sGenre").textContent = D.genre || "";
@@ -451,7 +459,8 @@
           const bal=Math.max(0, unit*count - DEPOSIT);
           payInfo.innerHTML =
             `<div class="line"><span>예약금 (입금)</span><span class="v" style="color:var(--gold)">${won(DEPOSIT)}원</span></div>`+
-            `<div class="line"><span>잔금 (현장 결제)</span><span class="v">${won(bal)}원</span></div>`;
+            `<div class="line"><span>잔금 (현장 결제)</span><span class="v">${won(bal)}원</span></div>`+
+            (ACCOUNT?`<div style="margin-top:10px;padding:10px 12px;background:rgba(200,168,99,.12);border:1px solid rgba(200,168,99,.3);border-radius:8px;font-size:12.5px;line-height:1.5;color:#e7ddc6">입금 계좌<br><b style="color:var(--gold)">${esc(ACCOUNT)}</b></div>`:"");
         }
       }
     }
@@ -530,7 +539,8 @@
         `테마 금액 <b>${won(unit*count)}원</b><br>`+
         (ONSITE
           ? `현장 결제<br><span style="color:#c8a863">관리자 확인 후 예약이 확정됩니다.</span>`
-          : `예약금 <b>${won(DEPOSIT)}원</b> 입금 · 잔금 <b>${won(Math.max(0,unit*count-DEPOSIT))}원</b> 현장 결제<br><span style="color:#c8a863">예약금 입금 확인 후 예약이 확정됩니다.</span>`);
+          : `예약금 <b>${won(DEPOSIT)}원</b> 입금 · 잔금 <b>${won(Math.max(0,unit*count-DEPOSIT))}원</b> 현장 결제<br><span style="color:#c8a863">예약금 입금 확인 후 예약이 확정됩니다.</span>`+
+            (ACCOUNT?`<div style="margin-top:10px;padding:10px 12px;background:rgba(200,168,99,.12);border:1px solid rgba(200,168,99,.3);border-radius:8px;font-size:13px;line-height:1.5">입금 계좌<br><b style="color:#c8a863">${esc(ACCOUNT)}</b></div>`:""));
       document.getElementById("doneMask").classList.add("on");
     });
   </script>
