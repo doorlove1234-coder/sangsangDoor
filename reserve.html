@@ -224,6 +224,8 @@
   .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
   @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/themes-store.js"></script>
 </head>
 <body>
 
@@ -640,8 +642,24 @@
     });
 
     const q=new URLSearchParams(location.search);
-    initBranches(q.get("branch"), q.get("theme"));
-    renderCal();
+    function startReserve(){ initBranches(q.get("branch"), q.get("theme")); renderCal(); }
+    // 관리자 테마(클라우드) 가 있으면 지점별 테마 목록을 덮어쓰기, 없으면 기존 데이터로 폴백
+    if(window.SDThemes && window.SDThemes.enabled){
+      window.SDThemes.byBranch()
+        .then(function(g){
+          if(g && Object.keys(g).length){
+            Object.keys(g).forEach(function(b){
+              var mapped = g[b].map(window.SDThemes.rowToReserve).filter(function(t){ return t.active!==false; });
+              if(mapped.length){
+                if(!BR[b]) BR[b] = { info:"", hours:"평일 12:00–23:00 · 주말·공휴일 10:00–23:00", themes:[] };
+                BR[b].themes = mapped;
+              }
+            });
+          }
+        })
+        .catch(function(e){ console.warn("[reserve] 테마 동기화 실패", e); })
+        .then(startReserve);
+    } else { startReserve(); }
   </script>
 
 <script>(function(){var b=document.getElementById("navBurger"),n=document.getElementById("navMenu");if(b&&n){b.addEventListener("click",function(){b.classList.toggle("on");n.classList.toggle("open");});}})();</script>

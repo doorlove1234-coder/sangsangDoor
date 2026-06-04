@@ -8,6 +8,7 @@
 <!-- Supabase 연동 (예약 데이터 클라우드 공유) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
+<script src="js/themes-store.js"></script>
 <style>
   :root{
     --bg:#f5f6fa; --panel:#ffffff; --ink:#1c2233; --sub:#6b7280; --mut:#9aa1ad;
@@ -667,8 +668,8 @@ function lsGet(k,def){ try{ const v=localStorage.getItem(k); return v?JSON.parse
 function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 
 // 초기 시드
-let THEMES = lsGet("sd_admin_themes", null);
-if(!THEMES){ THEMES = JSON.parse(JSON.stringify(THEME_SEED)); lsSet("sd_admin_themes", THEMES); }
+let THEMES = lsGet("sd_admin_themes_v2", null);
+if(!THEMES){ THEMES = (window.SDThemes ? SDThemes.seedAdmin() : JSON.parse(JSON.stringify(THEME_SEED))); lsSet("sd_admin_themes_v2", THEMES); }
 let HOURS = lsGet("sd_admin_hours", null);
 if(!HOURS){ HOURS = {}; BRANCHES.forEach(b=>HOURS[b]=JSON.parse(JSON.stringify(DEF_HOURS))); lsSet("sd_admin_hours", HOURS); }
 let BLOCKS = lsGet("sd_admin_blocks", null);
@@ -676,7 +677,7 @@ if(!BLOCKS){ BLOCKS = {}; BRANCHES.forEach(b=>BLOCKS[b]=[]); lsSet("sd_admin_blo
 let POSTS = lsGet("sd_admin_posts", null);
 if(!POSTS){ POSTS = JSON.parse(JSON.stringify(POST_SEED)); lsSet("sd_admin_posts", POSTS); }
 
-function saveThemes(){ lsSet("sd_admin_themes", THEMES); }
+function saveThemes(){ lsSet("sd_admin_themes_v2", THEMES); if(window.SDThemes) SDThemes.saveBranch(BR, THEMES[BR]||[]); }
 function saveHours(){ lsSet("sd_admin_hours", HOURS); }
 function saveBlocks(){ lsSet("sd_admin_blocks", BLOCKS); }
 function savePosts(){ lsSet("sd_admin_posts", POSTS); }
@@ -1194,6 +1195,29 @@ if(window.SD){
   window.SD.list()
     .then(merged=>{ if(Array.isArray(merged)){ setResv(merged); renderAll(); } })
     .catch(e=>console.warn("[admin] 클라우드 동기화 실패", e));
+}
+
+/* ============ 테마 클라우드 동기화 ============ */
+if(window.SDThemes && SDThemes.enabled){
+  SDThemes.list()
+    .then(rows=>{
+      if(rows && rows.length){
+        // 클라우드에 데이터가 있으면 지점별로 THEMES 를 덮어쓰기(클라우드 우선)
+        const g={}; rows.forEach(r=>{ (g[r.branch]=g[r.branch]||[]).push(r); });
+        Object.keys(g).forEach(b=>{
+          g[b].sort((a,c)=>(a.sort||0)-(c.sort||0));
+          THEMES[b]=g[b].map(SDThemes.rowToAdmin);
+        });
+        lsSet("sd_admin_themes_v2", THEMES);
+        if(curView==="theme") renderTheme();
+        if(curView==="cal") renderCal();
+        if(curView==="dash") renderDash();
+      } else {
+        // 클라우드가 비어있으면 현재 테마를 올려 사이트에 게시 (최초 1회 시드)
+        BRANCHES.forEach(b=> SDThemes.saveBranch(b, THEMES[b]||[]));
+      }
+    })
+    .catch(e=>console.warn("[admin] 테마 동기화 실패", e));
 }
 </script>
 </body>

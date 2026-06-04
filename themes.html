@@ -268,6 +268,8 @@
   .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
   @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/themes-store.js"></script>
 </head>
 <body>
 
@@ -457,10 +459,22 @@
       });
     });
 
-    render("대학로점");
+    // 관리자 테마(클라우드) 를 themeData 에 반영 — 기존 상세 소개문구(리치 텍스트)는 이름으로 매칭해 보존
+    function applyCloudThemes(g){
+      if(!g || !Object.keys(g).length) return;
+      Object.keys(g).forEach(function(b){
+        var mapped = g[b].map(window.SDThemes.rowToCard).filter(function(t){ return t.active!==false; });
+        if(!mapped.length) return;
+        var prev = themeData[b] || [];
+        mapped.forEach(function(t){
+          var old = prev.find(function(p){ return p.name === t.name; });
+          if(old && old.desc) t.desc = old.desc;   // 기존 마케팅 소개문구 유지, 신규는 관리자 desc
+        });
+        themeData[b] = mapped;
+      });
+    }
 
-    // index.html 카드 뽑기 → 바로가기 딥링크: ?branch=...&theme=...
-    (function () {
+    function runDeepLink(){
       var qs = new URLSearchParams(location.search);
       var qBranch = qs.get('branch'), qTheme = qs.get('theme');
       if (qBranch && themeData[qBranch]) {
@@ -484,7 +498,16 @@
           }, 280);
         }
       }
-    })();
+    }
+
+    function startThemes(){ render("대학로점"); runDeepLink(); }
+
+    if(window.SDThemes && window.SDThemes.enabled){
+      window.SDThemes.byBranch()
+        .then(function(g){ applyCloudThemes(g); })
+        .catch(function(e){ console.warn("[themes] 테마 동기화 실패", e); })
+        .then(startThemes);
+    } else { startThemes(); }
   </script>
 
 <script>(function(){var b=document.getElementById("navBurger"),n=document.getElementById("navMenu");if(b&&n){b.addEventListener("click",function(){b.classList.toggle("on");n.classList.toggle("open");});}})();</script>
