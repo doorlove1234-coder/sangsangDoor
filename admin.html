@@ -849,7 +849,8 @@ function within24h(r){ const dt=resvDateTime(r); return !!dt && (dt.getTime()-Da
 // 정산 (인원 조절 + 직접 입력) — 진행 중 예약만
 function settleSection(r){
   if(isVoid(r)) return "";
-  const unit = r.count ? Math.round((+r.total||0)/r.count) : 0;
+  const total=+r.total||0; const unit = r.count ? Math.round(total/r.count) : 0;
+  const even = r.count && (unit*r.count===total);   // 인당 균등가면 단가 표시, 아니면 직접입력 정산
   return `<div style="margin-top:16px;padding:13px 15px;background:var(--line2);border-radius:10px">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
       <span style="font-size:12.5px;font-weight:700;color:var(--sub)">정산 (인원·금액)</span>
@@ -857,12 +858,12 @@ function settleSection(r){
         <button class="mini" data-set="dec">−</button>
         <b style="min-width:46px;text-align:center">${r.count||0}명</b>
         <button class="mini" data-set="inc">+</button>
-        <button class="mini" data-set="manual">직접 입력</button>
+        <button class="mini" data-set="manual">총액 직접입력</button>
       </div>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:13.5px">
-      <span style="color:var(--sub)">1인 ${won(unit)}원 × ${r.count||0}명</span>
-      <b>${won(+r.total||0)}원</b>
+      <span style="color:var(--sub)">${even?`인당 ${won(unit)}원 × ${r.count||0}명`:`직접 입력 정산 · ${r.count||0}명`}</span>
+      <b>${won(total)}원</b>
     </div>
   </div>`;
 }
@@ -894,7 +895,7 @@ $("#resvDetail").addEventListener("click",e=>{
     if(setBtn.dataset.set==="inc"){ r.count=(+r.count||0)+1; r.total=unit*r.count; }
     else if(setBtn.dataset.set==="dec"){ if((+r.count||0)>1){ r.count=r.count-1; r.total=unit*r.count; } }
     else if(setBtn.dataset.set==="manual"){
-      const v=prompt("실수령액(원)을 입력하세요", String(+r.total||0)); if(v===null) return;
+      const v=prompt("총 정산 금액(원)을 입력하세요\n예) 3명 중 1명 1만원 할인 → 50000", String(+r.total||0)); if(v===null) return;
       const n=parseInt(String(v).replace(/[^0-9]/g,"")); if(isNaN(n)) return; r.total=n;
     }
     setResv(all); renderResv(); if(curView==="dash") renderDash(); if(curView==="cal") renderCal();
