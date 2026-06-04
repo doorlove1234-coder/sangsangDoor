@@ -366,8 +366,10 @@
 
   <script>
     const P = "img/main/poster/";
-    const fearTxt = f => f <= 1 ? "거의 없음" : f === 2 ? "낮음" : f === 3 ? "보통" : f === 4 ? "높음" : "매우 높음";
-    const actTxt  = a => a <= 1 ? "낮음" : a === 2 ? "보통" : a === 3 ? "다소 높음" : a === 4 ? "높음" : "매우 높음";
+    // 공포도·활동성 통일 기준 (1~5): 거의 없음 / 낮음 / 보통 / 높음 / 매우 높음
+    const levelTxt = v => v <= 1 ? "거의 없음" : v === 2 ? "낮음" : v === 3 ? "보통" : v === 4 ? "높음" : "매우 높음";
+    const fearTxt = levelTxt;
+    const actTxt  = levelTxt;
     const stars = d => "★".repeat(d) + "☆".repeat(5 - d);
 
     // themes.html 카드용 <br> 줄바꿈을 reserve.html 넓은 본문에 맞게 정리:
