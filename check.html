@@ -6,6 +6,9 @@
 <title>상상의 문 — 예약 확인</title>
 
 <link rel="stylesheet" href="css/fonts.css" />
+<!-- Supabase 연동 (예약 데이터 클라우드 공유) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -280,13 +283,24 @@
         if(b.dataset.act==="copy"){
           navigator.clipboard?.writeText(num); b.textContent="복사됨 ✓"; setTimeout(()=>b.textContent="예약번호 복사",1500);
         } else if(b.dataset.act==="cancel"){
-          const all=load(); const i=all.findIndex(x=>x.num===num); if(i>=0){ all[i].cancelled=true; save(all); doLookup(true); }
+          if(window.SD){
+            window.SD.update(num,{cancelled:true,status:"cancel"}).then(()=>doLookup(true));
+          } else {
+            const all=load(); const i=all.findIndex(x=>x.num===num); if(i>=0){ all[i].cancelled=true; save(all); doLookup(true); }
+          }
         }
       }));
     }
 
+    function filterLocal(q){
+      return load().filter(r=>{
+        const okName = !q.name || (r.name||"").includes(q.name);
+        const okPhone= !q.phone || (r.phone||"").replace(/\D/g,"").includes(q.phone);
+        return okName && okPhone;
+      });
+    }
     let lastQuery=null;
-    function doLookup(keep){
+    async function doLookup(keep){
       const name=document.getElementById("qName").value.trim();
       const phone=document.getElementById("qPhone").value.replace(/\D/g,"");
       msg.className="msg";
@@ -295,14 +309,15 @@
         lastQuery={name,phone};
       }
       const q=lastQuery||{name:"",phone:""};
-      let list=load();
-      list=list.filter(r=>{
-        const okName = !q.name || (r.name||"").includes(q.name);
-        const okPhone= !q.phone || (r.phone||"").replace(/\D/g,"").includes(q.phone);
-        return okName && okPhone;
-      });
+      // Supabase 우선 조회 (클라우드 + 로컬 백업 병합). 실패 시 로컬로 폴백.
+      let list;
+      if(window.SD){
+        try{ list = await window.SD.find({name:q.name, phone:q.phone}); }
+        catch(e){ list = filterLocal(q); }
+      } else {
+        list = filterLocal(q);
+      }
       render(list);
-      if(!list.length && !keep){ /* empty 상태가 표시됨 */ }
     }
     document.getElementById("lookupBtn").addEventListener("click",()=>doLookup(false));
     document.querySelectorAll("#qName,#qPhone").forEach(el=>el.addEventListener("keydown",e=>{ if(e.key==="Enter") doLookup(false); }));

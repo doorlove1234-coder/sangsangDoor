@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>상상의 문 — 관리자</title>
 <link rel="stylesheet" href="css/fonts.css" />
+<!-- Supabase 연동 (예약 데이터 클라우드 공유) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <style>
   :root{
     --bg:#f5f6fa; --panel:#ffffff; --ink:#1c2233; --sub:#6b7280; --mut:#9aa1ad;
@@ -777,8 +780,10 @@ $("#resvBody").addEventListener("click",e=>{
   if(btn.dataset.act==="status"){
     const cur=statusOf(r); const next=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length];
     r.status=next; r.cancelled=(next==="cancel"); setResv(all); renderResv(); toast("상태 → "+STATUS_LAB[next]);
+    if(window.SD) window.SD.update(num,{status:next, cancelled:(next==="cancel")});
   } else if(btn.dataset.act==="del"){
     setResv(all.filter(x=>x.num!==num)); renderResv(); toast("예약을 삭제했습니다");
+    if(window.SD) window.SD.remove(num);
   } else if(btn.dataset.act==="detail"){
     openResvDetail(r);
   }
@@ -805,7 +810,7 @@ function openResvDetail(r){
   $("#resvMask").classList.add("on");
 }
 function detailRow(k,v){ return `<div style="display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13.5px"><span style="color:var(--sub)">${k}</span><span style="font-weight:600;text-align:right">${v}</span></div>`; }
-$("#saveMemo").addEventListener("click",()=>{ const all=getResv(); const r=all.find(x=>x.num===editingResv); if(r){ r.memo=$("#memoBox").value; setResv(all); } closeMasks(); toast("메모를 저장했습니다"); });
+$("#saveMemo").addEventListener("click",()=>{ const all=getResv(); const r=all.find(x=>x.num===editingResv); if(r){ r.memo=$("#memoBox").value; setResv(all); if(window.SD) window.SD.update(r.num,{memo:r.memo}); } closeMasks(); toast("메모를 저장했습니다"); });
 
 // 샘플 예약 생성
 $("#seedBtn").addEventListener("click",()=>{
@@ -1069,6 +1074,13 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeMasks(); });
 
 /* ============ 초기 ============ */
 go("dash");
+
+/* ============ 클라우드 동기화 (진입 시 Supabase 예약 불러오기) ============ */
+if(window.SD){
+  window.SD.list()
+    .then(merged=>{ if(Array.isArray(merged)){ setResv(merged); renderAll(); } })
+    .catch(e=>console.warn("[admin] 클라우드 동기화 실패", e));
+}
 </script>
 </body>
 </html>
