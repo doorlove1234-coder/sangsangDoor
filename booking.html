@@ -494,8 +494,9 @@
       if(!document.querySelector("#chk1 input").checked || !document.querySelector("#chk2 input").checked)
         return showErr("필수 약관에 동의해주세요.");
       const pay=document.querySelector('input[name=pay]:checked').value;
+      const request=document.getElementById("fMemo").value.trim();
       const num=makeNum();
-      const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, status:"confirm", cancelled:false, ts:Date.now() };
+      const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, status:"confirm", cancelled:false, request, ts:Date.now() };
       // 로컬 백업 저장 (최근 30건) — 예약 확인 페이지 조회용
       try{
         const all=JSON.parse(localStorage.getItem("sd_reservations")||"[]"); all.unshift(rec);

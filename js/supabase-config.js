@@ -6,7 +6,8 @@
 
    예약 객체 구조:
    { num, name, phone, branch, theme, date, time,
-     count, pay, total, status, cancelled, memo, ts }
+     count, pay, total, status, cancelled, request, memo, ts }
+   - request 는 예약자가 입력한 요청사항, memo 는 관리자 메모.
    - num 을 unique 키로 upsert 한다.
 
    사용 전 <head> 에 아래 두 스크립트를 순서대로 로드해야 한다:
@@ -24,7 +25,7 @@
   var LS_KEY = "sd_reservations";
   // Supabase 로 보낼 때 유지할 필드 화이트리스트
   var FIELDS = ["num", "name", "phone", "branch", "theme", "date", "time",
-                "count", "pay", "total", "status", "cancelled", "memo", "ts"];
+                "count", "pay", "total", "status", "cancelled", "request", "memo", "ts"];
 
   /* ---------- Supabase 클라이언트 초기화 ---------- */
   var client = null;

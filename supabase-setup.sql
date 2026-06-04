@@ -24,10 +24,14 @@ create table if not exists public.reservations (
   total      bigint,                     -- 결제금액
   status     text default 'confirm',     -- confirm / done / noshow / cancel
   cancelled  boolean default false,      -- 취소 여부
+  request    text,                       -- 예약자 요청사항 (예약 시 고객 입력)
   memo       text,                       -- 관리자 메모
   ts         bigint,                     -- 생성 타임스탬프 (Date.now())
   created_at timestamptz default now()   -- 레코드 생성 시각
 );
+
+-- 기존 테이블에도 요청사항 컬럼 추가 (이미 있으면 무시)
+alter table public.reservations add column if not exists request text;
 
 -- 조회 성능용 인덱스 (이름/연락처 검색, 최신순 정렬)
 create index if not exists reservations_name_idx  on public.reservations (name);

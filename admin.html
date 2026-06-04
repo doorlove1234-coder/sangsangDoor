@@ -805,6 +805,8 @@ function openResvDetail(r){
       ${detailRow("결제수단",esc(r.pay||"-"))}
       ${detailRow("결제금액",`${won(r.total)}원`)}
     </div>
+    <div class="fld full" style="margin-top:16px"><label>예약자 요청사항</label>
+      <div style="border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:var(--line2);min-height:44px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:${(r.request&&String(r.request).trim())?"var(--ink)":"var(--mut)"}">${(r.request&&String(r.request).trim())?esc(r.request):"요청사항 없음"}</div></div>
     <div class="fld full" style="margin-top:16px"><label>관리자 메모</label>
       <textarea id="memoBox" placeholder="고객 특이사항·요청을 기록하세요">${esc(r.memo||"")}</textarea></div>`;
   $("#resvMask").classList.add("on");
