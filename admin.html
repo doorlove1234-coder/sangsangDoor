@@ -407,7 +407,8 @@
             <button class="chip" data-f="pending">입금대기</button>
             <button class="chip" data-f="confirm">예약확정</button>
             <button class="chip" data-f="noshow">노쇼</button>
-            <button class="chip" data-f="cancel">취소</button>
+            <button class="chip" data-f="cancel">취소(환불)</button>
+            <button class="chip" data-f="forfeit">취소(예약금)</button>
             <button class="chip" data-f="nopay">미입금취소</button>
           </div>
           <div class="spacer" style="flex:1"></div>
@@ -753,12 +754,12 @@ function depositOf(b){ return isOnsite(b)?0:(b==="분당서현점"?10000:20000);
 // 예약 1건이 대시보드 매출에 반영하는 금액
 function revenueOf(r){
   const s=statusOf(r);
-  if(s==="confirm"||s==="done") return +r.total||0;            // 확정 → 테마 전체
-  if(s==="noshow") return isOnsite(r.branch)?0:depositOf(r.branch); // 노쇼 → 무통장은 예약금만, 현장은 0
-  return 0;                                                     // 입금대기/취소/미입금취소
+  if(s==="confirm"||s==="done") return +r.total||0;            // 확정 → 정산 금액(실수령액)
+  if(s==="noshow"||s==="forfeit") return isOnsite(r.branch)?0:depositOf(r.branch); // 노쇼·예약금몰수 → 무통장 예약금만, 현장 0
+  return 0;                                                     // 입금대기/취소(환불)/미입금취소
 }
-// 취소류(취소·미입금취소)는 예약 수·슬롯 집계에서 제외
-function isVoid(r){ const s=statusOf(r); return s==="cancel"||s==="nopay"||r.cancelled; }
+// 취소류(취소·예약금몰수·미입금취소)는 예약 수·슬롯 집계에서 제외
+function isVoid(r){ const s=statusOf(r); return s==="cancel"||s==="forfeit"||s==="nopay"||r.cancelled; }
 // 입금대기인데 예약시간이 지난 건 (입금기한 초과)
 function resvDateTime(r){ const m=(r.date||"").match(/(\d+)\.(\d+)\.(\d+)/); if(!m) return null;
   const t=(r.time||"").match(/(\d+):(\d+)/); return new Date(+m[1],+m[2]-1,+m[3], t?+t[1]:23, t?+t[2]:59); }
@@ -766,7 +767,7 @@ function isOverdue(r){ if(statusOf(r)!=="pending") return false; const dt=resvDa
 function pendingLabel(r){ return isOnsite(r.branch)?"확인대기":"입금대기"; }
 function statusBadge(r){ const s=statusOf(r);
   if(s==="pending"){ const od=isOverdue(r); return `<span class="badge ${od?'overdue':'pending'}">${pendingLabel(r)}${od?' ⏰초과':''}</span>`; }
-  const map={confirm:["confirm","예약확정"],done:["done","방문완료"],cancel:["cancel","취소"],noshow:["noshow","노쇼"],nopay:["nopay","미입금취소"]};
+  const map={confirm:["confirm","예약확정"],done:["done","방문완료"],cancel:["cancel","취소"],forfeit:["nopay","취소(예약금)"],noshow:["noshow","노쇼"],nopay:["nopay","미입금취소"]};
   const m=map[s]||map.confirm; return `<span class="badge ${m[0]}">${m[1]}</span>`; }
 let resvFilterVal="all", resvQuery="";
 function renderResv(){
@@ -794,7 +795,7 @@ $("#resvFilter").addEventListener("click",e=>{ const c=e.target.closest(".chip")
   $$("#resvFilter .chip").forEach(x=>x.classList.remove("on")); c.classList.add("on"); resvFilterVal=c.dataset.f; renderResv(); });
 $("#resvSearch").addEventListener("input",e=>{ resvQuery=e.target.value.trim(); renderResv(); });
 
-const STATUS_LAB={pending:"입금대기",confirm:"예약확정",done:"방문완료",noshow:"노쇼",cancel:"취소",nopay:"미입금취소"};
+const STATUS_LAB={pending:"입금대기",confirm:"예약확정",done:"방문완료",noshow:"노쇼",cancel:"취소(환불)",forfeit:"취소(예약금몰수)",nopay:"미입금취소"};
 // 상태 변경 (로컬 + 클라우드 + 화면 갱신)
 function setStatus(num, st){
   const all=getResv(); const r=all.find(x=>x.num===num); if(!r) return;
@@ -828,12 +829,13 @@ function openResvDetail(r){
       ${detailRow("예약자",esc(r.name||"-"))}
       ${detailRow("연락처",esc(r.phone||"-"))}
       ${detailRow("결제수단",esc(r.pay||"-"))}
-      ${detailRow("테마 금액",`${won(r.total)}원`)}
+      ${detailRow("정산 금액",`${won(r.total)}원`)}
       ${isOnsite(r.branch)
         ? detailRow("결제 방식","현장 결제")
         : detailRow("예약금(입금)",`${won(depositOf(r.branch))}원`)+detailRow("잔금(현장)",`${won(Math.max(0,(+r.total||0)-depositOf(r.branch)))}원`)}
       ${detailRow("매출 반영액",`<b>${won(revenueOf(r))}원</b>`)}
     </div>
+    ${settleSection(r)}
     ${statusActions(r)}
     <div class="fld full" style="margin-top:16px"><label>예약자 요청사항</label>
       <div style="border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:var(--line2);min-height:44px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:${(r.request&&String(r.request).trim())?"var(--ink)":"var(--mut)"}">${(r.request&&String(r.request).trim())?esc(r.request):"요청사항 없음"}</div></div>
@@ -842,17 +844,64 @@ function openResvDetail(r){
   $("#resvMask").classList.add("on");
 }
 function detailRow(k,v){ return `<div style="display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13.5px"><span style="color:var(--sub)">${k}</span><span style="font-weight:600;text-align:right">${v}</span></div>`; }
+// 예약시간 24시간 이내 여부 (취소 시 예약금 몰수 적용 기준)
+function within24h(r){ const dt=resvDateTime(r); return !!dt && (dt.getTime()-Date.now() < 24*3600*1000); }
+// 정산 (인원 조절 + 직접 입력) — 진행 중 예약만
+function settleSection(r){
+  if(isVoid(r)) return "";
+  const unit = r.count ? Math.round((+r.total||0)/r.count) : 0;
+  return `<div style="margin-top:16px;padding:13px 15px;background:var(--line2);border-radius:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <span style="font-size:12.5px;font-weight:700;color:var(--sub)">정산 (인원·금액)</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="mini" data-set="dec">−</button>
+        <b style="min-width:46px;text-align:center">${r.count||0}명</b>
+        <button class="mini" data-set="inc">+</button>
+        <button class="mini" data-set="manual">직접 입력</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:13.5px">
+      <span style="color:var(--sub)">1인 ${won(unit)}원 × ${r.count||0}명</span>
+      <b>${won(+r.total||0)}원</b>
+    </div>
+  </div>`;
+}
 // 상태별 액션 버튼
 function statusActions(r){
-  const s=statusOf(r); let b="";
-  if(s==="pending"){ b=`<button class="btn" data-st="confirm">예약확정</button><button class="btn ghost" data-st="nopay">미입금취소</button>`; }
-  else if(s==="confirm"||s==="done"){ b=`<button class="btn ghost" data-st="noshow">노쇼</button><button class="btn ghost" data-st="cancel">취소</button>`; }
-  else { b=`<button class="btn ghost" data-st="confirm">예약확정으로 되돌리기</button>`; }
-  const od=isOverdue(r)?`<div style="color:var(--red);font-size:12.5px;margin-bottom:8px">⏰ 예약시간이 지났습니다. 입금 미확인 시 [미입금취소] 처리하세요.</div>`:"";
-  return `<div style="margin-top:16px">${od}<div style="display:flex;gap:8px;flex-wrap:wrap">${b}</div></div>`;
+  const s=statusOf(r); let note="", btns="";
+  if(s==="pending"){
+    btns=`<button class="btn" data-st="confirm">예약확정</button><button class="btn ghost" data-st="nopay">미입금취소</button>`;
+    if(isOverdue(r)) note=`<div style="color:var(--red);font-size:12.5px;margin-bottom:8px">⏰ 예약시간이 지났습니다. 입금 미확인 시 [미입금취소] 처리하세요.</div>`;
+  } else if(s==="confirm"||s==="done"){
+    const w24=within24h(r);
+    const refund=`<button class="btn ghost" data-st="cancel">취소 · 환불</button>`;
+    const forfeit=`<button class="btn ghost" data-st="forfeit">취소 · 예약금 몰수</button>`;
+    btns=`<button class="btn ghost" data-st="noshow">노쇼</button>`+(w24?forfeit+refund:refund+forfeit);
+    note = w24
+      ? `<div style="color:var(--red);font-size:12.5px;margin-bottom:8px">⏰ 예약시간 24시간 이내 — 취소 시 <b>예약금 몰수</b>가 권장됩니다.</div>`
+      : `<div style="color:var(--sub);font-size:12.5px;margin-bottom:8px">24시간 이전 — 정상 취소(환불) 가능합니다.</div>`;
+  } else {
+    btns=`<button class="btn ghost" data-st="confirm">예약확정으로 되돌리기</button>`;
+  }
+  return `<div style="margin-top:16px">${note}<div style="display:flex;gap:8px;flex-wrap:wrap">${btns}</div></div>`;
 }
-// 상세 모달 내 상태 버튼 클릭
+// 상세 모달 내 정산(인원·금액) 버튼 클릭
 $("#resvDetail").addEventListener("click",e=>{
+  const setBtn=e.target.closest("button[data-set]");
+  if(setBtn && editingResv){
+    const all=getResv(); const r=all.find(x=>x.num===editingResv); if(!r) return;
+    const unit = r.count ? Math.round((+r.total||0)/r.count) : 0;
+    if(setBtn.dataset.set==="inc"){ r.count=(+r.count||0)+1; r.total=unit*r.count; }
+    else if(setBtn.dataset.set==="dec"){ if((+r.count||0)>1){ r.count=r.count-1; r.total=unit*r.count; } }
+    else if(setBtn.dataset.set==="manual"){
+      const v=prompt("실수령액(원)을 입력하세요", String(+r.total||0)); if(v===null) return;
+      const n=parseInt(String(v).replace(/[^0-9]/g,"")); if(isNaN(n)) return; r.total=n;
+    }
+    setResv(all); renderResv(); if(curView==="dash") renderDash(); if(curView==="cal") renderCal();
+    if(window.SD) window.SD.update(r.num,{count:r.count,total:r.total});
+    toast("정산 금액을 갱신했습니다"); openResvDetail(r); return;
+  }
+  // 상태 변경 버튼
   const b=e.target.closest("button[data-st]"); if(!b||!editingResv) return;
   setStatus(editingResv, b.dataset.st);
   const r=getResv().find(x=>x.num===editingResv); if(r) openResvDetail(r);

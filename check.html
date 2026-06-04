@@ -242,11 +242,15 @@
     const depB = b => isOnsiteB(b)?0:(b==="분당서현점"?10000:20000);
     const ACCOUNTS = {"대학로점":"신한 140-013-822758 상상의문 대학로점","분당서현점":"국민 534201-04-185148 김리나","광주점":"국민 754201-04-128031 조준호","부평점":"우리은행 1002-355-497203 이원일"};
     const stOf = r => r.status || (r.cancelled?"cancel":"confirm");
-    const isCanc = r => { const s=stOf(r); return s==="cancel"||s==="nopay"||r.cancelled; };
+    const isCanc = r => { const s=stOf(r); return s==="cancel"||s==="forfeit"||s==="nopay"||r.cancelled; };
     const isClosed = r => { const s=stOf(r); return isCanc(r)||s==="noshow"; };  // 종료(버튼 숨김·흐림)
     function stateLabel(r){ const s=stOf(r);
       if(s==="pending") return isOnsiteB(r.branch)?"확인대기":"입금대기";
-      return ({confirm:"예약 확정",done:"예약 확정",noshow:"예약 종료",cancel:"취소됨",nopay:"미입금 취소"})[s]||"예약 확정"; }
+      return ({confirm:"예약 확정",done:"예약 확정",noshow:"예약 종료",cancel:"취소됨",forfeit:"취소됨",nopay:"미입금 취소"})[s]||"예약 확정"; }
+    // 예약시간 24시간 이내 여부 (이내 취소는 예약금 환불 불가 → forfeit)
+    function within24c(r){ const m=(r.date||"").match(/(\d+)\.(\d+)\.(\d+)/); if(!m) return false;
+      const t=(r.time||"").match(/(\d+):(\d+)/); const dt=new Date(+m[1],+m[2]-1,+m[3],t?+t[1]:23,t?+t[2]:59);
+      return (dt.getTime()-Date.now())<24*3600*1000; }
     const results = document.getElementById("results");
     const empty = document.getElementById("empty");
     const msg = document.getElementById("msg");
@@ -297,10 +301,17 @@
         if(b.dataset.act==="copy"){
           navigator.clipboard?.writeText(num); b.textContent="복사됨 ✓"; setTimeout(()=>b.textContent="예약번호 복사",1500);
         } else if(b.dataset.act==="cancel"){
+          const r=list.find(x=>x.num===num)||{};
+          const w24=within24c(r); const dep=isOnsiteB(r.branch)?0:depB(r.branch);
+          const warn=w24
+            ? (dep?`예약시간 24시간 이내 취소입니다.\n예약금 ${won(dep)}원은 환불되지 않습니다.\n계속하시겠습니까?`:`예약시간 24시간 이내 취소입니다.\n계속하시겠습니까?`)
+            : `예약을 취소하시겠습니까?`;
+          if(!confirm(warn)) return;
+          const newSt=w24?"forfeit":"cancel";
           if(window.SD){
-            window.SD.update(num,{cancelled:true,status:"cancel"}).then(()=>doLookup(true));
+            window.SD.update(num,{cancelled:true,status:newSt}).then(()=>doLookup(true));
           } else {
-            const all=load(); const i=all.findIndex(x=>x.num===num); if(i>=0){ all[i].cancelled=true; save(all); doLookup(true); }
+            const all=load(); const i=all.findIndex(x=>x.num===num); if(i>=0){ all[i].cancelled=true; all[i].status=newSt; save(all); doLookup(true); }
           }
         }
       }));
