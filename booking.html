@@ -107,7 +107,7 @@
 
   /* 인원 카운터 */
   .counter { display:inline-flex; align-items:center; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; }
-  .counter button { width:44px; height:46px; background:var(--card-2); border:0; color:var(--gold); font-size:20px; cursor:pointer; transition:background .15s; }
+  .counter button { width:46px; height:46px; background:var(--card-2); border:0; color:var(--gold); font-size:20px; cursor:pointer; transition:background .15s; }
   .counter button:hover { background:rgba(200,168,99,.14); }
   .counter button:disabled { color:#454b63; cursor:not-allowed; }
   .counter .cnt { min-width:82px; text-align:center; font-size:16px; font-weight:700; color:#f0e8d6; }
@@ -136,9 +136,12 @@
   .check .all { color:#f0e8d6; font-weight:700; font-size:14.5px; }
 
   /* ── 우측 요약 (sticky) ── */
-  .summary { position:sticky; top:96px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .summary { position:sticky; top:96px; background:linear-gradient(180deg, rgba(33,42,74,.94) 0%, rgba(23,30,56,.94) 100%);
+             -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+             border:1px solid rgba(200,168,99,.30); border-radius:12px; overflow:hidden;
+             box-shadow:0 18px 48px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06); }
   @media (max-width:880px){ .summary{ position:static; } }
-  .summary .s-top { display:flex; gap:16px; padding:22px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .summary .s-top { display:flex; align-items:center; gap:16px; padding:22px; border-bottom:1px solid rgba(255,255,255,.06); }
   .summary .s-poster { width:96px; aspect-ratio:3/4; border-radius:7px; overflow:hidden; border:1px solid rgba(200,168,99,.35); flex:none; background:var(--card-2); }
   .summary .s-poster img { width:100%; height:100%; object-fit:cover; }
   .summary .s-genre { font-size:12px; color:var(--gold-d); margin-bottom:6px; }
@@ -177,7 +180,13 @@
   .done .num b { display:inline-block; margin-top:5px; white-space:nowrap; color:var(--gold); font-family:"Cormorant Garamond",serif; font-size:19px; letter-spacing:.12em; }
   .done .recap { font-size:13.5px; color:#c2c8da; line-height:1.85; }
   .done .recap b { color:#e8e2d3; }
-  .done .acts { margin-top:24px; display:flex; gap:10px; }
+  .ticket-btn { margin-top:20px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:9px;
+                padding:14px; border:1px solid rgba(200,168,99,.45); border-radius:8px; background:rgba(200,168,99,.10);
+                color:var(--gold); font-family:inherit; font-size:14.5px; font-weight:700; cursor:pointer; transition:background .2s,filter .2s; }
+  .ticket-btn:hover { background:rgba(200,168,99,.18); }
+  .ticket-btn:disabled { opacity:.6; cursor:default; }
+  .ticket-btn span { font-size:17px; }
+  .done .acts { margin-top:12px; display:flex; gap:10px; }
   .done .acts a { flex:1; padding:13px; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none; transition:filter .2s,background .2s; }
   .done .acts .primary { background:var(--gold); color:#0a0e1c; }
   .done .acts .ghost { border:1px solid rgba(200,168,99,.45); color:var(--gold); }
@@ -314,7 +323,7 @@
             <div class="s-total"><span class="k">테마 금액</span><span class="v" id="sTotal">—<small>원</small></span></div>
             <div id="sPayInfo"></div>
           </div>
-          <p class="pay-note">* 주말·공휴일은 1인 요금이 다르게 적용됩니다. 무통장 입금 지점은 <b>예약금 입금 확인 후 예약이 확정</b>되며, 잔금은 현장에서 결제합니다. 수원·수원2호점은 현장 결제입니다.</p>
+          <p class="pay-note">* 요금은 테마별 1인 단가 × 인원으로 계산됩니다. 무통장 입금 지점은 <b>예약금 입금 확인 후 예약이 확정</b>되며, 잔금은 현장에서 결제합니다. 수원·수원2호점은 현장 결제입니다.</p>
           <div class="err-msg" id="errMsg"></div>
           <button class="submit" id="payBtn">예약 신청하기 <span>→</span></button>
         </aside>
@@ -331,6 +340,7 @@
       <div class="t">예약 신청이 접수되었습니다</div>
       <div class="num">예약번호<br><b id="rNum">—</b></div>
       <div class="recap" id="rRecap"></div>
+      <button type="button" class="ticket-btn" id="ticketBtn"><span aria-hidden="true">🎟</span> 예약 티켓 이미지 저장</button>
       <div class="acts">
         <a class="ghost" href="check.html">예약 확인</a>
         <a class="primary" href="index.html">홈으로</a>
@@ -367,7 +377,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>COPYRIGHT ⓒ 2022 상상의문. All right reserved. / created by TEAM 1</span>
+      <span>COPYRIGHT ⓒ 2026 상상의문. All right reserved. / created by TEAM 1</span>
       <span>이메일 imaginarydoor@yologuys.com</span>
       <a href="admin.html" style="color:inherit;opacity:.55">관리자</a>
     </div>
@@ -378,8 +388,7 @@
     const q = new URLSearchParams(location.search);
     const get = (k,d="") => q.get(k) || d;
 
-    // 요금 정책: 평일 25,000 / 주말·공휴일 28,000 (1인)
-    const UNIT_WEEKDAY = 25000, UNIT_WEEKEND = 28000;
+    // 요금 정책: 테마별 인당 단가 × 인원 (단가는 예약 페이지에서 전달)
     const won = n => n.toLocaleString("ko-KR");
 
     // 쿼리 파라미터
@@ -393,6 +402,7 @@
       poster: get("poster",""),
       min:    parseInt(get("min","2")) || 2,
       max:    parseInt(get("max","6")) || 6,
+      price:  parseInt(get("price","")) || 25000,
     };
     let count = Math.min(Math.max(parseInt(get("count","2"))||2, D.min), D.max);
 
@@ -409,15 +419,14 @@
       if (pays) pays.style.gridTemplateColumns = "1fr";   // 1개만 남으면 한 칸 꽉 채움
     })();
 
-    // 주말 여부
-    function isWeekend(dstr){
-      const m = dstr.match(/(\d{4})\.(\d{1,2})\.(\d{1,2})/);
-      if(!m) return false;
-      const day = new Date(+m[1], +m[2]-1, +m[3]).getDay();
-      return day===0 || day===6;
+    // 날짜 문자열(YYYY.MM.DD) → 요일 인덱스 (형식이 어긋나면 null)
+    function dowOf(dstr){
+      const m = (dstr||"").match(/(\d{4})\.(\d{1,2})\.(\d{1,2})/);
+      if(!m) return null;
+      return new Date(+m[1], +m[2]-1, +m[3]).getDay();
     }
-    const weekend = isWeekend(D.date);
-    const unit = weekend ? UNIT_WEEKEND : UNIT_WEEKDAY;
+    const DOW = ["일","월","화","수","목","금","토"];
+    const unit = D.price;   // 테마별 인당 단가
 
     // 결제 정책: 수원·수원2호점 = 현장 결제(예약금 없음), 그 외 = 무통장 예약금 선결제
     //  · 예약금: 분당서현점 10,000원 / 그 외 무통장 지점 20,000원
@@ -436,10 +445,13 @@
     document.getElementById("sGenre").textContent = D.genre || "";
     document.getElementById("sName").textContent  = D.theme;
     document.getElementById("sBranch").textContent= "상상의 문 " + D.branch;
-    document.getElementById("sDate").textContent  = D.date ? `${D.date} (${["일","월","화","수","목","금","토"][new Date(...D.date.split(".").map((v,i)=>i===1?+v-1:+v)).getDay()]})` : "—";
+    (function(){
+      const dw = dowOf(D.date);
+      document.getElementById("sDate").textContent = D.date ? (dw===null ? D.date : `${D.date} (${DOW[dw]})`) : "—";
+    })();
     document.getElementById("sTime").textContent  = D.time || "—";
     document.getElementById("sDur").textContent   = D.dur || "—";
-    document.getElementById("sUnitLab").textContent = (weekend?"1인 요금 (주말·공휴일)":"1인 요금 (평일)");
+    document.getElementById("sUnitLab").textContent = "1인 요금";
     document.getElementById("sUnit").textContent  = won(unit)+"원";
     if(D.poster){ const p=document.getElementById("sPoster"); p.src=D.poster; p.alt=D.theme; }
 
@@ -525,7 +537,7 @@
       const pay=document.querySelector('input[name=pay]:checked').value;
       const request=document.getElementById("fMemo").value.trim();
       const num=makeNum();
-      const rec={ num, name, phone, branch:D.branch, theme:D.theme, date:D.date, time:D.time, count, pay, total:unit*count, status:"pending", cancelled:false, request, ts:Date.now() };
+      const rec={ num, name, phone, branch:D.branch, theme:D.theme, genre:D.genre, date:D.date, time:D.time, count, pay, total:unit*count, status:"pending", cancelled:false, request, ts:Date.now() };
       // 로컬 백업 저장 (최근 30건) — 예약 확인 페이지 조회용
       try{
         const all=JSON.parse(localStorage.getItem("sd_reservations")||"[]"); all.unshift(rec);
@@ -541,7 +553,78 @@
           ? `현장 결제<br><span style="color:#c8a863">관리자 확인 후 예약이 확정됩니다.</span>`
           : `예약금 <b>${won(DEPOSIT)}원</b> 입금 · 잔금 <b>${won(Math.max(0,unit*count-DEPOSIT))}원</b> 현장 결제<br><span style="color:#c8a863">예약금 입금 확인 후 예약이 확정됩니다.</span>`+
             (ACCOUNT?`<div style="margin-top:10px;padding:10px 12px;background:rgba(200,168,99,.12);border:1px solid rgba(200,168,99,.3);border-radius:8px;font-size:13px;line-height:1.5">입금 계좌<br><b style="color:#c8a863">${esc(ACCOUNT)}</b></div>`:""));
+      lastRec = rec;
       document.getElementById("doneMask").classList.add("on");
+    });
+
+    /* ── 예약 티켓 이미지 (Canvas, 의존성 없음) ── */
+    let lastRec = null;
+    function rr(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+    function loadImg(src){ return new Promise(res=>{ if(!src) return res(null); const im=new Image(); im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; }); }
+    async function buildTicket(rec){
+      try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+      const poster = await loadImg(D.poster);
+      const W=820, H=1380, c=document.createElement("canvas"); c.width=W; c.height=H;
+      const x=c.getContext("2d");
+      // 배경
+      const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,"#0c1226"); g.addColorStop(1,"#070a16");
+      x.fillStyle=g; x.fillRect(0,0,W,H);
+      const glow=x.createRadialGradient(W/2,150,40,W/2,150,520); glow.addColorStop(0,"rgba(200,168,99,.18)"); glow.addColorStop(1,"rgba(200,168,99,0)");
+      x.fillStyle=glow; x.fillRect(0,0,W,520);
+      // 외곽 프레임
+      x.strokeStyle="rgba(200,168,99,.55)"; x.lineWidth=3; rr(x,30,30,W-60,H-60,24); x.stroke();
+      x.textAlign="center";
+      // 워드마크
+      x.fillStyle="#c8a863"; x.font='600 28px "Cormorant Garamond", serif';
+      x.fillText("IMAGINARY DOOR", W/2, 104);
+      x.fillStyle="#f4eede"; x.font='700 40px "Paperozi","Apple SD Gothic Neo",sans-serif';
+      x.fillText("상상의 문", W/2, 156);
+      x.strokeStyle="rgba(200,168,99,.3)"; x.lineWidth=1; x.beginPath(); x.moveTo(W/2-80,182); x.lineTo(W/2+80,182); x.stroke();
+      // 포스터
+      const pw=320, ph=440, px=(W-pw)/2, py=210;
+      x.save(); rr(x,px,py,pw,ph,12); x.clip();
+      if(poster){ const ar=poster.width/poster.height, tar=pw/ph; let sw,sh,sx,sy;
+        if(ar>tar){ sh=poster.height; sw=sh*tar; sx=(poster.width-sw)/2; sy=0; }
+        else { sw=poster.width; sh=sw/tar; sx=0; sy=(poster.height-sh)/2; }
+        x.drawImage(poster,sx,sy,sw,sh,px,py,pw,ph);
+      } else { x.fillStyle="#141a33"; x.fillRect(px,py,pw,ph); }
+      x.restore();
+      x.strokeStyle="rgba(200,168,99,.45)"; x.lineWidth=2; rr(x,px,py,pw,ph,12); x.stroke();
+      // 테마명 · 장르
+      let cy=py+ph+74;
+      if(rec.genre){ x.fillStyle="#c8a863"; x.font='600 18px "Paperozi",sans-serif'; x.fillText(rec.genre, W/2, cy-48); }
+      x.fillStyle="#f4eede"; x.font='700 36px "Paperozi","Apple SD Gothic Neo",sans-serif';
+      let name=rec.theme||""; if(x.measureText(name).width>W-120){ while(x.measureText(name+"…").width>W-120 && name.length>1) name=name.slice(0,-1); name+="…"; }
+      x.fillText(name, W/2, cy);
+      // 정보 행
+      cy+=54; const dw=dowOf(rec.date); const dstr=rec.date?(dw===null?rec.date:`${rec.date} (${DOW[dw]})`):"-";
+      const rows=[["지점","상상의 문 "+rec.branch],["일시",dstr+"  "+rec.time],["인원",rec.count+"명"],["테마 금액",won(rec.total)+"원"]];
+      x.font='500 21px "Paperozi",sans-serif';
+      rows.forEach(r=>{ x.textAlign="left"; x.fillStyle="#9aa2bd"; x.fillText(r[0], 130, cy);
+        x.textAlign="right"; x.fillStyle="#ece4d6"; x.fillText(r[1], W-130, cy); cy+=46; });
+      // 절취선 + 노치
+      const ly=cy+18; x.fillStyle="#070a16"; x.beginPath(); x.arc(30,ly,20,0,7); x.fill(); x.beginPath(); x.arc(W-30,ly,20,0,7); x.fill();
+      x.strokeStyle="rgba(200,168,99,.4)"; x.lineWidth=2; x.setLineDash([9,9]); x.beginPath(); x.moveTo(58,ly); x.lineTo(W-58,ly); x.stroke(); x.setLineDash([]);
+      // 예약번호
+      x.textAlign="center"; x.fillStyle="#9aa2bd"; x.font='500 17px "Paperozi",sans-serif'; x.fillText("예약번호", W/2, ly+56);
+      x.fillStyle="#c8a863"; x.font='700 34px "Cormorant Garamond", serif'; x.fillText(rec.num, W/2, ly+98);
+      x.fillStyle="rgba(244,238,222,.5)"; x.font='600 15px "Paperozi",sans-serif';
+      x.fillText("예약 확인·취소는 사이트의 ‘예약 확인’ 메뉴에서", W/2, ly+138);
+      return c;
+    }
+    document.getElementById("ticketBtn").addEventListener("click", async function(){
+      if(!lastRec) return;
+      const btn=this; btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML="티켓 생성 중…";
+      try{
+        const cv=await buildTicket(lastRec);
+        await new Promise(res=>cv.toBlob(function(blob){
+          if(blob){ const u=URL.createObjectURL(blob); const a=document.createElement("a");
+            a.href=u; a.download="상상의문_예약_"+lastRec.num+".png"; document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(()=>URL.revokeObjectURL(u),2000); }
+          res();
+        },"image/png"));
+      }catch(e){ console.warn("[ticket]",e); }
+      btn.disabled=false; btn.innerHTML=orig;
     });
   </script>
 
