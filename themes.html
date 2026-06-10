@@ -214,6 +214,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     transition: opacity .3s ease;
   }
   .tcard:hover .tinfo { opacity: 1; pointer-events: auto; }
+  /* 모바일/터치 기기: 카드를 탭하면 후버와 동일한 효과·상세정보를 표시 (.is-active 는 JS가 토글) */
+  .tcard.is-active .tframe { transform: translateY(-8px); border-color: var(--gold); }
+  .tcard.is-active .tframe img { transform: scale(1.05); }
+  .tcard.is-active .tframe .genre { opacity: 0; }
+  .tcard.is-active .tinfo { opacity: 1; pointer-events: auto; }
   .tinfo .ti-genre { font-size: 12px; letter-spacing: .04em; color: var(--gold-d); margin-bottom: 8px; }
   .tinfo .ti-name { font-size: clamp(17px, 1.7vw, 20px); font-weight: 700; color: var(--gold); margin-bottom: 12px; }
   .tinfo .ti-desc {
@@ -257,8 +262,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   @media (max-width: 520px) {
     .grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
     .branch-tabs { gap: 16px; }
-    /* 터치 기기: 후버가 없으므로 상세정보를 항상 보이게 */
-    .tinfo { opacity: 1; pointer-events: auto; position: static; background: rgba(0,0,0,.4); }
   }
 
   /* ══════════════ FOOTER (메인/STORY와 동일) ══════════════ */
@@ -268,6 +271,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .footer-hours { display:flex; align-items:center; gap:14px; }
   .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
   .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .br-mb { display: none; }
+  @media (max-width: 620px) { .br-mb { display: inline; } }
+  /* 모바일에서만 숨기는 구분자(·) — 데스크톱은 한 줄 유지 */
+  .sep-mb { display: inline; }
+  @media (max-width: 620px) { .sep-mb { display: none; } }
   .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
   .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
   .footer-nav a:hover { color:var(--gold); }
@@ -282,7 +290,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
   .footer-social a:hover { background:var(--gold); color:#0a0f24; }
   .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
-  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
+  @media (max-width:760px){ .footer-stores{ display:none; } .footer-nav{ margin-left:0; width:100%; } }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/themes-store.js"></script>
@@ -339,7 +347,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <div class="footer-top">
       <div class="footer-hours">
         <span class="clock">&#128337;</span>
-        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00<span class="sep-mb"> &nbsp;·&nbsp; </span><br class="br-mb">주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
       </div>
       <nav class="footer-nav">
         <a href="notice.html">공지사항</a>
@@ -464,6 +472,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }));
         });
       });
+      // 터치 기기 또는 모바일 폭: 카드를 탭하면 후버 효과/상세정보를 토글. 다른 카드를 탭하면 기존 카드는 닫힘
+      if (window.matchMedia("(hover: none), (pointer: coarse), (max-width: 820px)").matches) {
+        grid.querySelectorAll(".tcard").forEach(function (card) {
+          card.addEventListener("click", function (e) {
+            if (e.target.closest(".ti-btn")) return;   // 예약 바로가기는 링크 그대로
+            var open = card.classList.contains("is-active");
+            grid.querySelectorAll(".tcard.is-active").forEach(function (c) { c.classList.remove("is-active"); });
+            if (!open) card.classList.add("is-active");
+          });
+        });
+      }
     }
 
     document.querySelectorAll("#branchTabs button").forEach(btn => {

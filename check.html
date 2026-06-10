@@ -145,6 +145,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .footer-hours { display:flex; align-items:center; gap:14px; }
   .footer-hours .clock { width:36px;height:36px;border:1px solid #c8a863;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;flex:none; }
   .footer-hours .ft { font-size:13px; line-height:1.7; }
+  .br-mb { display: none; }
+  @media (max-width: 620px) { .br-mb { display: inline; } }
+  /* 모바일에서만 숨기는 구분자(·) — 데스크톱은 한 줄 유지 */
+  .sep-mb { display: inline; }
+  @media (max-width: 620px) { .sep-mb { display: none; } }
   .footer-hours .ft b { color:#e8dcc0; font-weight:600; }
   .footer-nav { margin-left:auto; display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
   .footer-nav a:hover { color:var(--gold); }
@@ -159,7 +164,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .footer-social a { width:34px;height:34px;border-radius:50%; background:rgba(255,255,255,.08); display:flex;align-items:center;justify-content:center; font-size:12px; color:#cfd5e6; }
   .footer-social a:hover { background:var(--gold); color:#0a0f24; }
   .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
-  @media (max-width:760px){ .footer-stores{ grid-template-columns:1fr;} .footer-nav{ margin-left:0; width:100%; } }
+  @media (max-width:760px){ .footer-stores{ display:none; } .footer-nav{ margin-left:0; width:100%; } }
 </style>
 </head>
 <body>
@@ -220,7 +225,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <div class="footer-top">
       <div class="footer-hours">
         <span class="clock">&#128337;</span>
-        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00 &nbsp;·&nbsp; 주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
+        <span class="ft"><b>운영 시간</b> &nbsp; 평일 12:00 - 23:00<span class="sep-mb"> &nbsp;·&nbsp; </span><br class="br-mb">주말 및 공휴일 10:00 - 23:00<br>연중무휴 (설날, 추석 당일 제외)</span>
       </div>
       <nav class="footer-nav">
         <a href="notice.html">공지사항</a>
