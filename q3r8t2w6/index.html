@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>페이지를 불러오는 중...</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #f8f8f8;
+      font-family: sans-serif;
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <p>페이지를 불러오는 중입니다...</p>
+  <script>
+    (function () {
+      const EMAIL = 'itsmauvely@gmail.com';
+      const COOLDOWN_MS = 10 * 60 * 1000;
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id') || 'unknown';
+      const storageKey = 'notify_last_' + id;
+      const last = Number(localStorage.getItem(storageKey) || 0);
+      const now = Date.now();
+      if (now - last < COOLDOWN_MS) return;
+      const kstTime = new Date().toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+      const pageUrl = window.location.href;
+      const browser = navigator.userAgent;
+      const body = [
+        '[ 비밀 페이지 접속 알림 ]',
+        '',
+        '대상(id): ' + id,
+        '접속 시각(KST): ' + kstTime,
+        '페이지 주소: ' + pageUrl,
+        '브라우저 정보: ' + browser
+      ].join('\n');
+      fetch('https://formsubmit.co/ajax/' + EMAIL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: '[방문 알림] ' + id + ' 접속 — ' + kstTime,
+          message: body,
+          _captcha: 'false'
+        })
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.success === 'true' || data.success === true) {
+          localStorage.setItem(storageKey, String(now));
+        }
+      })
+      .catch(function () {});
+    })();
+  </script>
+</body>
+</html>
