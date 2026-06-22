@@ -292,8 +292,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .footer-bottom { max-width:1280px; margin:clamp(22px,3vw,36px) auto 0; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; color:#6f7794; }
   @media (max-width:760px){ .footer-stores{ display:none; } .footer-nav{ margin-left:0; width:100%; } }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/themes-store.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="js/themes-store.js"></script>
 </head>
 <body>
 
@@ -537,12 +537,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     function startThemes(){ render("대학로점"); runDeepLink(); }
 
-    if(window.SDThemes && window.SDThemes.enabled){
+    // 1) 하드코딩 데이터로 즉시 렌더 — 네트워크 대기 없이 정보가 바로 뜬다
+    startThemes();
+
+    // 2) 클라우드(관리자) 테마가 도착하면 현재 보고 있는 지점만 조용히 갱신
+    //    (supabase-js / themes-store.js 는 defer 로 로드되므로 DOMContentLoaded 이후 사용)
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!(window.SDThemes && window.SDThemes.enabled)) return;
       window.SDThemes.byBranch()
-        .then(function(g){ applyCloudThemes(g); })
-        .catch(function(e){ console.warn("[themes] 테마 동기화 실패", e); })
-        .then(startThemes);
-    } else { startThemes(); }
+        .then(function(g){
+          applyCloudThemes(g);
+          var active = document.querySelector('#branchTabs button.active');
+          render(active ? active.dataset.branch : "대학로점");
+        })
+        .catch(function(e){ console.warn("[themes] 테마 동기화 실패", e); });
+    });
   </script>
 
 <script>(function(){var b=document.getElementById("navBurger"),n=document.getElementById("navMenu");if(b&&n){b.addEventListener("click",function(){b.classList.toggle("on");n.classList.toggle("open");});}})();</script>
